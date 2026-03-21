@@ -5,6 +5,9 @@ const envApiBase =
   process.env.REACT_APP_API_URL ||
   process.env.REACT_APP_API_BASE_URL ||
   process.env.REACT_APP_API ||
+  process.env.VITE_API_URL ||
+  process.env.VITE_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
   '';
 
 const isLocalHost =
@@ -14,7 +17,22 @@ const isLocalHost =
 const normalizeApiBase = (base) => {
   const value = String(base || '').trim().replace(/\/+$/, '');
   if (!value) return '';
-  return /\/api$/i.test(value) ? value : `${value}/api`;
+
+  // Supports full API paths (e.g. /api, /api/v1) and only appends /api for root host URLs.
+  try {
+    const parsed = new URL(value);
+    const path = (parsed.pathname || '').replace(/\/+$/, '');
+    if (!path || path === '/') {
+      return `${parsed.origin}/api`;
+    }
+    if (/^\/api(\/|$)/i.test(path)) {
+      return `${parsed.origin}${path}`;
+    }
+    return `${parsed.origin}${path}`;
+  } catch {
+    if (/\/api(\/|$)/i.test(value)) return value;
+    return `${value}/api`;
+  }
 };
 
 export const API_BASE_URL = normalizeApiBase(
