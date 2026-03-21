@@ -159,8 +159,9 @@ export default function LeaderboardPage() {
           {lb.map((r,i)=>{
             const rowKey = getRowKey(r) || `row-${i}`;
             const isPromoted = highlightedKey && highlightedKey === rowKey;
+            const topRowClass = i === 0 ? ' lb-row-top1' : i === 1 ? ' lb-row-top2' : i === 2 ? ' lb-row-top3' : '';
             return (
-            <div key={rowKey} className={`lb-row${isPromoted ? ' lb-row-promoted' : ''}`}>
+            <div key={rowKey} className={`lb-row${topRowClass}${isPromoted ? ' lb-row-promoted' : ''}`}>
               <div className={`lb-rank${i===0?' gold':i===1?' silver':i===2?' bronze':''}`}>
                 {i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}
               </div>

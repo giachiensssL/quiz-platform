@@ -1,22 +1,37 @@
 // src/api/api.js
 import axios from 'axios';
 
-// 🔥 FIX CỨNG API (production chạy luôn)
-export const API_BASE_URL = "https://quiz-platform-sm9a.onrender.com/api";
+const envApiBase =
+  process.env.REACT_APP_API_URL ||
+  process.env.REACT_APP_API_BASE_URL ||
+  process.env.REACT_APP_API ||
+  '';
+
+const isLocalHost =
+  typeof window !== 'undefined' &&
+  /^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/i.test(window.location.hostname || '');
+
+const normalizeApiBase = (base) => {
+  const value = String(base || '').trim().replace(/\/+$/, '');
+  if (!value) return '';
+  return /\/api$/i.test(value) ? value : `${value}/api`;
+};
+
+export const API_BASE_URL = normalizeApiBase(
+  envApiBase || (isLocalHost ? 'http://localhost:5001' : 'https://quiz-platform-sm9a.onrender.com')
+);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' }
 });
 
-// 🔐 Gắn token nếu có
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('qm_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// ⚠️ Xử lý lỗi 401 (logout)
 api.interceptors.response.use(
   (res) => res,
   (err) => {

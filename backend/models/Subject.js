@@ -9,6 +9,7 @@ const subjectSchema = new Schema(
     year: { type: Schema.Types.ObjectId, ref: "Year", required: true },
     semester: { type: Schema.Types.ObjectId, ref: "Semester", required: true },
     code: { type: String },
+    locked: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

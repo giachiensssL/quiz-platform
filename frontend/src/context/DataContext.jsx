@@ -475,56 +475,64 @@ export function DataProvider({ children }) {
       const shouldUseServer = Boolean(token);
       let serverSynced = false;
       try {
+        const currentItem = data[key]?.find((x) => String(x.id) === String(id));
+
         if (key === 'faculties') {
-          await adminDataAPI.updateFaculty(id, { name: changes.name, description: changes.desc || '' });
+          await adminDataAPI.updateFaculty(id, {
+            name: changes.name ?? currentItem?.name ?? '',
+            description: changes.desc ?? currentItem?.desc ?? '',
+            locked: typeof changes.locked === 'boolean' ? changes.locked : Boolean(currentItem?.locked),
+          });
           serverSynced = true;
         }
         if (key === 'years') {
-          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
-          const value = Number(changes.value || parseNumberFromLabel(changes.name, 1));
-          const facultyId = changes.facultyId || currentItem?.facultyId || undefined;
+          const currentName = changes.name ?? currentItem?.name ?? '';
+          const value = Number(changes.value ?? currentItem?.value ?? parseNumberFromLabel(currentName, 1));
+          const facultyId = changes.facultyId ?? currentItem?.facultyId ?? undefined;
           await adminDataAPI.updateYear(id, {
             value,
-            label: changes.name || `Năm ${value}`,
+            label: currentName || `Năm ${value}`,
             faculty: facultyId || undefined,
+            locked: typeof changes.locked === 'boolean' ? changes.locked : Boolean(currentItem?.locked),
           });
           serverSynced = true;
         }
         if (key === 'semesters') {
-          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
-          const value = Number(changes.value || parseNumberFromLabel(changes.name, 1));
-          const yearId = changes.yearId || currentItem?.yearId || undefined;
+          const currentName = changes.name ?? currentItem?.name ?? '';
+          const value = Number(changes.value ?? currentItem?.value ?? parseNumberFromLabel(currentName, 1));
+          const yearId = changes.yearId ?? currentItem?.yearId ?? undefined;
           await adminDataAPI.updateSemester(id, {
             value,
-            label: changes.name || `Học kỳ ${value}`,
+            label: currentName || `Học kỳ ${value}`,
             year: yearId || undefined,
+            locked: typeof changes.locked === 'boolean' ? changes.locked : Boolean(currentItem?.locked),
           });
           serverSynced = true;
         }
         if (key === 'subjects') {
-          // Lấy item hiện tại từ data để dùng làm fallback nếu user không chọn lại dropdown
-          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
-          const facultyId = changes.facultyId || currentItem?.facultyId || undefined;
-          const yearId = changes.yearId || currentItem?.yearId || undefined;
-          const semesterId = changes.semesterId || currentItem?.semesterId || undefined;
+          const facultyId = changes.facultyId ?? currentItem?.facultyId ?? undefined;
+          const yearId = changes.yearId ?? currentItem?.yearId ?? undefined;
+          const semesterId = changes.semesterId ?? currentItem?.semesterId ?? undefined;
           await adminDataAPI.updateSubject(id, {
-            name: changes.name,
-            description: changes.desc || '',
+            name: changes.name ?? currentItem?.name ?? '',
+            description: changes.desc ?? currentItem?.desc ?? '',
             faculty: facultyId || undefined,
             year: yearId || undefined,
             semester: semesterId || undefined,
-            code: changes.code || '',
+            code: changes.code ?? currentItem?.code ?? '',
+            locked: typeof changes.locked === 'boolean' ? changes.locked : Boolean(currentItem?.locked),
           });
           serverSynced = true;
         }
         if (key === 'lessons') {
-          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
-          const subjectId = changes.subjectId || currentItem?.subjectId || undefined;
+          const subjectId = changes.subjectId ?? currentItem?.subjectId ?? undefined;
+          const nextName = changes.name ?? currentItem?.name ?? '';
           await adminDataAPI.updateLesson(id, {
             subject: subjectId || undefined,
-            title: normalizeLessonTitle(changes.name, changes.order),
-            description: changes.desc || '',
-            order: Number(changes.order || 0),
+            title: normalizeLessonTitle(nextName, changes.order ?? currentItem?.order),
+            description: changes.desc ?? currentItem?.desc ?? '',
+            order: Number(changes.order ?? currentItem?.order ?? 0),
+            locked: typeof changes.locked === 'boolean' ? changes.locked : Boolean(currentItem?.locked),
           });
           serverSynced = true;
         }

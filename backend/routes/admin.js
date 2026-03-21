@@ -489,13 +489,16 @@ router.post(
 router.put(
   "/subjects/:id",
   asyncHandler(async (req, res) => {
-    const name = String(req.body?.name || "").trim();
+    const current = await Subject.findById(req.params.id);
+    if (!current) return res.status(404).json({ message: "Không tìm thấy môn học" });
+
+    const incomingName = String(req.body?.name ?? current.name ?? "").trim();
+    const safeName = incomingName || String(current.name || "").trim() || "Môn học";
     const updated = await Subject.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, name, icon: inferSubjectIcon(name) },
+      { ...req.body, name: safeName, icon: inferSubjectIcon(safeName) },
       { new: true, runValidators: false }
     );
-    if (!updated) return res.status(404).json({ message: "Không tìm thấy môn học" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -531,8 +534,17 @@ router.post(
 router.put(
   "/lessons/:id",
   asyncHandler(async (req, res) => {
-    const updated = await Lesson.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
-    if (!updated) return res.status(404).json({ message: "Không tìm thấy bài học" });
+    const current = await Lesson.findById(req.params.id);
+    if (!current) return res.status(404).json({ message: "Không tìm thấy bài học" });
+
+    const incomingTitle = String(req.body?.title ?? current.title ?? "").trim();
+    const safeTitle = incomingTitle || String(current.title || "").trim() || "Bài học";
+
+    const updated = await Lesson.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, title: safeTitle },
+      { new: true, runValidators: false }
+    );
     notifyCatalogUpdated();
     res.json(updated);
   })

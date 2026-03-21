@@ -597,8 +597,20 @@ function YearsPanel({ data, yearsCrud }) {
     ? (data.faculties || []).filter((f) => String(f.id) === String(facultyId))
     : (data.faculties || []);
 
+  const yearNameOptions = [
+    { value: 'Năm 1', label: 'Năm 1' },
+    { value: 'Năm 2', label: 'Năm 2' },
+    { value: 'Năm 3', label: 'Năm 3' },
+  ];
+
   const fields = [
-    { key: 'name', label: 'Tên năm học', required: true, placeholder: 'Năm 1' },
+    {
+      key: 'name',
+      label: 'Tên năm học',
+      required: true,
+      type: 'select',
+      options: yearNameOptions,
+    },
     {
       key: 'facultyId',
       label: 'Khoa',
@@ -610,6 +622,7 @@ function YearsPanel({ data, yearsCrud }) {
   ];
 
   const createDefaults = () => ({
+    name: 'Năm 1',
     facultyId: facultyId || '',
   });
 
@@ -673,8 +686,20 @@ function SemestersPanel({ data, semestersCrud }) {
     return true;
   });
 
+  const semesterNameOptions = [
+    { value: 'Học kỳ 1', label: 'Học kỳ 1' },
+    { value: 'Học kỳ 2', label: 'Học kỳ 2' },
+    { value: 'Học kỳ 3', label: 'Học kỳ 3' },
+  ];
+
   const fields = [
-    { key: 'name', label: 'Tên học kỳ', required: true, placeholder: 'Học kỳ 1' },
+    {
+      key: 'name',
+      label: 'Tên học kỳ',
+      required: true,
+      type: 'select',
+      options: semesterNameOptions,
+    },
     {
       key: 'yearId',
       label: 'Năm học',
@@ -686,6 +711,7 @@ function SemestersPanel({ data, semestersCrud }) {
   ];
 
   const createDefaults = () => ({
+    name: 'Học kỳ 1',
     yearId: yearId || (yearOptions.length === 1 ? String(yearOptions[0].id) : ''),
   });
 
