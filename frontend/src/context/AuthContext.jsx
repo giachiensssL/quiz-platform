@@ -62,8 +62,23 @@ export function AuthProvider({ children }) {
       localStorage.setItem('qm_token', payload.token || '');
       if (payload.refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
       return { success: true, role: u.role };
-    } catch {
-      // Only allow local fallback when explicitly enabled.
+    } catch (error) {
+      const status = error?.response?.status;
+      const serverMessage = error?.response?.data?.message;
+
+      if (status === 401) {
+        return { success: false, error: serverMessage || 'Tên đăng nhập hoặc mật khẩu không đúng.' };
+      }
+
+      if (status === 403) {
+        return { success: false, error: serverMessage || 'Tài khoản bị khoá. Liên hệ admin.' };
+      }
+
+      if (serverMessage && status) {
+        return { success: false, error: serverMessage };
+      }
+
+      // Only allow local fallback when explicitly enabled and server is unreachable.
     }
 
     if (!ENABLE_LOCAL_AUTH_FALLBACK) {

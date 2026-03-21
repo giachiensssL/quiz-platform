@@ -55,15 +55,12 @@ function UsersPanel() {
   const { mockUsers, setMockUsers } = useAuth();
   const [modal, setModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [resetModal, setResetModal] = useState(false);
   const [confirm, setConfirm] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
-  const [resetUser, setResetUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ fullName: '', email: '', username: '', password: '', role: 'user' });
-  const [editForm, setEditForm] = useState({ fullName: '', email: '', role: 'user' });
-  const [resetPassword, setResetPassword] = useState('');
+  const [editForm, setEditForm] = useState({ fullName: '', email: '', username: '', password: '', role: 'user' });
   const [showPasswords, setShowPasswords] = useState(false);
   const [toast, setToast] = useState('');
   const [mode, setMode] = useState('server');
@@ -74,7 +71,7 @@ function UsersPanel() {
     _id: String(user.id),
     id: String(user.id),
     username: user.username,
-    password: user.password,
+    plainPassword: user.password,
     fullName: user.name || user.fullName || '',
     email: user.email || '',
     role: user.role || 'user',
@@ -128,6 +125,7 @@ function UsersPanel() {
         id: Date.now(),
         username,
         password: form.password,
+        plainPassword: form.password,
         role: form.role,
         name: form.fullName.trim() || username,
         fullName: form.fullName.trim(),
@@ -201,6 +199,8 @@ function UsersPanel() {
     setEditForm({
       fullName: user.fullName || '',
       email: user.email || '',
+      username: user.username || '',
+      password: user.plainPassword || '',
       role: user.role || 'user',
     });
     setEditModal(true);
@@ -215,6 +215,9 @@ function UsersPanel() {
         if (String(item.id) !== id) return item;
         return {
           ...item,
+          username: editForm.username.trim().toLowerCase(),
+          password: editForm.password || item.password,
+          plainPassword: editForm.password || item.password,
           name: editForm.fullName,
           fullName: editForm.fullName,
           email: editForm.email,
@@ -225,6 +228,8 @@ function UsersPanel() {
         if (String(item._id || item.id) !== id) return item;
         return {
           ...item,
+          username: editForm.username.trim().toLowerCase(),
+          plainPassword: editForm.password || item.plainPassword,
           fullName: editForm.fullName,
           email: editForm.email,
           role: editForm.role,
@@ -238,6 +243,8 @@ function UsersPanel() {
 
     try {
       await adminDataAPI.updateUser(editingUser._id, {
+        username: editForm.username.trim().toLowerCase(),
+        password: editForm.password,
         fullName: editForm.fullName,
         email: editForm.email,
         role: editForm.role,
@@ -248,42 +255,6 @@ function UsersPanel() {
       await loadUsers();
     } catch (error) {
       setToast(error?.response?.data?.message || 'Không thể cập nhật người dùng.');
-    }
-  };
-
-  const openResetPassword = (user) => {
-    setResetUser(user);
-    setResetPassword('');
-    setResetModal(true);
-  };
-
-  const submitResetPassword = async () => {
-    if (!resetUser?._id) return;
-    if (!resetPassword || resetPassword.trim().length < 6) {
-      setToast('Mật khẩu mới phải có ít nhất 6 ký tự.');
-      return;
-    }
-
-    if (mode === 'local') {
-      const id = String(resetUser._id || resetUser.id);
-      setMockUsers((prev) => prev.map((item) => String(item.id) === id ? { ...item, password: resetPassword.trim() } : item));
-      setUsers((prev) => prev.map((item) => String(item._id || item.id) === id ? { ...item, password: resetPassword.trim() } : item));
-      setToast('Đặt lại mật khẩu thành công (cục bộ).');
-      setResetModal(false);
-      setResetUser(null);
-      setResetPassword('');
-      return;
-    }
-
-    try {
-      await adminDataAPI.resetUserPassword(resetUser._id, resetPassword.trim());
-      setToast('Đặt lại mật khẩu thành công.');
-      setResetModal(false);
-      setResetUser(null);
-      setResetPassword('');
-      await loadUsers();
-    } catch (error) {
-      setToast(error?.response?.data?.message || 'Không thể đặt lại mật khẩu.');
     }
   };
 
@@ -314,28 +285,17 @@ function UsersPanel() {
         footer={<><Button variant="ghost" onClick={() => setEditModal(false)}>Huỷ</Button><Button variant="primary" onClick={saveEdit}>Lưu thay đổi</Button></>}>
         <div className="form-grid-2">
           <Input label="Họ và tên" placeholder="Nguyễn Văn A" value={editForm.fullName} onChange={ef('fullName')} />
+          <Input label="Tên đăng nhập" placeholder="sinhvien01" value={editForm.username} onChange={ef('username')} />
+        </div>
+        <div className="form-grid-2">
           <Input label="Email" placeholder="abc@sv.edu.vn" value={editForm.email} onChange={ef('email')} />
+          <Input label="Mật khẩu" type="text" placeholder="Ít nhất 6 ký tự" value={editForm.password} onChange={ef('password')} />
         </div>
         <Select
           label="Phân quyền"
           value={editForm.role}
           onChange={ef('role')}
           options={[{ value: 'user', label: 'Người dùng' }, { value: 'admin', label: 'Quản trị viên' }]}
-        />
-      </Modal>
-
-      <Modal
-        open={resetModal}
-        title={`Đặt lại mật khẩu${resetUser?.username ? `: @${resetUser.username}` : ''}`}
-        onClose={() => setResetModal(false)}
-        footer={<><Button variant="ghost" onClick={() => setResetModal(false)}>Huỷ</Button><Button variant="primary" onClick={submitResetPassword}>Cập nhật</Button></>}
-      >
-        <Input
-          label="Mật khẩu mới"
-          type="password"
-          placeholder="Tối thiểu 6 ký tự"
-          value={resetPassword}
-          onChange={(e) => setResetPassword(e.target.value)}
         />
       </Modal>
 
@@ -372,7 +332,7 @@ function UsersPanel() {
                     </div>
                   </td>
                   <td style={{ maxWidth: 210, fontSize: '.76rem', wordBreak: 'break-all', color: 'var(--muted)' }}>
-                    {showPasswords ? (u.password || 'N/A') : '••••••••'}
+                    {showPasswords ? (u.plainPassword || 'Chưa có mật khẩu hiển thị') : '••••••••'}
                   </td>
                   <td><Badge color={u.role === 'admin' ? 'orange' : 'blue'}>{u.role || 'user'}</Badge></td>
                   <td><Badge color={u.isBlocked ? 'red' : 'green'}>{u.isBlocked ? 'Bị khoá' : 'Hoạt động'}</Badge></td>
@@ -381,8 +341,7 @@ function UsersPanel() {
                   </td>
                   <td>
                     <div className="td-actions">
-                      <Button variant="ghost" size="sm" onClick={() => openEdit(u)}>Phân quyền</Button>
-                      <Button variant="ghost" size="sm" onClick={() => openResetPassword(u)}>Đặt lại MK</Button>
+                      <Button variant="ghost" size="sm" onClick={() => openEdit(u)}>Sửa</Button>
                       <Button variant="ghost" size="sm" onClick={() => toggleBlock(u._id, u.isBlocked)}>{u.isBlocked ? '🔓 Mở' : '🔒 Khoá'}</Button>
                       <Button variant="danger" size="sm" onClick={() => setConfirm(u)}>Xoá</Button>
                     </div>
@@ -474,9 +433,28 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
               placeholder={f.placeholder} value={form[f.key] || ''}
               onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
           ) : (
-            <Input key={f.key} label={f.label + (f.required ? ' *' : '')}
-              placeholder={f.placeholder} value={form[f.key] || ''}
-              onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
+            <div key={f.key}>
+              <Input label={f.label + (f.required ? ' *' : '')}
+                placeholder={f.placeholder} value={form[f.key] || ''}
+                onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
+              {Array.isArray(f.quickOptions) && f.quickOptions.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
+                  {f.quickOptions.map((opt) => {
+                    const active = String(form[f.key] || '') === String(opt);
+                    return (
+                      <Button
+                        key={`${f.key}-${opt}`}
+                        variant={active ? 'primary' : 'ghost'}
+                        size="sm"
+                        onClick={() => setForm((p) => ({ ...p, [f.key]: opt }))}
+                      >
+                        {opt}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )
         ))}
       </Modal>
@@ -523,7 +501,23 @@ function LessonsPanel({ data, lessonsCrud, subjectId, setSubjectId, onlySelected
     : (data.lessons || []);
 
   const fields = [
-    { key: 'name', label: 'Tên bài học', required: true, placeholder: 'Ôn tập Chương 1' },
+    {
+      key: 'name',
+      label: 'Tên bài học',
+      required: true,
+      type: 'select',
+      options: [
+        { value: 'Bài 1', label: 'Bài 1' },
+        { value: 'Bài 2', label: 'Bài 2' },
+        { value: 'Bài 3', label: 'Bài 3' },
+        { value: 'Bài 4', label: 'Bài 4' },
+        { value: 'Bài 5', label: 'Bài 5' },
+        { value: 'Bài 6', label: 'Bài 6' },
+        { value: 'Bài 7', label: 'Bài 7' },
+        { value: 'Bài 8', label: 'Bài 8' },
+        { value: 'Bài 9', label: 'Bài 9' },
+      ],
+    },
     {
       key: 'subjectId',
       label: 'Môn học',
@@ -534,7 +528,22 @@ function LessonsPanel({ data, lessonsCrud, subjectId, setSubjectId, onlySelected
         : (data.subjects || [])
       ).map((s) => ({ value: s.id, label: s.name })),
     },
-    { key: 'order', label: 'Thứ tự bài', placeholder: '1' },
+    {
+      key: 'order',
+      label: 'Thứ tự bài',
+      type: 'select',
+      options: [
+        { value: '1', label: '1' },
+        { value: '2', label: '2' },
+        { value: '3', label: '3' },
+        { value: '4', label: '4' },
+        { value: '5', label: '5' },
+        { value: '6', label: '6' },
+        { value: '7', label: '7' },
+        { value: '8', label: '8' },
+        { value: '9', label: '9' },
+      ],
+    },
   ];
 
   const createDefaults = () => ({
@@ -597,19 +606,18 @@ function YearsPanel({ data, yearsCrud }) {
     ? (data.faculties || []).filter((f) => String(f.id) === String(facultyId))
     : (data.faculties || []);
 
-  const yearNameOptions = [
-    { value: 'Năm 1', label: 'Năm 1' },
-    { value: 'Năm 2', label: 'Năm 2' },
-    { value: 'Năm 3', label: 'Năm 3' },
-  ];
-
   const fields = [
     {
       key: 'name',
       label: 'Tên năm học',
       required: true,
       type: 'select',
-      options: yearNameOptions,
+      options: [
+        { value: 'Năm 1', label: 'Năm 1' },
+        { value: 'Năm 2', label: 'Năm 2' },
+        { value: 'Năm 3', label: 'Năm 3' },
+        { value: 'Năm 4', label: 'Năm 4' },
+      ],
     },
     {
       key: 'facultyId',
@@ -622,7 +630,6 @@ function YearsPanel({ data, yearsCrud }) {
   ];
 
   const createDefaults = () => ({
-    name: 'Năm 1',
     facultyId: facultyId || '',
   });
 
@@ -686,19 +693,17 @@ function SemestersPanel({ data, semestersCrud }) {
     return true;
   });
 
-  const semesterNameOptions = [
-    { value: 'Học kỳ 1', label: 'Học kỳ 1' },
-    { value: 'Học kỳ 2', label: 'Học kỳ 2' },
-    { value: 'Học kỳ 3', label: 'Học kỳ 3' },
-  ];
-
   const fields = [
     {
       key: 'name',
       label: 'Tên học kỳ',
       required: true,
       type: 'select',
-      options: semesterNameOptions,
+      options: [
+        { value: 'Học kỳ 1', label: 'Học kỳ 1' },
+        { value: 'Học kỳ 2', label: 'Học kỳ 2' },
+        { value: 'Học kỳ 3', label: 'Học kỳ 3' },
+      ],
     },
     {
       key: 'yearId',
@@ -711,7 +716,6 @@ function SemestersPanel({ data, semestersCrud }) {
   ];
 
   const createDefaults = () => ({
-    name: 'Học kỳ 1',
     yearId: yearId || (yearOptions.length === 1 ? String(yearOptions[0].id) : ''),
   });
 

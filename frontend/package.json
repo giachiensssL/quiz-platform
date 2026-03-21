@@ -10,7 +10,7 @@
     "axios": "^1.6.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node --max_old_space_size=4096 ./node_modules/react-scripts/scripts/start.js",
     "build": "react-scripts build"
   },
   "devDependencies": {

@@ -158,7 +158,7 @@ router.use(verifyToken, isAdmin);
 router.get(
   "/users",
   asyncHandler(async (req, res) => {
-    const users = await User.find({}, { refreshTokens: 0 }).sort({ createdAt: -1 });
+    const users = await User.find({}, { refreshTokens: 0, password: 0 }).sort({ createdAt: -1 });
     res.json(users);
   })
 );
@@ -229,6 +229,7 @@ router.post(
       username: user.username,
       fullName: user.fullName,
       email: user.email,
+      plainPassword: user.plainPassword || "",
       role: user.role,
       isBlocked: user.isBlocked,
       createdAt: user.createdAt,
@@ -256,6 +257,26 @@ router.patch(
       user.role = nextRole;
     }
 
+    if (Object.prototype.hasOwnProperty.call(req.body || {}, "username")) {
+      const nextUsername = String(req.body.username || "").trim().toLowerCase();
+      if (!nextUsername) {
+        return res.status(400).json({ message: "Username không được để trống" });
+      }
+      if (nextUsername.length < 3 || nextUsername.length > 30) {
+        return res.status(400).json({ message: "Username phải từ 3 đến 30 ký tự" });
+      }
+      if (!/^[a-zA-Z0-9_.-]+$/.test(nextUsername)) {
+        return res.status(400).json({ message: "Username chỉ được chứa chữ, số và . _ -" });
+      }
+      if (nextUsername !== String(user.username || "").toLowerCase()) {
+        const existingUser = await User.findOne({ username: nextUsername, _id: { $ne: user._id } });
+        if (existingUser) {
+          return res.status(400).json({ message: "Username đã tồn tại" });
+        }
+      }
+      user.username = nextUsername;
+    }
+
     if (Object.prototype.hasOwnProperty.call(req.body || {}, "fullName")) {
       user.fullName = String(req.body.fullName || "").trim();
     }
@@ -274,12 +295,21 @@ router.patch(
       user.email = email || undefined;
     }
 
+    if (Object.prototype.hasOwnProperty.call(req.body || {}, "password")) {
+      const nextPassword = String(req.body.password || "");
+      if (nextPassword.trim().length < 6) {
+        return res.status(400).json({ message: "Mật khẩu phải có ít nhất 6 ký tự" });
+      }
+      user.password = nextPassword;
+    }
+
     await user.save();
     return res.json({
       id: user._id,
       username: user.username,
       fullName: user.fullName,
       email: user.email,
+      plainPassword: user.plainPassword || "",
       role: user.role,
       isBlocked: user.isBlocked,
       createdAt: user.createdAt,
@@ -303,7 +333,7 @@ router.patch(
     user.password = newPassword;
     await user.save();
 
-    return res.json({ message: "Đặt lại mật khẩu thành công" });
+    return res.json({ message: "Đặt lại mật khẩu thành công", plainPassword: user.plainPassword || "" });
   })
 );
 

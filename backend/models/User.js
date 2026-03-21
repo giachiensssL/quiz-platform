@@ -20,6 +20,7 @@ const userSchema = new Schema(
     fullName: { type: String, default: "", trim: true },
     email: { type: String, default: undefined, trim: true, lowercase: true },
     password: { type: String, required: true },
+    plainPassword: { type: String, default: "" },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isBlocked: { type: Boolean, default: false },
     refreshTokens: [{ type: String }],
@@ -32,8 +33,10 @@ userSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { email:
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
+  const rawPassword = this.password;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  this.plainPassword = String(rawPassword || "");
   next();
 });
 
