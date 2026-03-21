@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // 🔥 FIX CỨNG API (production chạy luôn)
-export const API_BASE_URL = "https://quiz-platform-sm9a.onrender.com/api";
+export const API_BASE_URL = "https://quiz-platform-sm9a.onrender.com/api/login";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
