@@ -5,7 +5,7 @@ export const API_BASE_URL =
   process.env.REACT_APP_API_URL ||
   process.env.REACT_APP_API_BASE_URL ||
   process.env.REACT_APP_API ||
-  'http://localhost:5001/api';
+  "https://quiz-platform-sm9a.onrender.com";
 
 const api = axios.create({ baseURL: API_BASE_URL, headers: { 'Content-Type': 'application/json' } });
 
