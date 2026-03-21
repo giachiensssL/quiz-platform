@@ -63,6 +63,33 @@ const evaluateQuestion = (question, userAnswer) => {
     return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
   }
 
+  if (question.type === 'drag') {
+    const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
+    if (targets.length > 0) {
+      const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
+      const totalUnits = targets.length;
+      const earnedUnits = targets.reduce((sum, target) => {
+        const expected = Array.isArray(target.correctItemIds)
+          ? target.correctItemIds.map((id) => String(id))
+          : (target.correctItemId ? [String(target.correctItemId)] : []);
+        const actual = (Array.isArray(answerMap[target.id]) ? answerMap[target.id] : []).map((id) => String(id));
+        const ok = expected.length === actual.length && expected.every((id) => actual.includes(id));
+        return sum + (ok ? 1 : 0);
+      }, 0);
+      return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
+    }
+
+    const expectedOrder = [...(question.answers || [])]
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+      .map((a) => String(a.text || '').trim())
+      .filter(Boolean);
+    const actualOrder = (Array.isArray(userAnswer) ? userAnswer : [])
+      .map((item) => String(item || '').trim())
+      .filter(Boolean);
+    const ok = expectedOrder.length === actualOrder.length && expectedOrder.every((value, idx) => value === actualOrder[idx]);
+    return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+  }
+
   return { earnedUnits: 0, totalUnits: 1, fullyCorrect: false };
 };
 
@@ -133,6 +160,34 @@ const buildComparison = (question, userAnswer) => {
   }
 
   if (question.type === 'drag') {
+    const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
+    if (targets.length > 0) {
+      const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
+      const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id), item.label || String(item.id)]));
+      const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
+
+      const chosenItems = targets.map((target) => ({
+        label: target.label || target.id,
+        text: (Array.isArray(answerMap[target.id]) ? answerMap[target.id] : [])
+          .map((id) => labelById[String(id)] || String(id))
+          .join(', ') || 'Chưa kéo',
+        imageUrl: '',
+      }));
+
+      const correctItems = targets.map((target) => {
+        const expected = Array.isArray(target.correctItemIds)
+          ? target.correctItemIds
+          : (target.correctItemId ? [target.correctItemId] : []);
+        return {
+          label: target.label || target.id,
+          text: expected.map((id) => labelById[String(id)] || String(id)).join(', ') || 'Không xác định',
+          imageUrl: '',
+        };
+      });
+
+      return { chosenItems, correctItems };
+    }
+
     return {
       chosenItems: [{ label: 'Thứ tự', text: Array.isArray(userAnswer) && userAnswer.length ? userAnswer.join(' → ') : 'Chưa sắp xếp', imageUrl: '' }],
       correctItems: [{
@@ -314,28 +369,142 @@ function FillBlank({ q, answer='', onAnswer, submitted }) {
   );
 }
 
-function DragDrop({ q, onAnswer, submitted }) {
-  const [pool,setPool]=useState(()=>q.answers.map(a=>a.text));
-  const [dropped,setDropped]=useState([]);
-  const [over,setOver]=useState(false);
-  const handleDrop=(e)=>{ e.preventDefault();setOver(false); const val=e.dataTransfer.getData('text'); if(pool.includes(val)){ const next=[...dropped,val]; setDropped(next);setPool(p=>p.filter(x=>x!==val));onAnswer(next); }};
-  const remove=(val)=>{ if(submitted)return; setDropped(d=>d.filter(x=>x!==val));setPool(p=>[...p,val]);onAnswer(dropped.filter(x=>x!==val)); };
+function DragDrop({ q, answer, onAnswer, submitted }) {
+  const targets = Array.isArray(q.dropTargets) ? q.dropTargets : [];
+  const hasMappingMode = targets.length > 0;
+  const items = Array.isArray(q.dragItems) ? q.dragItems : [];
+
+  const [pool, setPool] = useState(() => {
+    if (Array.isArray(answer)) {
+      const source = q.answers.map((a) => a.text);
+      return source.filter((text) => !answer.includes(text));
+    }
+    return q.answers.map((a) => a.text);
+  });
+  const [dropped, setDropped] = useState(() => (Array.isArray(answer) ? answer : []));
+  const [over, setOver] = useState(false);
+  const [slotMap, setSlotMap] = useState(() => {
+    if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
+      return Object.fromEntries(targets.map((target) => [target.id, Array.isArray(answer[target.id]) ? answer[target.id] : []]));
+    }
+    return Object.fromEntries(targets.map((target) => [target.id, []]));
+  });
+  const [overSlot, setOverSlot] = useState('');
+
+  if (!hasMappingMode) {
+    const handleDrop = (e) => {
+      e.preventDefault();
+      setOver(false);
+      const val = e.dataTransfer.getData('text');
+      if (pool.includes(val)) {
+        const next = [...dropped, val];
+        setDropped(next);
+        setPool((p) => p.filter((x) => x !== val));
+        onAnswer(next);
+      }
+    };
+
+    const remove = (val) => {
+      if (submitted) return;
+      const next = dropped.filter((x) => x !== val);
+      setDropped(next);
+      setPool((p) => [...p, val]);
+      onAnswer(next);
+    };
+
+    return (
+      <div>
+        <div className="drag-pool">
+          {pool.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết</span>}
+          {pool.map((item) => <div key={item} className="drag-chip" draggable onDragStart={(e) => e.dataTransfer.setData('text', item)}>{item}</div>)}
+        </div>
+        <div className={`drop-zone${over ? ' over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={handleDrop}>
+          {dropped.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo thẻ vào đây theo thứ tự đúng...</span>}
+          {dropped.map((d, i) => (
+            <div key={`${d}-${i}`} className="drag-chip" style={{ cursor: 'default' }}>
+              <span style={{ marginRight: 5, color: 'var(--muted)', fontSize: '.7rem' }}>{i + 1}.</span>{d}
+              {!submitted && <button onClick={() => remove(d)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+            </div>
+          ))}
+        </div>
+        {submitted && <div style={{ marginTop: 8, fontSize: '.8rem', color: 'var(--muted)' }}>Thứ tự tham khảo: {[...(q.answers || [])].sort((a, b) => (a.order || 0) - (b.order || 0)).map((a) => a.text).join(' → ')}</div>}
+      </div>
+    );
+  }
+
+  const usedIds = Object.values(slotMap).flat();
+  const availableItems = items.filter((item) => !usedIds.includes(item.id));
+
+  const pushAnswer = (nextMap) => {
+    setSlotMap(nextMap);
+    onAnswer(nextMap);
+  };
+
+  const handleDropToSlot = (event, slotId) => {
+    event.preventDefault();
+    setOverSlot('');
+    if (submitted) return;
+
+    const itemId = event.dataTransfer.getData('text/item-id');
+    if (!itemId) return;
+
+    const nextMap = Object.fromEntries(Object.entries(slotMap).map(([id, values]) => [id, [...values]]));
+    const currentSlotId = Object.keys(nextMap).find((id) => nextMap[id].includes(itemId));
+    if (currentSlotId) {
+      nextMap[currentSlotId] = nextMap[currentSlotId].filter((id) => id !== itemId);
+    }
+    if (!nextMap[slotId].includes(itemId)) {
+      nextMap[slotId].push(itemId);
+    }
+    pushAnswer(nextMap);
+  };
+
+  const removeFromSlot = (slotId, itemId) => {
+    if (submitted) return;
+    const nextMap = {
+      ...slotMap,
+      [slotId]: (slotMap[slotId] || []).filter((id) => id !== itemId),
+    };
+    pushAnswer(nextMap);
+  };
+
   return (
     <div>
       <div className="drag-pool">
-        {pool.length===0&&<span style={{fontSize:'.8rem',color:'var(--muted)'}}>Đã dùng hết</span>}
-        {pool.map(item=><div key={item} className="drag-chip" draggable onDragStart={e=>e.dataTransfer.setData('text',item)}>{item}</div>)}
-      </div>
-      <div className={`drop-zone${over?' over':''}`} onDragOver={e=>{e.preventDefault();setOver(true);}} onDragLeave={()=>setOver(false)} onDrop={handleDrop}>
-        {dropped.length===0&&<span style={{fontSize:'.8rem',color:'var(--muted)'}}>Kéo thẻ vào đây theo thứ tự đúng...</span>}
-        {dropped.map((d,i)=>(
-          <div key={d} className="drag-chip" style={{cursor:'default'}}>
-            <span style={{marginRight:5,color:'var(--muted)',fontSize:'.7rem'}}>{i+1}.</span>{d}
-            {!submitted&&<button onClick={()=>remove(d)} style={{marginLeft:7,background:'none',border:'none',cursor:'pointer',color:'var(--danger)',fontSize:'.85rem'}}>×</button>}
+        {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết mục kéo</span>}
+        {availableItems.map((item) => (
+          <div key={item.id} className="drag-chip" draggable={!submitted} onDragStart={(e) => e.dataTransfer.setData('text/item-id', item.id)}>
+            {item.label}
           </div>
         ))}
       </div>
-      {submitted&&<div style={{marginTop:8,fontSize:'.8rem',color:'var(--muted)'}}>Thứ tự tham khảo: {[...(q.answers || [])].sort((a,b)=>(a.order||0)-(b.order||0)).map(a=>a.text).join(' → ')}</div>}
+
+      <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
+        {targets.map((target) => (
+          <div
+            key={target.id}
+            className={`drop-zone${overSlot === target.id ? ' over' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setOverSlot(target.id); }}
+            onDragLeave={() => setOverSlot('')}
+            onDrop={(e) => handleDropToSlot(e, target.id)}
+            style={{ minHeight: 52, alignItems: 'flex-start' }}
+          >
+            <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>{target.label || target.id}</div>
+            {(slotMap[target.id] || []).length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo 1 hoặc nhiều mục vào ô này...</span>}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {(slotMap[target.id] || []).map((itemId, idx) => {
+                const item = items.find((x) => String(x.id) === String(itemId));
+                return (
+                  <div key={`${target.id}-${itemId}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
+                    {item?.label || itemId}
+                    {!submitted && <button onClick={() => removeFromSlot(target.id, itemId)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -418,6 +587,9 @@ export default function QuizPage() {
         return answerValue || {};
       }
       if (question.type === 'drag') {
+        if (answerValue && typeof answerValue === 'object' && !Array.isArray(answerValue)) {
+          return answerValue;
+        }
         return Array.isArray(answerValue) ? answerValue : [];
       }
       return answerValue;
@@ -657,7 +829,7 @@ export default function QuizPage() {
             {q.type==='multiple'&&<MultiChoice q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='truefalse'&&<TrueFalse q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='fill'&&<FillBlank q={q} answer={answers[qIdx]||''} onAnswer={handleAnswer} submitted={submitted}/>}
-            {q.type==='drag'&&<DragDrop key={qIdx} q={q} onAnswer={handleAnswer} submitted={submitted}/>}
+            {q.type==='drag'&&<DragDrop key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
             {submitted&&isCorrect!==null&&(
               <div className={`quiz-feedback${isCorrect?' ok':' fail'}`}>
                 {q.type === 'truefalse'

@@ -32,6 +32,7 @@ const questionSchema = new Schema(
         id: { type: String },
         label: { type: String },
         correctItemId: { type: String },
+        correctItemIds: [{ type: String }],
       },
     ],
     blanks: [{ type: String }],

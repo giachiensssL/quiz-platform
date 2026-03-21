@@ -398,14 +398,20 @@ function UsersPanel() {
 }
 
 // ── GENERIC CRUD TABLE ─────────────────────────────────────────
-function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, onRemove, onToggleLock, showLockColumn = false }) {
+function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, onRemove, onToggleLock, showLockColumn = false, createDefaults }) {
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
   const [confirm, setConfirm] = useState(null);
   const [toast, setToast] = useState('');
 
-  const openAdd = () => { setEditing(null); setForm(Object.fromEntries(fields.map(f => [f.key, '']))); setModal(true); };
+  const openAdd = () => {
+    setEditing(null);
+    const base = Object.fromEntries(fields.map((f) => [f.key, '']));
+    const defaults = typeof createDefaults === 'function' ? createDefaults(base) : (createDefaults || {});
+    setForm({ ...base, ...defaults });
+    setModal(true);
+  };
   const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal(true); };
   const visibleFields = Array.isArray(tableFields) && tableFields.length ? tableFields : fields.slice(0, 3);
 
@@ -525,10 +531,22 @@ function LessonsPanel({ data, lessonsCrud }) {
       label: 'Môn học',
       required: true,
       type: 'select',
-      options: (data.subjects || []).map((s) => ({ value: s.id, label: s.name })),
+      options: ((onlySelectedSubject && subjectId)
+        ? (data.subjects || []).filter((s) => String(s.id) === String(subjectId))
+        : (data.subjects || [])
+      ).map((s) => ({ value: s.id, label: s.name })),
     },
     { key: 'order', label: 'Thứ tự bài', placeholder: '1' },
   ];
+
+  const createDefaults = () => ({
+    subjectId: subjectId || '',
+  });
+
+  const handleAddLesson = async (form) => {
+    const resolvedSubjectId = form.subjectId || subjectId || '';
+    await lessonsCrud.add({ ...form, subjectId: resolvedSubjectId });
+  };
 
   return (
     <>
@@ -554,7 +572,8 @@ function LessonsPanel({ data, lessonsCrud }) {
         icon="📝"
         items={filteredLessons}
         fields={fields}
-        onAdd={lessonsCrud.add}
+        createDefaults={createDefaults}
+        onAdd={handleAddLesson}
         onUpdate={lessonsCrud.update}
         onRemove={lessonsCrud.remove}
         onToggleLock={(id, locked) => lessonsCrud.update(id, { locked })}
@@ -639,10 +658,19 @@ function SemestersPanel({ data, semestersCrud }) {
       label: 'Năm học',
       required: true,
       type: 'select',
-      options: (data.years || []).map((year) => ({ value: year.id, label: year.name })),
+      options: (facultyId ? yearOptions : (data.years || [])).map((year) => ({ value: year.id, label: year.name })),
       render: (item) => (data.years || []).find((y) => String(y.id) === String(item.yearId || ''))?.name || item.yearId,
     },
   ];
+
+  const createDefaults = () => ({
+    yearId: yearId || (yearOptions.length === 1 ? String(yearOptions[0].id) : ''),
+  });
+
+  const handleAddSemester = async (form) => {
+    const resolvedYearId = form.yearId || yearId || (yearOptions.length === 1 ? String(yearOptions[0].id) : '');
+    await semestersCrud.add({ ...form, yearId: resolvedYearId });
+  };
 
   return (
     <>
@@ -665,7 +693,8 @@ function SemestersPanel({ data, semestersCrud }) {
         icon="📋"
         items={filteredSemesters}
         fields={fields}
-        onAdd={semestersCrud.add}
+        createDefaults={createDefaults}
+        onAdd={handleAddSemester}
         onUpdate={semestersCrud.update}
         onRemove={semestersCrud.remove}
       />
@@ -726,7 +755,11 @@ function SubjectsPanel({ data, subjectsCrud }) {
       required: true,
       type: 'select',
       options: (form) => (data.years || [])
-        .filter((y) => !form.facultyId || !y.facultyId || String(y.facultyId) === String(form.facultyId))
+        .filter((y) => {
+          const activeFacultyId = form.facultyId || facultyId;
+          if (activeFacultyId && String(y.facultyId || '') !== String(activeFacultyId)) return false;
+          return true;
+        })
         .map((y) => ({ value: y.id, label: y.name })),
       render: (item) => (data.years || []).find((y) => String(y.id) === String(item.yearId || ''))?.name || item.yearId,
     },
@@ -736,11 +769,31 @@ function SubjectsPanel({ data, subjectsCrud }) {
       required: true,
       type: 'select',
       options: (form) => (data.semesters || [])
-        .filter((s) => !form.yearId || !s.yearId || String(s.yearId) === String(form.yearId))
+        .filter((s) => {
+          const activeYearId = form.yearId || yearId;
+          if (activeYearId && String(s.yearId || '') !== String(activeYearId)) return false;
+          return true;
+        })
         .map((s) => ({ value: s.id, label: s.name })),
       render: (item) => (data.semesters || []).find((s) => String(s.id) === String(item.semesterId || ''))?.name || item.semesterId,
     },
   ];
+
+  const createDefaults = () => ({
+    facultyId: facultyId || '',
+    yearId: yearId || '',
+    semesterId: semesterId || '',
+  });
+
+  const handleAddSubject = async (form) => {
+    const resolved = {
+      ...form,
+      facultyId: form.facultyId || facultyId || '',
+      yearId: form.yearId || yearId || '',
+      semesterId: form.semesterId || semesterId || '',
+    };
+    await subjectsCrud.add(resolved);
+  };
 
   return (
     <>
@@ -770,7 +823,8 @@ function SubjectsPanel({ data, subjectsCrud }) {
         items={filteredSubjects}
         fields={fields}
         tableFields={fields}
-        onAdd={subjectsCrud.add}
+        createDefaults={createDefaults}
+        onAdd={handleAddSubject}
         onUpdate={subjectsCrud.update}
         onRemove={subjectsCrud.remove}
         onToggleLock={(id, locked) => subjectsCrud.update(id, { locked })}
@@ -839,8 +893,8 @@ function QuestionsPanel({ data, questionsCrud }) {
       { id: 'item-2', label: '' },
     ],
     dropTargets: [
-      { id: 'slot-1', label: 'Vị trí 1', correctItemId: '' },
-      { id: 'slot-2', label: 'Vị trí 2', correctItemId: '' },
+      { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+      { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
     ],
   });
 
@@ -871,8 +925,9 @@ function QuestionsPanel({ data, questionsCrud }) {
     setEditing(null);
     setQuestionImageFileName('');
     setAnswerImageFileNames({});
+    const defaultLessonId = filterLessonId || (lessonOptions.length === 1 ? String(lessonOptions[0].id) : '');
     setForm({
-      lessonId: filterLessonId || '',
+      lessonId: defaultLessonId,
       type: 'single',
       text: '',
       imageUrl: '',
@@ -882,8 +937,8 @@ function QuestionsPanel({ data, questionsCrud }) {
         { id: 'item-2', label: '' },
       ],
       dropTargets: [
-        { id: 'slot-1', label: 'Vị trí 1', correctItemId: '' },
-        { id: 'slot-2', label: 'Vị trí 2', correctItemId: '' },
+        { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+        { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
       ],
     });
     setModal(true);
@@ -917,20 +972,21 @@ function QuestionsPanel({ data, questionsCrud }) {
         return;
       }
 
-      if (report.invalidCount > 0) {
-        setToast(`File có ${report.invalidCount}/${report.candidateCount} câu sai định dạng. Hãy sửa file để import đầy đủ dữ liệu.`);
-        return;
-      }
-
-      for (const question of parsed) {
-        await questionsCrud.add({
+      const chunkSize = 5;
+      for (let i = 0; i < parsed.length; i += chunkSize) {
+        const chunk = parsed.slice(i, i + chunkSize);
+        await Promise.all(chunk.map((question) => questionsCrud.add({
           ...question,
           lessonId: importLessonId,
           answers: question.answers.map((answer, idx) => ({ id: idx + 1, ...answer })),
-        });
+        })));
       }
 
-      setToast(`Đã import ${parsed.length} câu hỏi từ file Word.`);
+      if (report.invalidCount > 0) {
+        setToast(`Đã import ${parsed.length} câu hợp lệ. Bỏ qua ${report.invalidCount}/${report.candidateCount} câu sai định dạng.`);
+      } else {
+        setToast(`Đã import ${parsed.length} câu hỏi từ file Word.`);
+      }
       setImportModal(false);
       setImportLessonId('');
       setImportFileName('');
@@ -975,12 +1031,15 @@ function QuestionsPanel({ data, questionsCrud }) {
         label: item.label || item.text || '',
       })),
       dropTargets: (Array.isArray(q.dropTargets) && q.dropTargets.length ? q.dropTargets : [
-        { id: 'slot-1', label: 'Vị trí 1', correctItemId: '' },
-        { id: 'slot-2', label: 'Vị trí 2', correctItemId: '' },
+        { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+        { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
       ]).map((target, idx) => ({
         id: target.id || `slot-${idx + 1}`,
         label: target.label || `Vị trí ${idx + 1}`,
         correctItemId: target.correctItemId || '',
+        correctItemIds: Array.isArray(target.correctItemIds)
+          ? target.correctItemIds.filter(Boolean)
+          : (target.correctItemId ? [target.correctItemId] : []),
       })),
     });
     setModal(true);
@@ -996,8 +1055,8 @@ function QuestionsPanel({ data, questionsCrud }) {
         : prev.dragItems,
       dropTargets: nextType === 'drag'
         ? [
-          { id: 'slot-1', label: 'Vị trí 1', correctItemId: '' },
-          { id: 'slot-2', label: 'Vị trí 2', correctItemId: '' },
+          { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+          { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
         ]
         : prev.dropTargets,
     }));
@@ -1079,7 +1138,11 @@ function QuestionsPanel({ data, questionsCrud }) {
         dragItems: nextItems,
         dropTargets: prev.dropTargets.map((target) => ({
           ...target,
-          correctItemId: target.correctItemId === id ? '' : target.correctItemId,
+          correctItemIds: (Array.isArray(target.correctItemIds)
+            ? target.correctItemIds
+            : (target.correctItemId ? [target.correctItemId] : [])
+          ).filter((itemId) => itemId !== id),
+          correctItemId: String(target.correctItemId || '') === String(id) ? '' : target.correctItemId,
         })),
       };
     });
@@ -1088,7 +1151,7 @@ function QuestionsPanel({ data, questionsCrud }) {
   const addDropTarget = () => {
     setForm((prev) => ({
       ...prev,
-      dropTargets: [...prev.dropTargets, { id: `slot-${Date.now()}`, label: `Vị trí ${prev.dropTargets.length + 1}`, correctItemId: '' }],
+      dropTargets: [...prev.dropTargets, { id: `slot-${Date.now()}`, label: `Vị trí ${prev.dropTargets.length + 1}`, correctItemId: '', correctItemIds: [] }],
     }));
   };
 
@@ -1120,15 +1183,25 @@ function QuestionsPanel({ data, questionsCrud }) {
       }))
       .filter((a) => a.text || a.imageUrl);
 
+    const approxBase64Size = String(form.imageUrl || '').length
+      + answers.reduce((sum, item) => sum + String(item.imageUrl || '').length, 0);
+    if (approxBase64Size > 6 * 1024 * 1024) {
+      setToast('Ảnh quá lớn, vui lòng giảm dung lượng ảnh trước khi lưu câu hỏi.');
+      return;
+    }
+
     if (form.type === 'drag') {
       const dragItems = form.dragItems
-        .map((item) => ({ ...item, label: String(item.label || '').trim() }))
+        .map((item) => ({ ...item, id: String(item.id || '').trim(), label: String(item.label || '').trim() }))
         .filter((item) => item.label);
       const dropTargets = form.dropTargets
         .map((target) => ({
           ...target,
           label: String(target.label || '').trim(),
-          correctItemId: String(target.correctItemId || ''),
+          correctItemIds: (Array.isArray(target.correctItemIds)
+            ? target.correctItemIds
+            : (target.correctItemId ? [target.correctItemId] : [])
+          ).map((itemId) => String(itemId || '').trim()).filter(Boolean),
         }))
         .filter((target) => target.label);
 
@@ -1136,12 +1209,12 @@ function QuestionsPanel({ data, questionsCrud }) {
         setToast('Kéo & thả cần ít nhất 2 mục để kéo.');
         return;
       }
-      if (dropTargets.length < 2) {
-        setToast('Kéo & thả cần ít nhất 2 ô đích để kéo vào.');
+      if (dropTargets.length < 1) {
+        setToast('Kéo & thả cần ít nhất 1 ô đích để kéo vào.');
         return;
       }
-      if (dropTargets.some((target) => !target.correctItemId)) {
-        setToast('Mỗi ô đích cần chọn đúng 1 mục kéo tương ứng.');
+      if (dropTargets.some((target) => target.correctItemIds.length < 1)) {
+        setToast('Mỗi ô đích cần chọn ít nhất 1 mục đúng.');
         return;
       }
 
@@ -1151,26 +1224,35 @@ function QuestionsPanel({ data, questionsCrud }) {
         text: form.text.trim(),
         imageUrl: form.imageUrl || '',
         dragItems,
-        dropTargets,
-        answers: dropTargets.map((target, idx) => {
-          const matched = dragItems.find((item) => item.id === target.correctItemId);
-          return {
-            id: idx + 1,
-            text: matched?.label || '',
-            correct: true,
-            order: idx + 1,
-          };
-        }),
+        dropTargets: dropTargets.map((target) => ({
+          ...target,
+          correctItemId: target.correctItemIds[0] || '',
+        })),
+        answers: dragItems.map((item, idx) => ({
+          id: idx + 1,
+          text: item.label,
+          correct: true,
+          order: idx + 1,
+        })),
       };
 
-      if (editing) {
-        await questionsCrud.update(editing.id, payload);
-        setToast('Đã cập nhật câu hỏi!');
-      } else {
-        await questionsCrud.add(payload);
-        setToast('Đã lưu câu hỏi!');
+      try {
+        if (editing) {
+          await questionsCrud.update(editing.id, payload);
+          setToast('Đã cập nhật câu hỏi!');
+        } else {
+          await questionsCrud.add(payload);
+          setToast('Đã lưu câu hỏi!');
+        }
+        setModal(false);
+      } catch (error) {
+        const status = Number(error?.response?.status || 0);
+        if (status === 413) {
+          setToast('Dữ liệu câu hỏi quá lớn (413). Hãy giảm kích thước ảnh hoặc chia nhỏ nội dung.');
+          return;
+        }
+        setToast(error?.response?.data?.message || error?.message || 'Không thể lưu câu hỏi.');
       }
-      setModal(false);
       return;
     }
 
@@ -1206,14 +1288,23 @@ function QuestionsPanel({ data, questionsCrud }) {
         .map((a, idx) => ({ id: idx + 1, ...a })),
     };
 
-    if (editing) {
-      await questionsCrud.update(editing.id, payload);
-      setToast('Đã cập nhật câu hỏi!');
-    } else {
-      await questionsCrud.add(payload);
-      setToast('Đã lưu câu hỏi!');
+    try {
+      if (editing) {
+        await questionsCrud.update(editing.id, payload);
+        setToast('Đã cập nhật câu hỏi!');
+      } else {
+        await questionsCrud.add(payload);
+        setToast('Đã lưu câu hỏi!');
+      }
+      setModal(false);
+    } catch (error) {
+      const status = Number(error?.response?.status || 0);
+      if (status === 413) {
+        setToast('Dữ liệu câu hỏi quá lớn (413). Hãy giảm kích thước ảnh hoặc chia nhỏ nội dung.');
+        return;
+      }
+      setToast(error?.response?.data?.message || error?.message || 'Không thể lưu câu hỏi.');
     }
-    setModal(false);
   };
 
   return (
@@ -1411,31 +1502,46 @@ function QuestionsPanel({ data, questionsCrud }) {
             <div>
               <label className="form-label">Các ô để kéo vào</label>
               {form.dropTargets.map((target, idx) => (
-                <div key={target.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, marginBottom: 8 }}>
+                <div key={target.id} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginBottom: 8 }}>
                   <input
                     className="form-input"
                     placeholder={`Tên ô đích ${idx + 1}`}
                     value={target.label}
                     onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
                   />
-                  <select
-                    className="form-input"
-                    value={target.correctItemId}
-                    onChange={(e) => setDropTarget(target.id, 'correctItemId', e.target.value)}
-                  >
-                    <option value="">-- Chọn mục đúng --</option>
-                    {form.dragItems.filter((item) => item.label.trim()).map((item) => (
-                      <option key={item.id} value={item.id}>{item.label}</option>
-                    ))}
-                  </select>
                   {form.dropTargets.length > 2 && (
                     <button onClick={() => removeDropTarget(target.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '1rem' }}>×</button>
                   )}
+                  <div style={{ gridColumn: '1 / -1', border: '1px dashed var(--border)', borderRadius: 8, padding: 8 }}>
+                    <div style={{ fontSize: '.8rem', marginBottom: 6, color: 'var(--text-2)' }}>Chọn 1 hoặc nhiều mục đúng cho ô này:</div>
+                    {(form.dragItems || []).filter((item) => item.label.trim()).map((item) => {
+                      const selectedIds = Array.isArray(target.correctItemIds)
+                        ? target.correctItemIds
+                        : (target.correctItemId ? [target.correctItemId] : []);
+                      const checked = selectedIds.includes(item.id);
+                      return (
+                        <label key={`${target.id}-${item.id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginRight: 12, marginBottom: 6, fontSize: '.84rem' }}>
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) => {
+                              const next = e.target.checked
+                                ? [...selectedIds, item.id]
+                                : selectedIds.filter((id) => id !== item.id);
+                              setDropTarget(target.id, 'correctItemIds', [...new Set(next)]);
+                              setDropTarget(target.id, 'correctItemId', next[0] || '');
+                            }}
+                          />
+                          {item.label}
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
               <Button variant="ghost" size="sm" onClick={addDropTarget}>+ Thêm ô đích</Button>
               <div style={{ marginTop: 6, fontSize: '.78rem', color: 'var(--muted)' }}>
-                Mỗi ô đích cần gán đúng 1 mục kéo tương ứng.
+                Mỗi ô đích có thể gán 1 hoặc nhiều mục kéo đúng.
               </div>
             </div>
           </div>

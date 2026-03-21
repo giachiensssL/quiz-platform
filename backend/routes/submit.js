@@ -116,6 +116,9 @@ router.post("/", protect, async (req, res) => {
         correctResponse = question.dropTargets?.map((target) => ({
           target: target.id,
           correctItemId: target.correctItemId,
+          correctItemIds: Array.isArray(target.correctItemIds)
+            ? target.correctItemIds
+            : (target.correctItemId ? [target.correctItemId] : []),
         }));
 
         if (userAnswer && userAnswer.answer) {
@@ -126,8 +129,18 @@ router.post("/", protect, async (req, res) => {
             const actualOrder = userAnswer.answer.map((item) => normalize(item));
             isCorrect = expectedOrder.length === actualOrder.length
               && expectedOrder.every((value, idx) => value === actualOrder[idx]);
-          } else if (question.dropTargets?.length) {
-            isCorrect = question.dropTargets.every((target) => userAnswer.answer[target.id] === target.correctItemId);
+          } else if (question.dropTargets?.length && typeof userAnswer.answer === "object") {
+            isCorrect = question.dropTargets.every((target) => {
+              const expected = Array.isArray(target.correctItemIds)
+                ? target.correctItemIds.map((id) => normalize(id)).filter(Boolean)
+                : [normalize(target.correctItemId)].filter(Boolean);
+              const actualRaw = userAnswer.answer[target.id];
+              const actual = (Array.isArray(actualRaw) ? actualRaw : [actualRaw])
+                .map((id) => normalize(id))
+                .filter(Boolean);
+              if (expected.length !== actual.length) return false;
+              return expected.every((id) => actual.includes(id));
+            });
           }
         }
       }

@@ -78,6 +78,33 @@ const sanitizeAnswers = (answers, type) => {
   return normalized;
 };
 
+const sanitizeDragItems = (dragItems) => {
+  return (Array.isArray(dragItems) ? dragItems : [])
+    .map((item, idx) => ({
+      id: String(item?.id || `item-${idx + 1}`).trim(),
+      label: String(item?.label || "").trim(),
+    }))
+    .filter((item) => item.id && item.label);
+};
+
+const sanitizeDropTargets = (dropTargets, dragItems) => {
+  const validDragIds = new Set((Array.isArray(dragItems) ? dragItems : []).map((item) => item.id));
+  return (Array.isArray(dropTargets) ? dropTargets : [])
+    .map((target, idx) => {
+      const rawIds = Array.isArray(target?.correctItemIds)
+        ? target.correctItemIds
+        : (target?.correctItemId ? [target.correctItemId] : []);
+      const correctItemIds = [...new Set(rawIds.map((id) => String(id || "").trim()).filter((id) => validDragIds.has(id)))];
+      return {
+        id: String(target?.id || `slot-${idx + 1}`).trim(),
+        label: String(target?.label || `Vị trí ${idx + 1}`).trim(),
+        correctItemId: correctItemIds[0] || "",
+        correctItemIds,
+      };
+    })
+    .filter((target) => target.id && target.label);
+};
+
 const buildQuestionPayload = (body) => {
   const lessonId = body.lessonId || body.lesson;
   const question = String(body.question || body.text || "").trim();
@@ -94,8 +121,22 @@ const buildQuestionPayload = (body) => {
   }
 
   const answers = sanitizeAnswers(body.answers, type);
+  const dragItems = sanitizeDragItems(body.dragItems);
+  const dropTargets = sanitizeDropTargets(body.dropTargets, dragItems);
   const points = Number(body.points || 1);
   const imageUrl = String(body.imageUrl || "").trim();
+
+  if (type === "drag_drop") {
+    if (dragItems.length < 2) {
+      throw badRequest("Câu kéo thả cần ít nhất 2 mục kéo");
+    }
+    if (dropTargets.length < 1) {
+      throw badRequest("Câu kéo thả cần ít nhất 1 ô đích");
+    }
+    if (dropTargets.some((target) => target.correctItemIds.length < 1)) {
+      throw badRequest("Mỗi ô đích phải có ít nhất 1 đáp án đúng");
+    }
+  }
 
   return {
     lessonId,
@@ -106,8 +147,8 @@ const buildQuestionPayload = (body) => {
     points: Number.isNaN(points) ? 1 : points,
     hint: String(body.hint || ""),
     order: Number(body.order || 0) || 0,
-    dragItems: Array.isArray(body.dragItems) ? body.dragItems : [],
-    dropTargets: Array.isArray(body.dropTargets) ? body.dropTargets : [],
+    dragItems,
+    dropTargets,
     blanks: type === "fill" ? answers.filter((item) => item.isCorrect).map((item) => item.text) : [],
   };
 };

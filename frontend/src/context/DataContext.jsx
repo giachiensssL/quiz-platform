@@ -200,7 +200,7 @@ export function DataProvider({ children }) {
 
   const syncFromServer = useCallback(async () => {
     const token = localStorage.getItem('qm_token');
-    if (!token || token === 'admin-token') return false;
+    if (!token) return false;
 
     let facRes;
     let yearRes;
@@ -315,7 +315,7 @@ export function DataProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('qm_token');
-    if (!token || token === 'admin-token') return undefined;
+    if (!token) return undefined;
 
     syncFromServer().catch(() => {});
     const timer = window.setInterval(() => {
@@ -327,7 +327,7 @@ export function DataProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('qm_token');
-    if (!token || token === 'admin-token') {
+    if (!token) {
       setRealtimeStatus('disconnected');
       return undefined;
     }
