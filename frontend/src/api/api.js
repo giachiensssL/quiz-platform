@@ -1,15 +1,7 @@
 // src/api/api.js
 import axios from 'axios';
 
-const envApiBase =
-  process.env.REACT_APP_API_URL ||
-  process.env.REACT_APP_API_BASE_URL ||
-  process.env.REACT_APP_API ||
-  '';
-
-const isLocalHost =
-  typeof window !== 'undefined' &&
-  /^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/i.test(window.location.hostname || '');
+const envApiBase = process.env.REACT_APP_API_URL || '';
 
 const normalizeApiBase = (base) => {
   const value = String(base || '').trim().replace(/\/+$/, '');
@@ -17,13 +9,12 @@ const normalizeApiBase = (base) => {
   return /\/api$/i.test(value) ? value : `${value}/api`;
 };
 
-export const API_BASE_URL = normalizeApiBase(
-  envApiBase || (isLocalHost ? 'http://localhost:5001' : 'https://quiz-platform-sm9a.onrender.com')
-);
+export const API_BASE_URL = normalizeApiBase(envApiBase);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -35,9 +26,14 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    const status = err?.response?.status;
+    const requestUrl = String(err?.config?.url || '').toLowerCase();
+    const isLoginRequest = requestUrl.includes('/auth/login');
+
+    if (status === 401 && !isLoginRequest) {
       localStorage.removeItem('qm_token');
       localStorage.removeItem('qm_user');
+      localStorage.removeItem('qm_refresh_token');
       window.location.href = '/login';
     }
     return Promise.reject(err);
