@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Kiến Trúc Máy Tính – Ôn Luyện</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1D4ED8;--blue-l:#EFF6FF;--blue-m:#BFDBFE;
+  --orange:#F97316;--orange-l:#FFF7ED;
+  --green:#16A34A;--green-l:#F0FDF4;--green-m:#BBF7D0;
+  --red:#DC2626;--red-l:#FEF2F2;--red-m:#FECACA;
+  --bg:#F8FAFC;--surface:#fff;--border:#E2E8F0;
+  --text:#0F172A;--muted:#64748B;
+  --shadow:0 2px 12px rgba(0,0,0,.07);
+  --r:10px;--r-lg:16px;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--blue);color:#fff;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(29,78,216,.3)}
+.topbar-brand{font-size:1.1rem;font-weight:800;letter-spacing:-.02em}
+.topbar-brand span{color:#FCD34D}
+.topbar-info{font-size:.82rem;opacity:.85}
+
+/* LAYOUT */
+.shell{display:flex;min-height:calc(100vh - 56px)}
+.sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:16px 10px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sb-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:8px 10px 4px}
+.sb-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border:none;background:transparent;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--muted);cursor:pointer;text-align:left;transition:.15s}
+.sb-btn:hover{background:var(--bg);color:var(--text)}
+.sb-btn.active{background:var(--blue-l);color:var(--blue);font-weight:700}
+.sb-btn .sb-badge{margin-left:auto;font-size:.68rem;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:1px 6px;color:var(--muted)}
+.sb-btn.active .sb-badge{background:var(--blue-m);border-color:var(--blue-m);color:var(--blue)}
+.sb-divider{height:1px;background:var(--border);margin:8px 0}
+
+/* MAIN */
+.main{flex:1;padding:24px;min-width:0}
+
+/* HOME */
+#home-view{max-width:900px}
+.home-header{margin-bottom:24px}
+.home-header h1{font-size:1.6rem;font-weight:800}
+.home-header p{color:var(--muted);margin-top:4px;font-size:.9rem}
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.lesson-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue)}
+.lesson-card:nth-child(even)::before{background:var(--orange)}
+.lesson-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--blue-m)}
+.lc-num{font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.lesson-card:nth-child(even) .lc-num{color:var(--orange)}
+.lc-title{font-size:.95rem;font-weight:700;line-height:1.35;margin-bottom:8px}
+.lc-count{font-size:.78rem;color:var(--muted)}
+.lc-arrow{position:absolute;bottom:14px;right:14px;color:var(--muted);font-size:.85rem;transition:.15s}
+.lesson-card:hover .lc-arrow{color:var(--blue);transform:translateX(3px)}
+
+/* LESSON VIEW */
+#lesson-view{display:none}
+.lesson-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:18px}
+.lh-back{display:inline-flex;align-items:center;gap:5px;font-size:.82rem;color:var(--muted);cursor:pointer;background:none;border:none;margin-bottom:10px;transition:.15s;padding:0}
+.lh-back:hover{color:var(--blue)}
+.lh-title{font-size:1.2rem;font-weight:800}
+.lh-meta{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.lh-chip{font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--blue-l);color:var(--blue)}
+.lh-chip.orange{background:var(--orange-l);color:var(--orange)}
+.lh-chip.green{background:var(--green-l);color:var(--green)}
+
+/* QUESTION CARD */
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:14px}
+.q-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.q-num{width:32px;height:32px;border-radius:50%;background:var(--blue-l);color:var(--blue);font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-num.multi{background:var(--orange-l);color:var(--orange)}
+.q-num.fill{background:var(--green-l);color:var(--green)}
+.q-text{font-size:.95rem;font-weight:600;line-height:1.6;flex:1}
+.q-type-tag{display:inline-block;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--orange-l);color:var(--orange);padding:2px 8px;border-radius:99px;margin-bottom:10px}
+.q-img{margin:10px 0 14px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.q-img img{display:block;max-width:100%;height:auto;max-height:320px;object-fit:contain;background:#f8f9fa}
+
+/* ANSWER OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:.875rem;font-weight:500;color:#374151;transition:.15s;user-select:none}
+.opt:hover:not(.revealed){border-color:var(--blue-m);background:var(--blue-l);color:var(--blue)}
+.opt.selected{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.opt.correct-ans{border-color:var(--green);background:var(--green-l);color:var(--green)}
+.opt.wrong-ans{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt.revealed{cursor:default}
+.opt-key{width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.opt-mark{margin-left:auto;font-size:1rem}
+
+/* MULTI-SELECT */
+.opt .checkbox{width:17px;height:17px;border-radius:4px;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:1px}
+
+/* FILL ANSWER */
+.fill-wrap{margin-top:10px}
+.fill-input{font-family:'Be Vietnam Pro',sans-serif;font-size:.9rem;width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;transition:.15s;background:var(--bg)}
+.fill-input:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.fill-input.correct-fill{border-color:var(--green);background:var(--green-l)}
+.fill-input.wrong-fill{border-color:var(--red);background:var(--red-l)}
+.fill-hint{font-size:.78rem;color:var(--green);margin-top:5px;font-weight:600}
+.fill-hint.wrong{color:var(--red)}
+
+/* FEEDBACK */
+.q-feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:600}
+.q-feedback.ok{background:var(--green-l);color:var(--green)}
+.q-feedback.fail{background:var(--red-l);color:var(--red)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Be Vietnam Pro',sans-serif;font-size:.875rem;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#1E40AF;box-shadow:0 4px 12px rgba(29,78,216,.25)}
+.btn-ghost{background:transparent;color:#374151;border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--bg);border-color:#CBD5E1}
+.btn-sm{font-size:.8rem;padding:6px 12px;border-radius:6px}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-orange:hover{background:#EA580C}
+
+/* ACTION ROW */
+.q-action{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+
+/* RESULT BOX */
+.result-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.result-score{font-size:2rem;font-weight:800;color:var(--blue)}
+.result-info{flex:1}
+.result-info p{font-size:.875rem;color:var(--muted);margin-top:2px}
+.result-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+/* PROGRESS DOTS */
+.q-dots{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.q-dot{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;transition:.12s}
+.q-dot:hover{border-color:var(--blue);color:var(--blue)}
+.q-dot.current{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.q-dot.answered{border-color:var(--green);background:var(--green-l);color:var(--green)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:14px}
+}
+@media(max-width:480px){
+  .lesson-grid{grid-template-columns:1fr 1fr}
+  .q-card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">Kiến Trúc <span>Máy Tính</span></div>
+  <div class="topbar-info" id="topbar-info">9 bài học · 248 câu hỏi</div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-title">Môn học</div>
+    <button class="sb-btn active" onclick="showHome(this)">
+      🏠 Trang chủ
+    </button>
+    <div class="sb-divider"></div>
+    <div class="sb-title">Bài học</div>
+    <button class="sb-btn" onclick="showLesson(0,this)">Bài 1 – Tổng quan <span class="sb-badge">30</span></button>
+    <button class="sb-btn" onclick="showLesson(1,this)">Bài 2 – Cấu trúc PC <span class="sb-badge">30</span></button>
+    <button class="sb-btn" onclick="showLesson(2,this)">Bài 3 – Hệ đếm <span class="sb-badge">30</span></button>
+    <button class="sb-btn" onclick="showLesson(3,this)">Bài 4 – CPU <span class="sb-badge">29</span></button>
+    <button class="sb-btn" onclick="showLesson(4,this)">Bài 5 – Bộ nhớ <span class="sb-badge">28</span></button>
+    <button class="sb-btn" onclick="showLesson(5,this)">Bài 6 – Vào/Ra <span class="sb-badge">29</span></button>
+    <button class="sb-btn" onclick="showLesson(6,this)">Bài 7 – Truyền tin <span class="sb-badge">29</span></button>
+    <button class="sb-btn" onclick="showLesson(7,this)">Bài 8 – Ngắt <span class="sb-badge">29</span></button>
+    <button class="sb-btn" onclick="showLesson(8,this)">Bài 9 – Pipeline <span class="sb-badge">29</span></button>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HOME -->
+    <div id="home-view">
+      <div class="home-header">
+        <h1>Ôn luyện Kiến Trúc Máy Tính</h1>
+        <p>248 câu hỏi trắc nghiệm · 9 bài học · Có hình ảnh minh hoạ</p>
+      </div>
+      <div class="lesson-grid" id="lesson-grid"></div>
+    </div>
+
+    <!-- LESSON -->
+    <div id="lesson-view">
+      <div class="lesson-header">
+        <button class="lh-back" onclick="showHome()">← Quay lại</button>
+        <div class="lh-title" id="lh-title"></div>
+        <div class="lh-meta" id="lh-meta"></div>
+      </div>
+
+      <div id="result-bar" style="display:none"></div>
+      <div class="q-dots" id="q-dots"></div>
+      <div id="q-list"></div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-bottom:40px">
+        <button class="btn btn-ghost" onclick="resetLesson()">↺ Làm lại</button>
+        <button class="btn btn-orange" onclick="submitAll()">Nộp bài ✓</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── IMAGE MAP: b{bai}_{image} relative to ./images/ ──────────────────────────
+const IMG = (b,i)=>`images/b${b}_image${i}.png`;
+const IMG_Q = {
+  // Bài 1
+  '1_7':  IMG(1,1),  '1_8':  IMG(1,1),  '1_11': IMG(1,2),
+  '1_12': IMG(1,3),  '1_14': IMG(1,4),  '1_16': IMG(1,1),
+  '1_21': IMG(1,5),  '1_22': IMG(1,6),  '1_23': IMG(1,5),
+  '1_24': IMG(1,5),  '1_25': IMG(1,7),  '1_26': IMG(1,8),
+  '1_27': IMG(1,9),  '1_28': IMG(1,10), '1_29': IMG(1,11),
+  '1_30': IMG(1,12),
+  // Bài 2
+  '2_24': IMG(2,1),  '2_25': IMG(2,1),  '2_26': IMG(2,1),
+  '2_27': IMG(2,1),  '2_28': IMG(2,2),  '2_29': IMG(2,1),
+  '2_30': IMG(2,2),
+  // Bài 4
+  '4_19': IMG(4,2),  '4_20': IMG(4,2),  '4_21': IMG(4,3),
+  '4_22': IMG(4,4),  '4_23': IMG(4,5),  '4_24': IMG(4,6),
+  '4_25': IMG(4,6),  '4_26': IMG(4,6),  '4_27': IMG(4,6),
+  '4_28': IMG(4,6),  '4_29': IMG(4,6),
+  // Bài 5
+  '5_22': IMG(5,1),  '5_23': IMG(5,1),  '5_24': IMG(5,2),
+  '5_25': IMG(5,2),  '5_26': IMG(5,3),  '5_27': IMG(5,3),
+  '5_28': IMG(5,4),
+  // Bài 6
+  '6_13': IMG(6,1),  '6_14': IMG(6,2),  '6_15': IMG(6,3),
+  '6_16': IMG(6,4),  '6_17': IMG(6,5),  '6_18': IMG(6,6),
+  '6_19': IMG(6,7),  '6_20': IMG(6,8),  '6_21': IMG(6,9),
+  '6_22': IMG(6,10), '6_23': IMG(6,11), '6_24': IMG(6,12),
+  '6_25': IMG(6,13), '6_26': IMG(6,14), '6_27': IMG(6,15),
+  '6_28': IMG(6,16), '6_29': IMG(6,17),
+  // Bài 7
+  '7_21': IMG(7,1),  '7_22': IMG(7,2),  '7_23': IMG(7,3),
+  '7_24': IMG(7,4),  '7_25': IMG(7,5),  '7_26': IMG(7,6),
+  '7_27': IMG(7,7),  '7_28': IMG(7,8),  '7_29': IMG(7,9),
+  // Bài 8
+  '8_16': IMG(8,1),  '8_17': IMG(8,2),  '8_18': IMG(8,2),
+  '8_19': IMG(8,2),  '8_20': IMG(8,3),  '8_21': IMG(8,4),
+  '8_22': IMG(8,4),  '8_23': IMG(8,5),  '8_24': IMG(8,6),
+  '8_25': IMG(8,5),  '8_26': IMG(8,7),  '8_27': IMG(8,6),
+  '8_28': IMG(8,8),  '8_29': IMG(8,9),
+  // Bài 9
+  '9_19': IMG(9,1),  '9_20': IMG(9,2),  '9_21': IMG(9,2),
+  '9_22': IMG(9,3),  '9_23': IMG(9,4),  '9_24': IMG(9,5),
+  '9_25': IMG(9,6),  '9_26': IMG(9,6),  '9_27': IMG(9,7),
+  '9_28': IMG(9,8),  '9_29': IMG(9,9),
+};
+
+// ── LESSON DATA ───────────────────────────────────────────────────────────────
+const LESSONS = [
+{
+  title:"Bài 1 – Tổng quan Kiến trúc Máy tính",
+  topic:"Tổng quan",
+  questions:[
+    {n:1,type:'single',text:"Các máy tính có cùng họ có đặc điểm nào sau đây?",opts:["Các máy tính có kích thước và hình dạng tương tự nhau.","Tổ chức các thành phần bên trong hệ thống giống hệt nhau.","Có thể thực thi cùng một chương trình mà cho hiệu quả khác nhau.","Có thể thực thi cùng một chương trình mà cho hiệu quả giống nhau."],ans:[3]},
+    {n:2,type:'single',text:"Nói về sự tổ chức bên trong, các máy tính có cùng họ có đặc điểm nào sau đây?",opts:["Tổ chức các thành phần bên trong hệ thống có thể khác nhau.","Tổ chức các thành phần bên trong hệ thống giống hệt nhau.","Các CPU có thể khác nhau về số lượng thanh ghi.","Các máy tính có kích thước và hình dạng tương tự nhau."],ans:[0]},
+    {n:3,type:'single',text:"Kiến trúc máy tính là:",opts:["Những đặc tính được hiện thực hóa như tín hiệu điều khiển, giao diện, kỹ thuật tổ chức bộ nhớ.","Những thuộc tính có thể được nhìn thấy bởi người lập trình như tập lệnh, chuỗi bít dữ liệu, cơ chế vào/ra, kỹ thuật xác định địa chỉ ô nhớ.","Sự tổ chức giống nhau của các thành phần trong hệ thống máy tính.","Sự cụ thể hóa chức năng của các thành phần bên trong hệ thống máy tính."],ans:[1]},
+    {n:4,type:'single',text:"Vào/ra dữ liệu có thể được hiểu là:",opts:["Lưu trữ dữ liệu trên đĩa cứng.","Thực hiện các phép toán cộng, trừ trên các thanh ghi.","Di chuyển dữ liệu hai chiều giữa bộ nhớ và thiết bị vào/ra.","Điều khiển đọc/ghi bộ nhớ hoặc thiết bị vào/ra."],ans:[2]},
+    {n:5,type:'single',text:"Bộ nhớ chính của máy tính có chức năng chủ yếu là gì?",opts:["Xử lý dữ liệu, lưu trữ dữ liệu, vào/ra dữ liệu, xử lý hình ảnh.","Xử lý dữ liệu, lưu trữ dữ liệu, vào/ra dữ liệu, tính toán song song.","Xử lý dữ liệu, lưu trữ dữ liệu, vào/ra dữ liệu, điều khiển.","Xử lý dữ liệu, lưu trữ dữ liệu, vào/ra dữ liệu, chuyển đổi dữ liệu."],ans:[2]},
+    {n:6,type:'single',text:"Một CPU có tốc độ xử lý 3GHz nghĩa là:",opts:["CPU có thể thực hiện tối đa 3 nghìn thao tác/1 giây.","CPU có thể thực hiện tối đa 3 triệu thao tác/1 giây.","CPU có thể thực hiện tối đa 3 trăm thao tác/1 giây.","CPU có thể thực hiện tối đa 3 tỷ thao tác/1 giây."],ans:[3]},
+    {n:7,type:'single',text:"Cho bảng mô tả các thế hệ của máy tính như dưới đây, hỏi vi xử lý nào sử dụng dung lượng cache (bộ nhớ đệm) lớn nhất?",img:true,opts:["Pentium Pro","Pentium","486TM SX","Pentium II"],ans:[3]},
+    {n:8,type:'single',text:"Cho hình mô tả các thế hệ của máy tính như dưới đây, mô tả nào sau đây đúng?",img:true,opts:["Độ rộng bus của Pentium Pro lớn hơn độ rộng bus của Pentium (1993).","Độ rộng bus của Pentium Pro lớn hơn độ rộng bus của Pentium II.","Độ rộng bus của Pentium Pro nhỏ hơn độ rộng bus của Pentium (1993).","Độ rộng bus của Pentium Pro nhỏ hơn độ rộng bus của Pentium II."],ans:[1]},
+    {n:9,type:'single',text:"Không gian bộ nhớ RAM một máy tính có thể quản lý được phụ thuộc vào yếu tố nào?",opts:["Dung lượng RAM","Độ rộng bus dữ liệu","Độ rộng bus địa chỉ","Độ rộng bus điều khiển"],ans:[2]},
+    {n:10,type:'single',text:"Một trong những yếu tố ảnh hưởng đến tốc độ xử lý của vi xử lý là:",opts:["Độ rộng Bus dữ liệu.","Kích thước một phần tử nhớ (Feature size) trên chip.","Dung lượng bộ nhớ Cache.","Mạch tạo dao động (Clock Speeds) đầu vào cấp cho CPU."],ans:[3]},
+    {n:11,type:'single',text:"Phát biểu nào sau đây là đúng khi nói về sự tương quan giữa số lượng Transistor trên một chip so với kích thước của một Transistor bán dẫn trong quá trình phát triển của máy tính?",img:true,opts:["Số lượng Transistor trên một chip luôn nhỏ hơn kích thước một phần tử nhớ.","Số lượng Transistor trên một chip luôn bằng với kích thước một phần tử nhớ.","Số lượng Transistor trên một chip tỷ lệ thuận với kích thước một phần tử nhớ.","Số lượng Transistor trên một chip tỷ lệ nghịch với kích thước một phần tử nhớ."],ans:[3]},
+    {n:12,type:'single',text:"Một máy tính phân chia vùng RAM cho một chương trình như hình sau:",img:true,opts:["Harvard","Non Neumann","Havard","Von Neumann"],ans:[3]},
+    {n:13,type:'single',text:"Tại sao mỗi thiết bị ngoại vi lại cần có khối phối ghép vào/ra riêng?",opts:["Vì mỗi ngoại vi có kích thước khác nhau.","Vì các ngoại vi yêu cầu các tín hiệu bắt tay khác nhau.","Vì mỗi thiết bị ngoại vi có tốc độ hoạt động, dạng thức thông tin và các tín hiệu bắt tay với CPU khác nhau.","Vì mỗi thiết bị ngoại vi có số lượng transitor trên chíp, dạng thức thông tin và các tín hiệu bắt tay với CPU khác nhau."],ans:[2]},
+    {n:14,type:'single',text:"Một máy tính phân chia vùng RAM cho một chương trình như hình sau:",img:true,opts:["Harvard","Non Neumann","Havard","Von Neumann"],ans:[3]},
+    {n:15,type:'multi',text:"Mô tả nào sau đây là đúng khi nói về BUS trong máy tính? (Chọn 2)",opts:["Bus địa chỉ luôn có độ rộng lớn hơn Bus dữ liệu.","Bus dữ liệu là bus hai chiều.","Bus địa chỉ là bus một chiều.","Mỗi tín hiệu trong bus điều khiển là 2 chiều."],ans:[1,2]},
+    {n:16,type:'single',text:"Tại sao máy tính Pentium quản lý được không gian nhớ vật lý tối đa là 4GB, trong khi máy tính Pentium II có thể quản lý được không gian nhớ vật lý tối đa đến 64GB?",img:true,opts:["Vì kích thước phần tử nhớ của Pentium là 0.8 µm.","Vì độ rộng bus dữ liệu của Pentium là 32 bit.","Vì kích thước phần tử nhớ của Pentium II là 0.35 µm.","Vì độ rộng bus địa chỉ của Pentium là 32 bit."],ans:[3]},
+    {n:17,type:'single',text:"Đâu là đặc điểm của máy tính sử dụng kiến trúc Von Neumann?",opts:["Sử dụng riêng bus cho lệnh và dữ liệu.","Vùng dữ liệu luôn có kích thước lớn hơn vùng lệnh.","Sử dụng chung bus cho lệnh và dữ liệu.","Vùng mã lệnh luôn có kích thước lớn hơn vùng dữ liệu."],ans:[2]},
+    {n:18,type:'single',text:"Đâu là mô tả đúng về chức năng của khối phối hợp vào/ra trong hệ thống máy tính?",opts:["Chuyển đổi thông tin từ dạng điện tử sang dạng tương tự, giúp cho CPU giao tiếp được với thiết bị ngoại vi.","Tạo ra các tín hiệu điều khiển giúp cho CPU giao tiếp được với thiết bị ngoại vi.","Chuyển đổi thông tin về dạng dữ liệu phù hợp (số hoặc tương tự), giúp cho CPU giao tiếp được với thiết bị ngoại vi.","Chuyển đổi thông tin về dạng tín hiệu số, giúp cho CPU giao tiếp được với thiết bị ngoại vi."],ans:[2]},
+    {n:19,type:'single',text:"Một chương trình máy tính khi được thực thi thường được cấp phát bộ nhớ cho những thành phần nào?",opts:["Mã chương trình, dữ liệu, dữ liệu mở rộng, vùng cấp phát động (heap).","Mã chương trình, dữ liệu.","Mã chương trình, dữ liệu, ngăn xếp chương trình, dữ liệu mở rộng.","Mã chương trình, dữ liệu, ngăn xếp chương trình, vùng chương trình."],ans:[0]},
+    {n:20,type:'multi',text:"Đâu là khó khăn khi phân chia bộ nhớ RAM cho các chương trình theo kiến trúc Von Neumann? (Chọn 2)",opts:["Phức tạp cho việc quản lý khi lệnh và dữ liệu nằm chung trong một vùng nhớ.","Khó đáp ứng phải khi kích thước dữ liệu lớn hơn kích thước mã lệnh.","Tốc độ truy xuất dữ liệu chậm hơn so với kiến trúc Harvard do dùng chung bus.","Khó thiết kế khi tốc độ xử lý cao và kích thước máy tính lớn."],ans:[0,2]},
+    {n:21,type:'single',text:"Cho thông tin về máy tính như sau. Hãy cho biết dung lượng RAM của máy tính là bao nhiêu?",img:true,opts:["64 bit","1.9GHz","1.7GB","8GB"],ans:[3]},
+    {n:22,type:'single',text:"Cho thông tin về máy tính như sau. Hãy cho biết vi xử lý trên thuộc họ kiến trúc nào?",img:true,opts:["Intel® Core™ i5-8350U","Intel® Core™ i3-8350U","Intel® Core™ i5-4350U","Intel® Core™ i7-8350U"],ans:[0]},
+    {n:23,type:'single',text:"Cho thông tin về máy tính như sau. Hãy cho biết kiến trúc vi xử lý trên là bao nhiêu bit?",img:true,opts:["8","1.9","64","1.7"],ans:[2]},
+    {n:24,type:'single',text:"Cho thông tin về máy tính như sau. Hãy cho biết tần số hoạt động cơ bản của vi xử lý là bao nhiêu GHz?",img:true,opts:["1.7 GHz","1.6 GHz","1.9 GHz","1.8 GHz"],ans:[2]},
+    {n:25,type:'single',text:"Cho thông tin về máy tính như sau. Hãy cho biết tần số hoạt động cực đại của CPU khi có sử dụng TDP để điều chỉnh là bao nhiêu GHz?",img:true,opts:["1.7 GHz","1.6 GHz","1.9 GHz","1.8 GHz"],ans:[0]},
+    {n:26,type:'single',text:"Cho thông tin về một máy tính trên thị trường như sau. CPU của máy tính này là loại nào?",img:true,opts:["Xeon® E3","SSD","Core i7-6820HQ","2.7 GHz"],ans:[2]},
+    {n:27,type:'single',text:"Cho thông tin về một hệ thống máy tính như sau. Cho biết vi xử lý trên có kiến trúc xử lý bao nhiêu bit?",img:true,opts:["255","3.1","64","0816"],ans:[2]},
+    {n:28,type:'single',text:"Cho thông tin về một máy tính được mô tả như sau. Hãy cho biết CPU của máy tính trên là loại nào?",img:true,opts:["Core Ultra i3 165H","Core Ultra i5 165H","Core Ultra i7 165H","Core i7-6820HQ"],ans:[2]},
+    {n:29,type:'fill',text:"Một chip vi điều khiển thực hiện 16 triệu thao tác trong 2 giây. Hãy cho biết tốc độ xử lý của chip là bao nhiêu tính theo MHz? (chính xác số thập phân 10, VD: 4)",ans_text:"8"},
+    {n:30,type:'fill',text:"Một chip xử lý thực hiện 4 tỷ thao tác trong 2 giây. Hãy cho biết tốc độ xử lý của chip là bao nhiêu tính theo GHz? (chính xác số thập phân 10, VD: 4)",ans_text:"2"},
+  ]
+},
+{
+  title:"Bài 2 – Cấu trúc máy vi tính PC & Bộ nhớ",
+  topic:"Cấu trúc PC",
+  questions:[
+    {n:1,type:'single',text:"Các thành phần chức năng cơ bản của máy tính là:",opts:["CPU, bộ nhớ chính, thiết bị giao diện vào/ra dữ liệu, thiết bị ngoại vi.","CPU, bộ nhớ chính, màn hình, bàn phím.","CPU, bộ nhớ, chuột, màn hình.","CPU, chuột, bàn phím, màn hình."],ans:[0]},
+    {n:2,type:'single',text:"Trong kiến trúc cơ bản của máy vi tính PC, KC 8042 là:",opts:["Thiết bị giao diện bàn phím","Thiết bị ngoại vi","Thiết bị giao diện nối tiếp","Thiết bị giao diện song song"],ans:[0]},
+    {n:3,type:'single',text:"Thành phần đóng vai trò \"bộ não\" của máy tính là:",opts:["CPU","Bus","Bộ điều khiển bộ nhớ","Thiết bị giao diện"],ans:[0]},
+    {n:4,type:'single',text:"Thiết bị đầu ra chuẩn của máy tính là:",opts:["Bàn phím","Chuột","Loa","Màn hình"],ans:[3]},
+    {n:5,type:'single',text:"Thiết bị đầu vào chuẩn của máy tính là:",opts:["Màn hình","Loa","Bàn phím","Chuột"],ans:[2]},
+    {n:6,type:'single',text:"Thông tin về cấu hình cơ sở của máy tính được lưu trữ trong:",opts:["ROM","RAM-CMOS","SSD","RAM"],ans:[1]},
+    {n:7,type:'single',text:"Bus trong máy tính là:",opts:["Một tập hợp đường dây dẫn để truyền tín hiệu giữa các thành phần.","Đơn vị điều khiển trung tâm.","Một loại thiết bị ngoại vi.","Một thiết bị lưu trữ dữ liệu (bộ nhớ)."],ans:[0]},
+    {n:8,type:'single',text:"Trong máy vi tính, RAM là viết tắt của cụm từ:",opts:["Random Access Memory","Random Accept Memory","Reduce Access Memory","Reinforce Access Memory"],ans:[0]},
+    {n:9,type:'single',text:"Chương trình xác lập cấu hình hệ thống được lưu trữ trong:",opts:["ROM","CMOS","Bộ nhớ Flash","RAM"],ans:[2]},
+    {n:10,type:'single',text:"Nếu quá trình POST (Power On Self-Test) của máy tính phát hiện lỗi hỏng phần cứng thì máy tính sẽ thực hiện thao tác nào?",opts:["Tự động tắt nguồn","Thông báo lỗi và dừng hoạt động","Nạp hệ điều hành vào RAM","Khởi động lại từ đầu"],ans:[1]},
+    {n:11,type:'single',text:"Một trong những điểm khác biệt giữa RAM và ROM là gì?",opts:["RAM lưu trữ các chương trình tạm thời, trong khi ROM lưu trữ các chương trình lâu dài và cố định.","RAM lưu trữ hệ điều hành, còn ROM lưu trữ các chương trình tạm thời.","ROM lưu trữ các chương trình tạm thời, RAM lưu trữ cấu hình máy tính.","RAM có dung lượng lớn hơn ROM."],ans:[0]},
+    {n:12,type:'single',text:"Không gian nhớ mà CPU có thể quản lý được phụ thuộc vào bus nào?",opts:["Bus điều khiển","Bus địa chỉ","Bus dữ liệu và bus điều khiển","Bus dữ liệu"],ans:[1]},
+    {n:13,type:'single',text:"Khi khởi động máy tính, chương trình đầu tiên được thực hiện nằm trong bộ nhớ nào?",opts:["Cache","ROM","SSD","RAM"],ans:[1]},
+    {n:14,type:'single',text:"Trong máy vi tính, địa chỉ của một thiết bị vào/ra thường được phân bổ như nào?",opts:["Một dải địa chỉ tách biệt với RAM và duy nhất.","Một vùng nhớ trong RAM và dùng chung cho nhiều thiết bị ngoại vi.","Là địa chỉ duy nhất trong bộ nhớ RAM.","Là một địa chỉ độc lập không thuộc vào không gian địa chỉ hệ thống."],ans:[0]},
+    {n:15,type:'single',text:"Trong máy tính số, thiết bị giao diện vào/ra dữ liệu cần thiết là do:",opts:["Sự khác biệt về dạng thông thức truyền tải dữ liệu và tốc độ xử lý thông tin.","Sự giống nhau về dạng thức truyền tải dữ liệu.","Tốc độ xử lý thông tin là như nhau.","Giao diện giữa CPU với bộ nhớ ROM."],ans:[0]},
+    {n:16,type:'single',text:"Một CPU có Bus địa chỉ là 8 bít thì có thể quản lý được không gian nhớ vật lý là:",opts:["256 Byte","255 Byte","512 Byte","8 Byte"],ans:[0]},
+    {n:17,type:'single',text:"Khi muốn đọc dữ liệu từ bộ nhớ, tín hiệu điều khiển được truyền từ:",opts:["CPU tới thiết bị ngoại vi","CPU tới thiết bị vào/ra","Bộ nhớ tới CPU","CPU tới bộ nhớ"],ans:[3]},
+    {n:18,type:'single',text:"Nếu độ rộng của Bus dữ liệu trong máy tính là 32 bít thì máy tính có thể đọc đồng thời tối đa bao nhiêu byte cùng một lúc từ bộ nhớ?",opts:["4","64","8","32"],ans:[0]},
+    {n:19,type:'single',text:"Trong máy tính, tín hiệu trạng thái được truyền đi từ:",opts:["Thiết bị vào/ra đến CPU","CPU đến bộ nhớ","Bộ nhớ đến thiết bị ra","CPU đến thiết bị vào/ra"],ans:[0]},
+    {n:20,type:'single',text:"Khi muốn làm việc với ô nhớ có địa chỉ ABCDEh thì bus nào được sử dụng để truyền tín hiệu tương ứng với địa chỉ này?",opts:["Bus điều khiển","Không Bus nào","Bus dữ liệu","Bus địa chỉ"],ans:[3]},
+    {n:21,type:'single',text:"Thông số \"DDR4 3200 MHz\" trên RAM cho biết thông tin gì?",opts:["Tốc độ truyền tải dữ liệu của RAM là 3200 MT/s.","Dung lượng RAM là 3200GB.","RAM chỉ tương thích với CPU Intel.","Dung lượng RAM là DDR4."],ans:[0]},
+    {n:22,type:'single',text:"Khẳng định nào sau đây là đúng:",opts:["Tốc độ truy nhập dữ liệu vào DRAM và SRAM là như nhau.","Tốc độ truy cập dữ liệu vào ROM nhanh hơn vào RAM.","Tốc độ truy cập dữ liệu vào SRAM nhanh hơn DRAM.","Tốc độ truy cập dữ liệu vào DRAM nhanh hơn SRAM."],ans:[2]},
+    {n:23,type:'single',text:"Theo cấu tạo của phần tử nhớ, RAM thường được phân loại thành:",opts:["DRAM và MRAM","SRAM và MRAM","DDRAM và DRAM","DRAM và SRAM"],ans:[3]},
+    {n:24,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Thanh RAM có dung lượng 8 Gigabytes.","Thanh RAM có dung lượng 2 Gigabytes.","Thanh RAM có dung lượng 12 Gigabytes.","Thanh RAM có dung lượng 2x2 Gigabytes."],ans:[0]},
+    {n:25,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Thanh RAM là loại Triple Rank.","Thanh RAM là loại Single Rank.","Thanh RAM là loại Double Rank.","Thanh RAM là loại Dual Rank."],ans:[1]},
+    {n:26,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Thanh RAM là loại DDR2.","Thanh RAM là loại DDR3.","Thanh RAM là loại DDR4.","Thanh RAM là loại DDR1."],ans:[2]},
+    {n:27,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Tốc độ bus dữ liệu của thành RAM là 1600Mhz.","Tốc độ bus dữ liệu của thành RAM là 3200Mhz.","Tốc độ bus dữ liệu của thành RAM là 800Mhz.","Tốc độ bus dữ liệu của thành RAM là 6400Mhz."],ans:[1]},
+    {n:28,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Tốc độ dữ liệu của thành RAM là 800Mhz.","Tốc độ dữ liệu của thành RAM là 2666Mhz.","Tốc độ dữ liệu của thành RAM là 3200Mhz.","Tốc độ dữ liệu của thành RAM là 6400Mhz."],ans:[2]},
+    {n:29,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Thanh RAM loại SODIMM","Thanh RAM loại SDIMM","Thanh RAM loại LDIMM","Thanh RAM loại DIMM"],ans:[3]},
+    {n:30,type:'single',text:"Cho hình thanh RAM sau. Hãy chọn đáp án đúng:",img:true,opts:["Thanh RAM là loại SRAM.","Thanh RAM là loại SDRAM.","Thanh RAM không có chức năng sửa lỗi.","Thanh RAM có chức năng hạn chế mất dữ liệu."],ans:[1]},
+  ]
+},
+{
+  title:"Bài 3 – Hệ đếm & Biểu diễn số",
+  topic:"Hệ đếm",
+  questions:[
+    {n:1,type:'single',text:"Trong hệ thập lục phân, các ký tự nào được sử dụng để thể hiện giá trị số đếm?",opts:["0, 1, 2, 3, 4, 5","0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F","A, B, C, D, E, F","0, 1, 2, 3, 4, 5, 6, 7"],ans:[1]},
+    {n:2,type:'single',text:"Số nhị phân 1011₂ ở cơ số 10 là:",opts:["11₁₀","15₁₀","9₁₀","13₁₀"],ans:[0]},
+    {n:3,type:'single',text:"Chuyển đổi số nhị phân 110011₂ sang hệ thập lục phân:",opts:["CC₁₆","33₁₆","3C₁₆","C3₁₆"],ans:[1]},
+    {n:4,type:'single',text:"Giá trị của số 2A₁₆ ở hệ 10 là:",opts:["42₁₀","52₁₀","32₁₀","22₁₀"],ans:[0]},
+    {n:5,type:'single',text:"Số nhị phân 101110₂ ở hệ cơ số 8 là:",opts:["65₈","56₈","66₈","55₈"],ans:[1]},
+    {n:6,type:'single',text:"Số A7₁₆ ở dạng nhị phân là:",opts:["1010 1110₂","0111 1010₂","1010 0111₂","0111 0101₂"],ans:[2]},
+    {n:7,type:'fill',text:"Với số có dấu, số -13₁₀ ở dạng nhị phân 8 bit khi sử dụng số bù 2 là: (Điền đủ 8 bit, VD: 01111111)",ans_text:"11110011"},
+    {n:8,type:'single',text:"Điều kiện để phép AND hai bit có kết quả bằng 1 là:",opts:["Một bit là 0.","Cả hai bit đều là 1.","Ít nhất một bit là 1.","Cả hai bit đều bằng 0."],ans:[1]},
+    {n:9,type:'single',text:"Kết quả của phép cộng 1011₂ + 1101₂ trong hệ nhị phân là gì?",opts:["10110₂","10100₂","11000₂","11010₂"],ans:[2]},
+    {n:10,type:'single',text:"Kết quả của phép cộng A6₁₆ + 9F₁₆ trong hệ thập lục phân là gì?",opts:["541₁₆","121₁₆","145₁₆","512₁₆"],ans:[2]},
+    {n:11,type:'fill',text:"Kết quả của phép cộng B8₁₆ + C9₁₆ trong hệ thập lục phân là gì? (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"181"},
+    {n:12,type:'fill',text:"Thực hiện toán tử bit XOR giữa hai số nhị phân 10111101₂ và 10010111₂. (Điền đủ 8 bít nhị phân, VD: 01111111)",ans_text:"00101010"},
+    {n:13,type:'fill',text:"Thực hiện toán tử bit AND giữa hai số nhị phân 10011010₂ và 11101100₂. (Điền đủ 8 bít nhị phân, VD: 01111111)",ans_text:"10001000"},
+    {n:14,type:'fill',text:"Kết quả phép toán bit XOR giữa hai số B5₁₆ và 9E₁₆ là: (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"2B"},
+    {n:15,type:'fill',text:"Kết quả của phép cộng 5ADC₁₆ + 9FB7₁₆ trong hệ thập lục phân là gì? (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"FA93"},
+    {n:16,type:'single',text:"Số bù 2 của một nhị phân được tạo ra bằng cách:",opts:["Lấy số bù 1 trừ 1.","Cộng 1 vào số bù 1.","Cộng vào 2 vào số bù 1.","Đảo trạng thái tất cả các bit của số nhị phân."],ans:[1]},
+    {n:17,type:'single',text:"Trong hệ thập phân n, số 256₁₀ được biểu diễn như nào trong hệ thập lục phân?",opts:["10A₁₆","100₁₆","10B₁₆","10C₁₆"],ans:[1]},
+    {n:18,type:'single',text:"Số 725₈ ở dạng nhị phân là:",opts:["111 010 101₂","111 001 101₂","110 110 101₂","111 011 101₂"],ans:[0]},
+    {n:19,type:'single',text:"Kết quả thực hiện AND bít giữa hai số nhị phân 1001₂ và 1011₂ là:",opts:["1101₂","1001₂","1011₂","0010₂"],ans:[1]},
+    {n:20,type:'fill',text:"Kết quả của phép cộng BD₁₆ + 26₁₆ trong hệ thập lục phân là gì? (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"E3"},
+    {n:21,type:'fill',text:"Kết quả thực hiện AND bít giữa hai số A5₁₆ và C9₁₆ là: (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"81"},
+    {n:22,type:'single',text:"Với số nguyên không dấu, dạng nhị phân của số 255₁₀ là:",opts:["1111 1111₂","1111 1101₂","111 111 110₂","1000 0000₂"],ans:[0]},
+    {n:23,type:'single',text:"Điều kiện nào để kết quả của phép toán OR hai bít bằng 0?",opts:["Cả hai bit đều là 0.","Ít nhất một trong hai bít là 1.","Chỉ một trong hai bít là 0.","Cả hai bit đều là 1."],ans:[0]},
+    {n:24,type:'fill',text:"Kết quả của phép cộng 54₁₆ + 27₁₆ trong hệ thập lục phân là gì? (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"7B"},
+    {n:25,type:'fill',text:"Kết quả của phép trừ 97₁₆ - 7F₁₆ trong hệ thập lục phân là: (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"18"},
+    {n:26,type:'single',text:"Số 166₁₀ ở hệ đếm cơ số 16 là:",opts:["106₁₆","A6₁₆","6A₁₆","601₁₆"],ans:[1]},
+    {n:27,type:'fill',text:"Kết quả thực hiện phép OR bít giữa hai số 74₁₆ và B2₁₆ là: (Chỉ nhập số ở hệ 16, VD: A5)",ans_text:"F6"},
+    {n:28,type:'single',text:"Trong hệ nhị phân, số âm có thể được biểu diễn qua:",opts:["Số bù","Số bù 2","Số bù 3","Số bù 1"],ans:[1]},
+    {n:29,type:'single',text:"Số 1101011₂ có giá trị tương ứng trong hệ có cơ số 8 là:",opts:["151₈","154₈","152₈","153₈"],ans:[3]},
+    {n:30,type:'single',text:"Hệ thập phân dùng bao nhiêu ký hiệu (chữ số) để thể hiện số đếm?",opts:["2","8","16","10"],ans:[3]},
+  ]
+},
+{
+  title:"Bài 4 – Bộ xử lý trung tâm (CPU)",
+  topic:"CPU",
+  questions:[
+    {n:1,type:'single',text:"Trong máy tính CPU là viết tắt của cụm từ nào sau đây?",opts:["Central Program Unit","Central Processing Unit","Center Processing Unit","Computer Processor Unit"],ans:[1]},
+    {n:2,type:'single',text:"Giả sử AX = A34B₁₆ và BX = 7232₁₆ khi thực hiện phép cộng AX và BX thì giá trị bít cờ là:",opts:["CR=0","ZF=1","SF=1","CF=1"],ans:[3]},
+    {n:3,type:'single',text:"Khi máy tính thực hiện gọi chương trình con thì thanh ghi nào trong CPU Cortex ARM trỏ đến đỉnh ngăn xếp?",opts:["R14","R13","R12","R11"],ans:[1]},
+    {n:4,type:'single',text:"Cho giá trị của thanh ghi AH = 14₁₀ và AL = 10₁₀ thì giá trị của thanh ghi AX ở hệ đếm cơ số 16 là:",opts:["1014₁₆","0A0E₁₆","1410₁₆","0E0A₁₆"],ans:[3]},
+    {n:5,type:'single',text:"INT (Interrupt) nối tới bus nào trong kiến trúc máy tính?",opts:["Bus dữ liệu","Bus điều khiển","Bus địa chỉ","Không nối tới bus nào"],ans:[1]},
+    {n:6,type:'single',text:"Chức năng nào sau đây không phải của đơn vị số học logic – (ALU):",opts:["Đảo bit, quay bit và dịch bit","Thực hiện phép toán so sánh","Điều khiển các thao tác trong CPU","Thực hiện các phép toán số học"],ans:[2]},
+    {n:7,type:'single',text:"Phát biểu nào sau đây mô tả đúng nhất về chức năng của CPU?",opts:["Điều khiển quá trình đọc/ghi thông tin từ bộ nhớ hoặc thiết bị vào/ra","Nhận tín hiệu trực tiếp từ thiết bị ngoại vi","Điều khiển đọc tin từ thiết bị vào/ra","Điều khiển ghi thông tin từ thiết bị vào/ra"],ans:[0]},
+    {n:8,type:'single',text:"Bộ xử lí gồm các thành phần chính nào (không kể bus):",opts:["Đơn vị điều khiển, các thanh ghi, thiết bị vào/ra","Các thanh ghi, DAC, đơn vị điều khiển","Đơn vị điều khiển, ALU, các thanh ghi","ALU, các thanh ghi, thiết bị vào/ra"],ans:[2]},
+    {n:9,type:'single',text:"Chức năng chính của đơn vị điều khiển (Control Unit – CU) trong CPU là gì?",opts:["Thực hiện các phép toán số học và logic","Thực hiện các phép toán dịch bit và đảo bit","Lữu trữ tạm thời dữ liệu và kết quả tính toán","Điều khiển và phối hợp hoạt động giữa các thành phần bên trong CPU"],ans:[3]},
+    {n:10,type:'single',text:"Khi tín hiệu RST (Reset) được kích hoạt, điều gì sẽ xảy ra bên trong CPU?",opts:["Các lệnh trong CPU được thực thi lại từ đầu","CPU tăng tốc độ xử lí lên mức tối đa","CPU tạm thời ngừng hoạt động","Mạch logic bên trong CPU được đưa về trạng thái ban đầu"],ans:[3]},
+    {n:11,type:'single',text:"Tín hiệu RST (Reset) trong CPU thường được sử dụng trong trường hợp nào?",opts:["Khi cần chạy một chương trình mới","Khi cần tăng tốc độ xung nhịp của CPU","Khi hệ thống cần khởi động lại hoặc CPU gặp lỗi","Khi cần lưu trữ kết quả tạp thời"],ans:[2]},
+    {n:12,type:'single',text:"Điều gì sẽ xảy ra nếu tín hiệu CLK (Clock) trong CPU bị mất hoặc ngừng hoạt động?",opts:["CPU thực hiện các lệnh không xác định hoặc ngẫu nhiên lo lỗi tín hiệu Clock","CPU dừng hoạt động vì không có tín hiệu Clock để đồng bộ và thực thi lệnh","CPU tự động khởi động lại để khôi phục tín hiệu Clock","CPU tiếp tục hoạt động bình thường, không phụ thuộc vào tín hiệu Clock"],ans:[1]},
+    {n:13,type:'single',text:"Trong kiến trúc x86, nếu thanh ghi CX có giá trị là 256₁₀ thì giá trị của thanh ghi CH là:",opts:["10₁₆","100₁₆","01₁₆","00₁₆"],ans:[2]},
+    {n:14,type:'single',text:"Với một CPU giữa tín hiệu INT và NMI, tín hiệu nào được ưu tiên xử lí trước?",opts:["Cả hai tín hiệu có cùng mức ưu tiên","INT có mức ưu tiên cao hơn NMI","NMI có mức ưu tiên cao hơn INT","Ưu tiên được quyết định bởi bộ điều khiển ngắt"],ans:[2]},
+    {n:15,type:'single',text:"Khi CPU Cortex ARM thực hiện một chương trình thì thanh ghi nào trỏ đến lệnh tiếp theo sẽ được thực thi?",opts:["R15","R12","R13","R14"],ans:[0]},
+    {n:16,type:'single',text:"Các thanh ghi R0-R12 trong CPU Cortex ARM là:",opts:["Các thanh ghi người dùng, cho phép tính toán và lưu trữ dữ liệu người dùng","Các thanh ghi con trỏ","Các thanh ghi chứa địa chỉ của các lệnh tiếp theo sẽ được thực hiện","Các thanh ghi liên kiến"],ans:[0]},
+    {n:17,type:'single',text:"Nếu máy tính thực hiện phép trừ số nguyên không dấu thì giá trị bit cờ nào đúng?",img:true,opts:["SF=1","CF=1","OF=1","ZF=1"],ans:[1]},
+    {n:18,type:'single',text:"Trong kiến trúc x86, thanh ghi nào KHÔNG thể truy cập riêng như hai thanh ghi 8 bít?",opts:["DX","CX","AX","BP"],ans:[3]},
+    {n:19,type:'single',text:"Cho mô tả cấu hình bên ngoài của CPU như sau. Độ rộng của Bus dữ liệu là bao nhiêu bit?",img:true,opts:["16","23","24","15"],ans:[0]},
+    {n:20,type:'single',text:"Cho mô tả cấu hình bên ngoài của CPU như sau. Độ rộng của Bus địa chỉ là bao nhiêu bit?",img:true,opts:["16","23","24","15"],ans:[2]},
+    {n:21,type:'fill',text:"Cho sơ đồ khối mô tả vi điều khiển 8051. Cho biết số cổng vào/ra là: (Nhập ở hệ số 10, VD: 2)",img:true,ans_text:"4"},
+    {n:22,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU sử dụng kiến trúc xử lí bao nhiêu bit? (Nhập ở hệ số 10, VD: 6)",img:true,ans_text:"64"},
+    {n:23,type:'fill',text:"Cho thông tin mô tả về 1 CPU như sau. Hãy cho biết tần số Turbo tối đa là bao nhiêu GHZ? (làm tròn đến 2 chữ số thập phân, VD: 2.00)",img:true,ans_text:"4.50"},
+    {n:24,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Biết rằng 2 LED đơn được đấu tại chân P2.0 và chân P2.5, nếu các chân này bằng 1 thì 2 LED sáng. Giá trị của cổng P2 bằng bao nhiêu để bật 2 LED sáng? Biết rằng các chân khác đều bằng 0. (Nhập ở hệ đếm cơ số 16: VD: A2)",img:true,ans_text:"21"},
+    {n:25,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Nếu chân P1.1 và chân P1.6 bằng 1 và các chân khác bằng 0. Hỏi giá trị của cổng P1 là: (Nhập ở hệ đếm cơ số 16, VD: A2)",img:true,ans_text:"42"},
+    {n:26,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Biết rằng 4 LED được đấu tại chân P1.0, chân P1.3, chân P1.6 và chân P1.7, nếu các chân này bằng 1 thì 4 LED sáng. Giá trị của cổng P1 là: (Nhập ở hệ cơ số 16, VD: A2)",img:true,ans_text:"C9"},
+    {n:27,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Nếu tất cả chân có chỉ số lẻ của cổng P1 có giá trị bằng 1 và các chân khác bằng 0, thì cần gán cho cổng P1 giá trị là: (Nhập ở hệ đếm cơ số 16, VD: A1)",img:true,ans_text:"55"},
+    {n:28,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Nếu tất cả các chân chỉ số chẵn của cổng P1 có giá trị bằng 1 và các chân khác bằng 0 thì cần gán cho cổng P1 giá trị là: (Nhập hệ đếm cơ số 16, VD: A2)",img:true,ans_text:"AA"},
+    {n:29,type:'fill',text:"Cho sơ đồ mô tả chân của 8051 như sau. Biết rằng 3 LED đơn được đấu tại chân P2.2, chân P2.4 và P2.7, nếu các chân này bằng 1 thì 3 LED sáng. Giá trị của cổng P2 bằng bao nhiêu để bật 3 LED sáng? (Nhập ở hệ đếm cơ số 16, VD: A2)",img:true,ans_text:"94"},
+  ]
+},
+{
+  title:"Bài 5 – Bộ nhớ",
+  topic:"Bộ nhớ",
+  questions:[
+    {n:1,type:'single',text:"Đơn vị nhớ là gì?",opts:["Là đơn vị có giá trị 0 hoặc 1, không cần nguồn nuôi","Là đơn vị nhỏ nhất của bộ nhớ, có khả năng biểu diễn trạng thái","Là đơn vị có chứa chất bán dẫn","Là đơn vị có chứa tụ điện"],ans:[1]},
+    {n:2,type:'single',text:"Nếu một ô nhớ có thể biểu diễn được 2 byte dữ liệu thì ô nhớ đó gồm bao nhiêu đơn vị nhớ?",opts:["8 đơn vị nhớ","14 đơn vị nhớ","16 đơn vị nhớ","12 đơn vị nhớ"],ans:[2]},
+    {n:3,type:'single',text:"Nếu một bộ nhớ có thể chứa được 256 bytes dữ liệu thì bộ nhớ đó gồm có bao nhiêu đơn vị nhớ?",opts:["4096 đơn vị nhớ","16384 đơn vị nhớ","2048 đơn vị nhớ","8192 đơn vị nhớ"],ans:[2]},
+    {n:4,type:'single',text:"Nếu một bộ nhớ có thể chứa được 256 bytes dữ liệu thì bộ nhớ đó gồm có bao nhiêu địa chỉ của ô nhớ?",opts:["1024 địa chỉ","256 địa chỉ","4096 địa chỉ","2048 địa chỉ"],ans:[1]},
+    {n:5,type:'multi',text:"Hãy chọn phương án đúng về bộ nhớ đệm (Cache): (Chọn 2)",opts:["Bộ nhớ đệm có tốc độ truy cập nhanh hơn RAM","Bộ nhớ đệm có dung lượng nhỏ hơn bộ nhớ RAM","Bộ nhớ đệm có tốc độ truy cập chậm hơn RAM","Bộ nhớ đệm có dung lượng lớn hơn RAM"],ans:[0,1]},
+    {n:6,type:'single',text:"Thành phần nhớ nào có tốc độ truy cập nhanh nhất?",opts:["RAM","Thanh ghi (Register)","SSD","Bộ nhớ đệm (Cache)"],ans:[1]},
+    {n:7,type:'single',text:"Bộ xử lý trung tâm thường xuyên giao tiếp trực tiếp với bộ nhớ nào (Không phải thông qua bus hệ thống)?",opts:["RAM","ROM","EPRAM","Bộ nhớ đệm (Cache)"],ans:[3]},
+    {n:8,type:'single',text:"Dung lượng bộ nhớ là gì?",opts:["Tốc độ đọc ghi tối đa","Lượng dữ liệu đang được lưu trữ trong bộ nhớ","Lượng dữ liệu tối đa mà bộ nhớ có thể lưu trữ","Tốc độ làm tươi dữ liệu tối đa"],ans:[2]},
+    {n:9,type:'single',text:"Khi CPU thực thi một đoạn chương trình thì bộ nhớ nào sẽ được truy cập đầu tiên?",opts:["Bộ nhớ RAM","Bộ nhớ ROM","Bộ nhớ đệm","Bộ nhớ ngoài"],ans:[2]},
+    {n:10,type:'single',text:"Thời gian truy cập bộ nhớ có thể được hiểu là:",opts:["Thời gian cần thiết để thực hiện một thao tác đọc/ghi cộng với thời gian tính toán địa chỉ vật lý của lệnh tiếp theo","Thời gian cần thiết để thực hiện một thao tác đọc hoặc ghi","Thời gian cần thiết để thực hiện một chương trình","Thời gian cần thiết để thực hiện một thao tác đọc/ghi cộng với thời gian chờ tín hiệu ổn định"],ans:[1]},
+    {n:11,type:'single',text:"Một ổ cứng SSD chuẩn M.2 thì chỉ có thể kết nối trực tiếp với bo mạch chủ có:",opts:["Khe cắm PCI","Khe cắm PCle","Khe cắm NVMe","Khe cắm SATA"],ans:[1]},
+    {n:12,type:'single',text:"Một ổ cứng SSD chuẩn 2.5 inch thì chỉ có thể kết nối trực tiếp với bo mạch chủ có:",opts:["Khe cắm PCI","Khe cắm PCIe","Khe cắm NVMe","Khe cắm SATA"],ans:[3]},
+    {n:13,type:'single',text:"Nguyên tắc nào giúp bộ nhớ Cache tăng tốc độ truy cập?",opts:["Nguyên tắc truy xuất ngẫu nhiên","Nguyên tắc phân cập","Nguyên tắc cục bộ (locality)","Nguyên tắc tuần tự"],ans:[2]},
+    {n:14,type:'single',text:"Lợi ích chính của Cache L1 so với Cache L3 là gì?",opts:["Không có lợi ích nào","Tốc độ truy cập nhanh hơn","Chi phí thấp hơn","Dung lượng lớn hơn"],ans:[1]},
+    {n:15,type:'single',text:"Kích thước khối Cache ảnh hưởng đến:",opts:["Dung lượng Cache","Tốc độ truy cập Cache","Tần suất xảy ra Cache miss","Tất cả các ý trên"],ans:[3]},
+    {n:16,type:'multi',text:"Đơn vị nhớ có những đặc điểm nào? (Chọn 2)",opts:["Có khả năng tự sinh thông tin","Có khả năng ghi","Có khả năng tái tạo thông tin","Có khả năng biểu diễn trạng thái, được dùng để biểu diễn bit 0 và bit 1"],ans:[1]},
+    {n:17,type:'single',text:"Dữ liệu trong Cache được tổ chức theo:",opts:["Thanh ghi (register)","Byte","Khối (block)","File"],ans:[2]},
+    {n:18,type:'single',text:"Bộ nhớ nào có tốc độ truy cập chậm nhất?",opts:["SSD","RAM","Bộ nhớ đệm (Cache)","Thanh ghi"],ans:[0]},
+    {n:19,type:'single',text:"Đâu là đặc điểm của truy cập bộ nhớ theo kiểu tuần tự?",opts:["Dữ liệu có thể được truy cập ở bất kỳ vị trí nào một cách tức thì và độc lập","Dữ liệu có thể được truy cập ở vị trí ngẫu nhiên","Dữ liệu được truy cập theo một trình tự tuyến tính không cố định","Dữ liệu phải được truy cập theo một trình tự tuyến tính cố định"],ans:[3]},
+    {n:20,type:'single',text:"Tại sao cần nhiều cấp Cache (L1, L2, L3)?",opts:["Để giảm chi phí hệ thống","Để cân bằng giữa tốc độ truy cập và chi phí/bit","Để tăng dung lượng bộ nhớ chính","Để giảm số lượng thanh ghi"],ans:[1]},
+    {n:21,type:'single',text:"Cache được chia thành các cấp L1, L2, L3 dựa trên yếu tố nào?",opts:["Dung lượng và vị trí gần CPU","Giá thành","Loại công nghệ sử dụng","Tần suất truy cập"],ans:[0]},
+    {n:22,type:'single',text:"Cho hình ổ cứng SSD sau. Hãy chọn một phương án đúng:",img:true,opts:["Chuẩn giao tiếp PCIe","Ổ cứng có kích thước tiêu chuẩn 2.5 inch","Chuẩn giao tiếp PCI","Kích thước lưu trữ 6Gb"],ans:[1]},
+    {n:23,type:'single',text:"Cho hình ổ cứng SSD sau. Hãy chọn một phương án đúng:",img:true,opts:["Ổ cứng có tốc độ dữ liệu 3.84 Tera bytes và dung lượng 6 Gbps","Ổ có kích thước tiêu chuẩn M.2","Ổ cứng dùng công nghệ chống va đập","Ổ cứng có tốc độ dữ liệu 6 Gbps và dung lượng 3.84 Tera bytes"],ans:[3]},
+    {n:24,type:'single',text:"Cho hình sau. Cho biết hình trên biểu diễn quá trình hoạt động nào của bộ nhớ?",img:true,opts:["Ghi dữ liệu","Xóa dữ liệu","Đọc dữ liệu","Cập nhật dữ liệu"],ans:[2]},
+    {n:25,type:'single',text:"Cho hình sau. Hãy cho biết để thực hiện được quá trình ghi dữ liệu vào ô nhớ thì các thao tác nào sau đây cần phải được thực hiện?",img:true,opts:["Chọn ô nhớ bằng đầu nối chọn (Select), chọn chế độ đọc, đọc trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal)","Chọn ô nhớ bằng đầu nối chọn (Select), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal), xóa trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in)","Chọn ô nhớ bằng đầu nối chọn (Select), chọn chế độ ghi, nạp trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal)","Chọn ô nhớ bằng đầu nối chọn (Select), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal), reset trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in)"],ans:[2]},
+    {n:26,type:'single',text:"Cho hình sau. Cho biết hình trên biểu diễn quá trình hoạt động nào của bộ nhớ?",img:true,opts:["Đọc dữ liệu","Cập nhật dữ liệu","Ghi dữ liệu","Xóa dữ liệu"],ans:[2]},
+    {n:27,type:'single',text:"Cho hình sau. Hãy cho biết để thực hiện được quá trình đọc dữ liệu thì các thao tác nào sau đây cần phải được thực hiện?",img:true,opts:["Chọn ô nhớ bằng đầu nối chọn (Select), chọn chế độ ghi, nạp trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal)","Chọn ô nhớ bằng đầu nối chọn (Select), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal), xóa trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in)","Chọn ô nhớ bằng đầu nối chọn (Select), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal), reset trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in)","Chọn ô nhớ bằng đầu nối chọn (Select), chọn chế độ đọc, đọc trạng thái 0 hoặc 1 vào đầu nối dữ liệu (Data in), điều khiển ghi dữ liệu bằng đầu điều khiển (Control terminal)"],ans:[3]},
+    {n:28,type:'single',text:"Cho hình sau. Đầu nối chọn (Select) có tác dụng gì?",img:true,opts:["Để đọc tín hiệu 1 hoặc 0 từ ô nhớ","Để chỉ định thao tác đọc/ghi","Để cung cấp tín hiệu 1 hoặc 0 cho ô nhớ","Để chọn một đơn vị nhớ"],ans:[3]},
+  ]
+},
+{
+  title:"Bài 6 – Phương pháp Vào/Ra dữ liệu",
+  topic:"Vào/Ra",
+  questions:[
+    {n:1,type:'multi',text:"Đâu là phương pháp vào/ra do CPU chủ động? (Chọn 2)",opts:["Vào/ra theo định trình","Vào/ra có tham dò","Vào/ra kiểu DMA","Vào/ra theo ngắt cứng"],ans:[0,1]},
+    {n:2,type:'multi',text:"Đâu là phương pháp vào/ra do thiết bị vào/ra chủ động? (Chọn 2)",opts:["Vào/ra có thăm dò","Vào/ra theo định trình","Vào/ra theo ngắt cứng","Vào/ra kiểu DMA"],ans:[2,3]},
+    {n:3,type:'single',text:"Vào/ra kiểu DMA nghĩa là:",opts:["Vào ra kiểu CPU kiểm tra Bus dữ liệu","Vào ra kiểu CPU kiểm tra bộ nhớ Cache","Vào ra kiểu CPU kiểm tra thanh ghi trạng thái trên thiết bị","Vào/ra kiểu truy cập trực tiếp bộ nhớ"],ans:[3]},
+    {n:4,type:'single',text:"Ngắt là:",opts:["Sự kiện CPU bị tạm dừng tiến trình đang thực hiện để chuyển sang thực hiện quá trình phục vụ ngắt","Sự kiện CPU ngừng toàn bộ tiến trình đang thực hiện","Sự kiện CPU kiểm tra trạng thái thiết bị ngoại vi","Sự kiện CPU kiểm tra thanh ghi trạng thái thiết bị ngoại vi"],ans:[0]},
+    {n:5,type:'single',text:"Vào/ra theo định trình nghĩa là:",opts:["Quá trình vào/ra được thực hiện khi bộ nhớ Cache sẵn sàng","CPU luôn kiểm tra trạng thái của thiết bị vào/ra","CPU không quan tâm đến trạng thái của thiết bị vào/ra","Quá trình vào/ra được thực hiện khi thanh ghi sẵn sàng"],ans:[2]},
+    {n:6,type:'multi',text:"Phương pháp hỏi vòng có nhược điểm gì? (Chọn 2)",opts:["Giảm tuổi thọ của thiết bị ngoại vi","CPU phải tiêu tốn thời gian và tài nguyên để liên tục kiểm tra trạng thái của thiết bị","Thiết bị ngoại vi tốn hao nhiều tài nguyên","Không hiệu quả đối với hệ thống có nhiều thiết bị ngoại vi"],ans:[1,3]},
+    {n:7,type:'single',text:"Phát biểu nào sau đây là đúng về phương pháp vào/ra hỏi vòng?",opts:["CPU liên tục kiểm tra trạng thái của thiết bị vào/ra, khi thiết bị vào/ra sẵn sàng thì tiến hành vào/ra dữ liệu","CPU không quan tâm đến trạng thái sẵn sàng của thiết bị vào/ra","CPU được báo để vào/ra khi thiết bị vào/ra sẵn sàng","CPU kiểm tra trạng thái thiết bị vào/ra theo chu kỳ định trước"],ans:[0]},
+    {n:8,type:'single',text:"Ưu điểm khi sử dụng vào/ra theo hỏi vòng (polling)?",opts:["Quá trình vào/ra dữ liệu kiểu hỏi vòng có tốc độ truyền giống nhau","Quá trình vào/ra dữ liệu kiểu hỏi vòng có độ tin cậy cao","Quá trình vào/ra dữ liệu kiểu hỏi vòng chỉ sử dụng với một loại thiết bị vào/ra","Quá trình vào/ra dữ liệu kiểu hỏi vòng sử dụng khi có yêu cầu thời gian thực"],ans:[3]},
+    {n:9,type:'single',text:"Phương pháp vào/ra nào luôn kiểm tra trạng thái sẵn sàng làm việc của thiết bị vào/ra trước khi thực hiện quá trình vào/ra:",opts:["Vào/ra theo ngắt cứng","Vào/ra có tham dò","Vào/ra theo định trình","Vào/ra kiểu DMA"],ans:[1]},
+    {n:10,type:'multi',text:"Phát biểu nào sau đây là đúng về phương pháp vào/ra định trình? (Chọn 2)",opts:["Trạng thái sẵn sàng của thiết bị vào/ra sẽ được kiểm tra trước khi thực hiện quá trình vào/ra","CPU chủ động quá trình vào/ra","CPU không quan tâm đến trạng thái sẵn sàng của thiết bị vào/ra","Thiết bị vào/ra chủ động quá trình vào/ra"],ans:[1,2]},
+    {n:11,type:'multi',text:"So sánh về hiệu quả sử dụng CPU giữa phương pháp vào/ra theo định trình và vào/ra theo hỏi vòng (polling): (Chọn 2)",opts:["Cả hai đều có tính linh hoạt","Độ phức tạp của vào/ra theo định trình thấp hơn vào/ra theo hồi vòng (polling)","Cả hai cùng tốn thời gian kiểm tra thiết bị vào/ra","Cả hai đều tốn tài nguyên CPU không cần thiết"],ans:[2,3]},
+    {n:12,type:'single',text:"Ưu điểm khi sử dụng vào/ra theo định trình?",opts:["Phương pháp vào/ra theo định trình thích hợp với những quá trình vào/ra có chu kỳ cố định và có thể xác định trước","Phương pháp vào/ra theo định trình phù hợp với các thiết bị vào/ra không yêu cầu thời gian thực","Phương pháp vào/ra theo định trình phù hợp với các thiết bị vào/ra có tốc độ truyền dữ liệu nhanh","Phương pháp vào/ra theo định trình phù hợp với các thiết bị vào/ra có tốc độ truyền dữ liệu chậm"],ans:[0]},
+    {n:13,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình dưới đây, khi nhấn nút bấm thì LED sáng. Phương pháp vào/ra nào được sử dụng?",img:true,opts:["Phương pháp vào/ra định trình","Phương pháp vào/ra theo DMA","Phương pháp vào/ra theo ngắt","Phương pháp vào/ra hỏi vòng"],ans:[0]},
+    {n:14,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau, điện trở số phù hợp vào vị trí (1) để khi nhấn nút bấm thì bật LED sáng:",img:true,opts:["0x04","0x20","0x40","0x02"],ans:[2]},
+    {n:15,type:'multi',text:"Cho sơ đồ mạch và đoạn chương trình như hình sau, điền hằng số phù hợp vào vị trí (1) và (2) để khi nhấn nút BT1 thì 2 LED tại chân P1.0 và P1.2 sáng, và khi nhấn nút BT2 thì 2 LED tại chân P1.1 và P1.3 sáng: (Chọn 2 đáp án)",img:true,opts:["Giá trị vị trí (2) là: 0x05","Giá trị vị trí (2) là: 0x0A","Giá trị vị trí (1) là: 0x0A","Giá trị vị trí (1) là: 0x05"],ans:[1,3]},
+    {n:16,type:'single',text:"Cho sơ đồ và đoạn mã chương trình như hình sau: Đoạn mã chương trình trên sử dụng phương pháp vào/ra nào?",img:true,opts:["Phương pháp vào/ra theo hỏi vòng","Phương pháp vào/ra theo định trình","Phương pháp vào/ra theo ngắt","Phương pháp vào/ra theo DMA"],ans:[1]},
+    {n:17,type:'single',text:"Cho sơ đồ và đoạn mã chương trình như hình sau: Chương trình trên sử dụng phương pháp vào/ra nào?",img:true,opts:["Phương pháp vào/ra theo ngắt","Phương pháp vào/ra theo hỏi vòng","Phương pháp vào/ra theo định trình","Phương pháp vào/ra theo DMA"],ans:[0]},
+    {n:18,type:'multi',text:"Cho sơ đồ và đoạn mã chương trình như hình sau: Đoạn mã chương trình trên sử dụng những phương pháp vào/ra nào? (Chọn 2 đáp án)",img:true,opts:["Vào/ra theo DMA","Vào/ra theo ngắt","Vào/ra theo định trình","Vào/ra theo hỏi vòng"],ans:[1,2]},
+    {n:19,type:'multi',text:"Cho sơ đồ và đoạn code như hình sau, những cổng nào tham gia vào quá trình điều khiển LED và nút nhấn BT1? (Chọn 2 đáp án)",img:true,opts:["P2","P1","P3","P0"],ans:[1,2]},
+    {n:20,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau, hãy điền giá trị thích hợp vào vị trí (1) để chương trình điều khiển các LED sáng dần từ chân P1.0 đến chân P1.7 (Tại 1 thời điểm chỉ có 1 LED sáng):",img:true,opts:["0x10","0x01","0x80","0x08"],ans:[1]},
+    {n:21,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau, điền hằng số phù hợp vào vị trí (1) để khi nhấn nút bấm thì LED sáng:",img:true,opts:["0x10","0x80","0x01","0x08"],ans:[2]},
+    {n:22,type:'multi',text:"Cho sơ đồ mạch và đoạn chương trình như hình sau, điền hằng số phù hợp vào vị trí (1) và (2) để khi nhấn nút bấm BT1 thì bật 4 LED sáng và khi nhấn nút bấm BT2 thì 4 LED tắt: (Chọn 2 đáp án)",img:true,opts:["Giá trị tại vị trí (1) là: 0x00","Giá trị tại vị trí (2) là: 0x00","Giá trị tại vị trí (1) là: 0x0F","Giá trị tại vị trí (2) là: 0x0F"],ans:[1,2]},
+    {n:23,type:'single',text:"Cho sơ đồ mạch và đoạn chương trình như hình sau, điền hằng số phù hợp vào vị trí (1) để khi nhấn nút bấm thì LED tại chân P1.0 và P1.3 sáng:",img:true,opts:["0x09","0x90","0x0A","0xA0"],ans:[0]},
+    {n:24,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau, hãy điền từ khóa thích hợp vào vị trí (1) để nhấn BT tương ứng với chân P0.3 khi sử dụng phương pháp vào/ra theo hỏi vòng:",img:true,opts:["#define","int","sbit","bit"],ans:[2]},
+    {n:25,type:'single',text:"Cho sơ đồ và đoạn mã chương trình như hình dưới, nếu người dùng nhấn nút BT1 hai lần thì trạng thái các LED như nào?",img:true,opts:["Tất cả các LED tắt","Các LED chân sáng","Các LED nhấp nháy","Tất cả các LED sáng"],ans:[3]},
+    {n:26,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau: Khi chạy chương trình trên, thì LED tại chân nào sáng?",img:true,opts:["P1.2","P1.4","P1.3","P1.5"],ans:[2]},
+    {n:27,type:'single',text:"Cho sơ đồ mạch và đoạn chương trình điều khiển LED sau, đoạn chương trình sử dụng phương pháp vào/ra nào?",img:true,opts:["Vào/ra theo ngắt","Vào/ra theo vòng","Vào/ra theo định trình","Vào/ra theo DMA"],ans:[2]},
+    {n:28,type:'single',text:"Cho sơ đồ mạch và đoạn chương trình như hình sau, điền hằng số phù hợp vào vị trí (1) để khi nhấn nút bấm thì LED tại chân P1.0 và P1.2 sáng:",img:true,opts:["0x05","0x50","0xA0","0x0A"],ans:[0]},
+    {n:29,type:'single',text:"Cho sơ đồ và đoạn chương trình như hình sau, hãy điền giá trị thích hợp vào vị trí (1) để chương trình điều khiển các LED sáng dần từ chân P1.7 đến chân P1.0 (Tại 1 thời điểm chỉ có 1 LED sáng):",img:true,opts:["0x10","0x08","0x80","0x01"],ans:[2]},
+  ]
+},
+{
+  title:"Bài 7 – Truyền tin & Giao tiếp (COM / LPT)",
+  topic:"Truyền tin",
+  questions:[
+    {n:1,type:'single',text:"Với chuẩn truyền tin nối tiếp, dữ liệu được truyền đi trên đường truyền theo cách?",opts:["Truyền đồng thời 8 bit trên 8 dây dẫn.","Truyền đồng thời 5 bit trên 5 dây dẫn.","Truyền đồng thời các bit 0 trước, bit 1 sau trên 1 dây dẫn.","Truyền theo từng bit trên một dây dẫn."],ans:[3]},
+    {n:2,type:'single',text:"Trong máy tính, cổng nào hỗ trợ truyền tin nối tiếp theo chuẩn RS232?",opts:["COM","HDMI","LPT","USB"],ans:[0]},
+    {n:3,type:'single',text:"Đâu là tốc độ truyền không hợp lệ trong truyền thông nối tiếp không đồng bộ theo chuẩn RS232?",opts:["3800","9600","2400","115200"],ans:[0]},
+    {n:4,type:'single',text:"Biết rằng cổng nối tiếp nhận được một khung truyền trong chế độ truyền không đồng bộ là dãy nhị phân có dạng 00101110011 và không có lỗi xảy ra trong quá trình truyền, sử dụng 8 bit dữ liệu, 1 bit stop. Hãy cho biết cổng nối tiếp sử dụng chế độ kiểm tra lỗi nào?",opts:["Kiểm tra kiểu lẻ.","Kết hợp đồng thời cả kiểu chẵn và kiểu lẻ.","Không sử dụng kiểm tra chẵn lẻ.","Kiểm tra kiểu chẵn."],ans:[3]},
+    {n:5,type:'single',text:"Biết rằng cổng nối tiếp nhận được một khung truyền trong chế độ truyền không đồng bộ là dãy nhị phân có dạng 00101111011 và không có lỗi xảy ra trong quá trình truyền, sử dụng 8 bit dữ liệu, 1 bit stop, có kiểm tra chẵn lẻ. Hãy cho biết cổng nối tiếp sử dụng chế độ kiểm tra lỗi nào?",opts:["Kiểm tra kiểu chẵn.","Kiểm tra kiểu lẻ.","Không sử dụng kiểm tra chẵn lẻ.","Kết hợp đồng thời cả chẵn và lẻ."],ans:[1]},
+    {n:6,type:'single',text:"Biết rằng cổng nối tiếp nhận được một khung truyền trong chế độ truyền không đồng bộ là dãy nhị phân có dạng 01001100001 và không có lỗi xảy ra trong quá trình truyền, sử dụng 8 bit dữ liệu, 1 bit stop, có kiểm tra chẵn lẻ. Hãy cho biết cổng nối tiếp sử dụng chế độ kiểm tra lỗi nào?",opts:["Không sử dụng kiểm tra chẵn lẻ.","Kiểm tra kiểu chẵn.","Kiểm tra kiểu lẻ.","Kết hợp đồng thời cả kiểu chẵn và lẻ."],ans:[1]},
+    {n:7,type:'single',text:"Đâu là đặc điểm đúng về quá trình truyền dữ liệu theo chuẩn truyền tin song song (cổng LPT)?",opts:["Bit MSB được truyền trước, bit LSB truyền cuối cùng.","Bit LSB được truyền trước, bit MSB truyền cuối cùng.","Dữ liệu được truyền từng bit theo thứ tự ngẫu nhiên.","Dữ liệu truyền đồng thời 8 bit trên các dây dẫn."],ans:[3]},
+    {n:8,type:'single',text:"Thiết bị giao diện song song trong máy tính (LPT) gồm các thanh ghi:",opts:["Điều khiển, trạng thái, dữ liệu.","Điều khiển, tốc độ, dữ liệu.","Điều khiển, tốc độ, chế độ.","Điều khiển, trạng thái, chế độ."],ans:[0]},
+    {n:9,type:'single',text:"Đâu là đặc điểm đúng khi so sánh giữa truyền tin nối tiếp đồng bộ và không đồng bộ?",opts:["Truyền không đồng bộ đòi hỏi khoảng cách truyền ngắn hơn so với truyền đồng bộ.","Truyền đồng bộ không cần tín hiệu CLK để đồng bộ dữ liệu hai bên truyền-nhận như truyền không đồng bộ.","Truyền đồng bộ tốc độ truyền chậm hơn so với truyền không đồng bộ.","Truyền không đồng bộ không cần tín hiệu CLK đồng bộ hai bên truyền-nhận như truyền đồng bộ."],ans:[3]},
+    {n:10,type:'single',text:"Chân nào của cổng COM dùng để nhận và truyền tín hiệu dữ liệu?",opts:["RST và CTS","CTS và RI","GND và RTS","RXD và TXD"],ans:[3]},
+    {n:11,type:'single',text:"Cổng LPT trong máy tính có thể được gán địa chỉ là:",opts:["3FB₁₆","2FB₁₆","3F9₁₆","278₁₆"],ans:[3]},
+    {n:12,type:'single',text:"Tại sao khoảng cách truyền trong truyền tin song song lại bị hạn chế so với truyền tin nối tiếp?",opts:["Do tín hiệu truyền đồng thời trên các dây dẫn nên sinh ra từ trường làm suy hao tín hiệu.","Do tín hiệu truyền đồng thời trên các dây dẫn nên sinh ra nhiệt lượng làm suy hao tín hiệu.","Do tốn chi phí thiết kế các đường dây song song.","Do tốc độ truyền giới hạn."],ans:[0]},
+    {n:13,type:'single',text:"Thiết bị giao diện song song (của cổng LPT) trên máy tính, thanh ghi nào có địa chỉ thấp nhất?",opts:["Trạng thái","Dữ liệu","Tốc độ","Điều khiển"],ans:[1]},
+    {n:14,type:'multi',text:"Chuẩn RS232 trong công nghiệp thường sử dụng đầu nối loại nào? (Chọn 2)",opts:["DB25","DB12","DB9","DB20"],ans:[0,2]},
+    {n:15,type:'fill',text:"Điền các bit nhị phân còn thiếu (bit dữ liệu và bit Parity) vào khung truyền ký tự 'a' trong chế độ truyền nối tiếp không đồng bộ với 8 bit dữ liệu, kiểm tra chẵn, 1 bit stop. Mã ASCII của 'a' là 97 = (01100001)₂. Dãy bit trong khung truyền: 0........1. Dãy bit cần điền:",ans_text:"011000011"},
+    {n:16,type:'fill',text:"Điền các bit nhị phân còn thiếu (bit dữ liệu và bit Parity) vào khung truyền ký tự 'c' trong chế độ truyền nối tiếp không đồng bộ với 8 bit dữ liệu, kiểm tra lẻ, 1 bit stop. Mã ASCII của 'c' là 99 = (01100011)₂. Dãy bit trong khung truyền: 0........1. Dãy bit cần điền:",ans_text:"011000111"},
+    {n:17,type:'fill',text:"Viết dãy nhị phân biểu diễn khung truyền dữ liệu cho ký tự 'B' trong chế độ truyền không đồng bộ qua cổng nối tiếp RS232 với 8 bit dữ liệu, kiểm tra chẵn, 1 bit stop. Mã ASCII của 'B' là 66 = (01000010)₂. Đáp án:",ans_text:"00100001001"},
+    {n:18,type:'fill',text:"Biết rằng địa chỉ cơ sở của cổng LPT1 trong máy tính là 0x278, địa chỉ của thanh ghi trạng thái là: (Viết ở hệ hexa, VD: 0x127)",ans_text:"0x279"},
+    {n:19,type:'fill',text:"Biết rằng địa chỉ cơ sở của cổng LPT1 trong máy tính là 0x278, địa chỉ của thanh ghi điều khiển là: (Viết ở hệ hexa, VD: 0x127)",ans_text:"0x27A"},
+    {n:20,type:'fill',text:"Biết rằng địa chỉ cơ sở của cổng LPT1 trong máy tính là 0x378, địa chỉ của thanh ghi trạng thái là: (Viết ở hệ hexa, VD: 0x127)",ans_text:"0x379"},
+    {n:21,type:'single',text:"Biết rằng khung truyền gồm 8 bit dữ liệu, 1 bit stop và sử dụng chế độ kiểm tra kiểu chẵn. Giá trị của bit Parity là bao nhiêu?",img:true,opts:["0","3","1","2"],ans:[0]},
+    {n:22,type:'fill',text:"Cho khung truyền dữ liệu của một ký tự trong chế độ truyền nối tiếp đồng bộ theo chuẩn RS232. Hãy cho biết mã ASCII của ký tự được truyền bằng bao nhiêu? Biết rằng khung truyền sử dụng 8 bit dữ liệu, không kiểm tra chẵn lẻ, 1 bit stop và không có lỗi. (Viết ở hệ hexa, VD: 0x20)",img:true,ans_text:"0x51"},
+    {n:23,type:'fill',text:"Cho khung truyền dữ liệu của một ký tự trong chế độ truyền nối tiếp đồng bộ theo chuẩn RS232 như sau. Hãy cho biết mã ASCII của ký tự được truyền bằng bao nhiêu? Biết rằng khung truyền sử dụng 8 bít dữ liệu, kiểm tra chẵn lẻ, 1 bít stop và không có lỗi. (Viết ở hệ cơ số 10, VD: 20)",img:true,ans_text:"15"},
+    {n:24,type:'single',text:"Khi máy in báo bận thì mô tả nào sau đây đúng về các chân tín hiệu? Biết rằng các chân của cổng LPT được mô tả như sau:",img:true,opts:["Chân BUSY ở mức logic thấp.","Chân BUSY ở mức logic cao.","Chân STROBE ở mức logic thấp.","Chân ERROR ở mức logic thấp."],ans:[1]},
+    {n:25,type:'single',text:"Cho sơ đồ ghép nối vi điều khiển AT89C51 với LED 7 đoạn như sau. Để hiển thị số 15 trên 2 LED 7 thanh thì giá trị của cổng P1 là:",img:true,opts:["15₁₆","51₁₀","15₁₀","51₁₆"],ans:[3]},
+    {n:26,type:'single',text:"Cho sơ đồ nối vi điều khiển AT89C51 với LED 7 đoạn như sau. Nếu muốn LED 7 đoạn hiển thị số 5 thì giá trị cần đưa ra cổng P1 là:",img:true,opts:["0A₁₆","05₁₆","50₁₀","A0₁₀"],ans:[3]},
+    {n:27,type:'single',text:"Cho sơ đồ ghép nối vi điều khiển AT89C51 với LED 7 đoạn như sau. Để hiển thị số 20 trên 2 LED 7 thanh thì giá trị của cổng P1 là:",img:true,opts:["02₁₆","10₁₆","20₁₀","20₁₆"],ans:[3]},
+    {n:28,type:'single',text:"Cho sơ đồ nối vi điều khiển AT89C51 với LED 7 đoạn như sau. Nếu muốn LED 7 đoạn hiển thị số 8 thì giá trị cần đưa ra cổng P1 là:",img:true,opts:["8₁₆","10₁₆","8₁₀","10₁₀"],ans:[0]},
+    {n:29,type:'single',text:"Cho sơ đồ nối vi điều khiển AT89C51 với LED 7 đoạn như sau. Nếu muốn LED 7 đoạn hiển thị số 7 thì giá trị cần đưa ra cổng P1 là:",img:true,opts:["30₁₆","10₁₆","07₁₆","70₁₆"],ans:[2]},
+  ]
+},
+{
+  title:"Bài 8 – Ngắt (Interrupt)",
+  topic:"Ngắt",
+  questions:[
+    {n:1,type:'single',text:"Chương trình con phục vụ ngắt ISR là viết tắt của cụm từ nào?",opts:["Intelligence Service Routine","Inventory Service Routine","Interrupt Service Routine","Interface Service Routine"],ans:[2]},
+    {n:2,type:'multi',text:"Đâu là mô tả đúng về Bảng vectơ ngắt? (Chọn 2)",opts:["Trong bảng vectơ ngắt, địa chỉ của chương trình con phục vụ ngắt là 1 byte","Là một file được lưu trong ổ đĩa cứng và được nạp khi khởi động máy tính hoặc vi điều khiển","Địa chỉ của các chương trình con phục vụ ngắt là cố định","Được khởi tạo ngay khi khởi động máy tính hoặc vi điều khiển"],ans:[2,3]},
+    {n:3,type:'single',text:"Bảng vectơ ngắt trong máy tính mô tả bao nhiêu ngắt?",opts:["256","1024","100","32"],ans:[0]},
+    {n:4,type:'multi',text:"Đâu là phát biểu đúng về chương trình con phục vụ ngắt? (Chọn 2)",opts:["Được thực thi khi có yêu cầu ngắt từ thiết bị vào/ra hoặc các ngoại lệ trong hệ thống","Được thực thi khi có yêu cầu ngắt từ thiết bị vào/ra","Có địa chỉ trong RAM được xác định khi biên dịch chương trình","Có địa chỉ 4 byte cố định trong bảng vectơ ngắt"],ans:[0,3]},
+    {n:5,type:'single',text:"Đâu là mô tả đúng khi so sánh giữa ngắt cứng và ngắt mềm?",opts:["Ngắt cứng được xử lý nhanh hơn ngắt mềm","Ngắt cứng sinh ra do thiết bị phần cứng, ngắt mềm sinh ra do lệnh ngắt trong chương trình phần mềm","Ngắt mềm được xử lý nhanh hơn ngắt cứng","Ngắt cứng được sinh ra do chương trình phần mềm, ngắt mềm được sinh ra do các ngoại lệ hệ thống"],ans:[1]},
+    {n:6,type:'single',text:"Ngắt sinh ra khi một chương trình phần mềm thực hiện lệnh gây ra lỗi tràn bộ nhớ thuộc loại ngắt nào?",opts:["Ngắt cứng không che được","Ngoại lệ","Ngắt cứng","Ngắt cứng che được"],ans:[1]},
+    {n:7,type:'single',text:"Máy tính đang thực thi các chương trình thì bị treo, người dùng buộc phải nhấn nút Reset để khởi động lại máy tính. Hãy cho biết ngắt sinh ra khi nhấn nút Reset thuộc ngắt nào?",opts:["Ngắt mềm","Ngắt cứng không che được","Ngoại lệ","Ngắt cứng che được"],ans:[1]},
+    {n:8,type:'single',text:"Địa chỉ của chương trình con phục vụ ngắt trong bảng vectơ ngắt là bao nhiêu byte?",opts:["4","256","8","1024"],ans:[0]},
+    {n:9,type:'single',text:"Ngắt sinh ra khi nhấn tổ hợp phím trên bàn phím thuộc loại ngắt nào?",opts:["Ngắt mềm","Ngắt mềm không che được","Ngắt cứng","Ngoại lệ"],ans:[2]},
+    {n:10,type:'single',text:"Ngắt sinh ra khi một chương trình phần mềm thực hiện lệnh chia một số cho 0 thuộc loại ngắt nào?",opts:["Ngắt cứng không che được","Ngắt cứng che được","Ngoại lệ","Ngắt cứng"],ans:[2]},
+    {n:11,type:'single',text:"Đâu là thứ tự đúng khi có ngắt xảy ra? Biết rằng các bước: (1) Lấy địa chỉ chương trình con phục vụ ngắt; (2) Chuyển sang thực chương trình con phục vụ ngắt; (3) Cất địa chỉ của lệnh tiếp theo vào ngăn xếp; (4) Khôi phục địa chỉ lệnh tiếp theo của chương trình chính; (5) Cất giá trị của các thanh ghi trong chương trình chính và thanh ghi trạng thái vào ngăn xếp; (6) Xác định nguồn ngắt",opts:["(3) → (5) → (6) → (1) → (4) → (2)","(2) → (3) → (6) → (1) → (5) → (4)","(3) → (5) → (4) → (1) → (2) → (6)","(3) → (5) → (6) → (1) → (2) → (4)"],ans:[3]},
+    {n:12,type:'single',text:"Dựa vào nguồn sinh ra ngắt, ngắt có thể được phân loại thành:",opts:["Ngắt mềm và ngắt logic","Ngắt cứng và ngắt mềm","Ngắt trong và ngắt ngoài","Ngắt che được và ngắt không che được"],ans:[1]},
+    {n:13,type:'single',text:"Đâu là mô tả đúng khi so sánh ngắt che được và ngắt không che được?",opts:["Ngắt không che được có thể được phản hồi trễ khi CPU đang xử lý một ngắt khác có mức ưu tiên cao hơn còn ngắt che được CPU phải phản hồi ngay lập tức.","Ngắt che được do phần mềm sinh ra còn ngắt không che được do phần cứng sinh ra","Ngắt che được luôn có mức ưu tiên cao hơn ngắt không che được","Ngắt che được có thể được phản hồi trễ khi CPU đang xử lý một ngắt khác có mức ưu tiên cao hơn còn ngắt không che được CPU phải phản hồi ngay lập tức"],ans:[3]},
+    {n:14,type:'single',text:"Nếu thanh ghi IE của vi điều khiển 8051 có giá trị bằng 0x00, có nghĩa là:",opts:["Cho phép ngắt ngoài 0","Cho phép ngắt ngoài 1","Cấm tất cả các ngắt","Cho phép tất cả các ngắt"],ans:[2]},
+    {n:15,type:'fill',text:"Biết rằng một máy tính cung cấp 256 nguồn ngắt, địa chỉ của mỗi chương trình con phục vụ ngắt gồm 4 byte thì kích thước vùng nhớ RAM dành cho bảng vectơ ngắt là bao nhiêu byte? (Nhập số ở hệ 10, VD: 12)",ans_text:"1024"},
+    {n:16,type:'single',text:"Cho bảng vectơ ngắt của vi điều khiển 8051 như sau. Hãy cho biết vi điều khiển này hỗ trợ bao nhiêu nguồn ngắt?",img:true,opts:["3","4","7","6"],ans:[3]},
+    {n:17,type:'single',text:"Cho bảng vectơ ngắt của vi điều khiển 8051 như sau. Cho biết chương trình con phục vụ ngắt của ngắt ngoài 0 có địa chỉ là bao nhiêu?",img:true,opts:["0x001B","0x0003","0x000B","0x0013"],ans:[1]},
+    {n:18,type:'single',text:"Cho bảng vectơ ngắt của vi điều khiển 8051 như sau. Cho biết chương trình con phục vụ ngắt của ngắt ngoài 1 có địa chỉ là bao nhiêu?",img:true,opts:["0x001B","0x000B","0x0013","0x0003"],ans:[2]},
+    {n:19,type:'single',text:"Cho bảng vectơ ngắt của vi điều khiển 8051 như sau. Cho biết chương trình con phục vụ ngắt của Timer 0 có địa chỉ là bao nhiêu?",img:true,opts:["0x0013","0x000B","0x001B","0x0003"],ans:[1]},
+    {n:20,type:'single',text:"Cho bảng vectơ ngắt của một vi điều khiển họ ARM được mô tả như sau. Hãy cho biết ngắt nào sau đây có mức ưu tiên cao nhất?",img:true,opts:["HardFault","SysTick","SVCall","Reset"],ans:[3]},
+    {n:21,type:'fill',text:"Cho thanh ghi cho phép ngắt IE của vi điều khiển 8051 như sau. Thanh ghi này nhận giá trị bằng bao nhiêu để cho phép ngắt ngoài 0 xảy ra và cấm tất cả các ngắt khác? IE = --- (Viết ở hệ hexa, VD: 0x20)",img:true,ans_text:"0x81"},
+    {n:22,type:'fill',text:"Cho thanh ghi cho phép ngắt IE của vi điều khiển 8051 như sau. Thanh ghi này nhận giá trị bằng bao nhiêu để cho phép ngắt ngoài 1 xảy ra và cấm tất cả các ngắt khác? IE = --- (Viết ở hệ hexa, VD: 0x20)",img:true,ans_text:"0x84"},
+    {n:23,type:'single',text:"Cho sơ đồ chân của vi điều khiển 8051 như hình sau. Hãy cho biết mỗi cổng của vi điều khiển gồm mấy bít?",img:true,opts:["8 bít","4 bit","16 bit","32 bít"],ans:[0]},
+    {n:24,type:'fill',text:"Cho hình ảnh sau. Điền hằng số ở hệ hexa phù hợp để đặt chân số 4 của cổng P1 bằng 1, các chân khác xóa về 0. P1= --- (Viết ở hệ hexa, VD: 0x22)",img:true,ans_text:"0x10"},
+    {n:25,type:'fill',text:"Cho vi điều khiển sau. Điền hằng số ở hệ hexa phù hợp để xóa chân số 0 của cổng P1 về 0, các chân khác đặt bằng 1. P1= --- (Viết ở hệ hexa, VD: 0x22)",img:true,ans_text:"0xFE"},
+    {n:26,type:'fill',text:"Cho sơ đồ mạch điều khiển LED đơn bằng vi điều khiển 8051 như sau. Điền giá trị ở hệ hexa phù hợp vào vị trí --- trong lệnh sau để bật LED sáng, các chân khác ở mức 0. P1= --- (Viết ở hệ hexa, VD: 0x12)",img:true,ans_text:"0x08"},
+    {n:27,type:'multi',text:"Cho sơ đồ chân của vi điều khiển 8051 như hình sau. Hãy cho biết các chân của vi điều khiển có thể sử dụng cho ngắt ngoài là: (Chọn 2)",img:true,opts:["P3.3","P3.2","P3.1","P3.0"],ans:[0,1]},
+    {n:28,type:'single',text:"Cho hình dưới đây, khi xảy ra ngắt ngoài 0 tại chân P3.2 thì bật LED đơn tại chân P1.4. Hãy điền hằng số ở hệ hexa vào vị trí --- trong chương trình con phục vụ ngắt sau đây:",img:true,opts:["0x01","0x02","0x10","0x80"],ans:[2]},
+    {n:29,type:'single',text:"Cho hình sau đây, khi xảy ra ngắt ngoài 1 tại chân P3.3 thì tắt LED đơn tại chân P1.3. Hãy điền hằng số ở hệ hexa vào vị trí --- trong chương trình con phục vụ ngắt sau đây để tắt LED:",img:true,opts:["0x08","0xF7","0xF8","0x0F"],ans:[1]},
+  ]
+},
+{
+  title:"Bài 9 – Pipeline & Đa xử lý",
+  topic:"Pipeline",
+  questions:[
+    {n:1,type:'single',text:"Sắp xếp các giai đoạn thực hiện lệnh trên một Pipeline theo thứ tự đúng:",opts:["Decode → Fetch → Execute → Write Back → Memory.","Fetch → Decode → Execute → Memory → Write Back.","Decode → Fetch → Write Back → Memory → Execute.","Fetch → Decode → Execute → Write Back → Memory."],ans:[1]},
+    {n:2,type:'multi',text:"Các giải pháp có thể để khắc phục hiện tượng thải nạp (hazard) là: (Chọn 2)",opts:["Tăng thêm số Pipeline.","Tăng tốc độ của CPU.","Sử dụng bộ dự báo lệnh rẽ nhánh.","Chuyển tiếp đầu ra của lệnh trước đó tới lệnh phụ thuộc mà không cần ghi vào thanh ghi."],ans:[2,3]},
+    {n:3,type:'multi',text:"Giải pháp nào sau đây giúp tăng hiệu suất xử lý của một máy tính? (Chọn 2)",opts:["Tăng dung lượng bộ nhớ ngoài","Giảm kích thước RAM","Tăng số Pipeline","Tăng số lõi vi xử lý (Multicore)"],ans:[2,3]},
+    {n:4,type:'single',text:"Đâu là đặc điểm của hiện tượng thải nạp (hazard) trên pipeline?",opts:["Các lệnh phụ thuộc lẫn nhau được đẩy vào Pipeline để thực hiện nhưng phải chờ đợi các lệnh trước đó hoàn thành làm trễ hoặc gián đoạn quá trình thực hiện lệnh trên Pipeline.","Một CPU có nhiều Pipeline xử lý lệnh đồng thời.","Các lệnh phụ thuộc lẫn nhau được đẩy vào Pipeline để thực hiện nhưng yêu cầu chấm dứt các lệnh trước đó làm trễ hoặc gián đoạn quá trình thực hiện lệnh trên Pipeline.","Một trình tự các lệnh không phụ thuộc lẫn nhau được đẩy vào Pipeline để thực hiện tuần tự."],ans:[0]},
+    {n:5,type:'single',text:"GPU là viết tắt của cụm từ nào?",opts:["Gray Processing Unit","Green Processing Unit","Ground Processing Unit","Graphics Processing Unit"],ans:[3]},
+    {n:6,type:'single',text:"Chíp xử lý nào có tốc độ tính toán nhanh nhất khi thực hiện các phép toán trên các ma trận trong học máy?",opts:["GPU","CPU","TPU","Tất cả các chíp TPU, GPU, CPU có tốc độ như nhau"],ans:[2]},
+    {n:7,type:'single',text:"Các vi xử lý hiện đại ngày nay thường chứa thành phần nào bên trong để giúp cải thiện hiệu năng của hệ thống máy tính?",opts:["Pipeline","Register","FPU","ALU"],ans:[0]},
+    {n:8,type:'single',text:"Tại sao các nhà sản xuất phần cứng máy tính không chọn phương án cải thiện hiệu năng của một máy tính bằng cách tăng tốc độ xử lý mà sử dụng nhiều pipeline hoặc đa lõi xử lý?",opts:["Vì tăng tốc độ xử lý làm phát sinh nhiều dây dẫn (hiện tượng cooling problem) gây hỏng hóc hệ thống.","Vì tăng tốc độ xử lý tốn chi phí thiết kế mạch tạo dao động có tần số cao.","Vì tăng tốc độ xử lý làm phát sinh nhiệt (hiện tượng cooling problem) gây hại cho máy tính.","Vì tăng tốc độ xử lý làm tăng kích thước của hệ thống máy tính."],ans:[2]},
+    {n:9,type:'single',text:"Cho các lệnh sau đây, thứ tự thực hiện lệnh nào tránh được hiện tượng thải nạp khi chúng được thực thì lần lượt trên Pipeline? (1) a = 5; (2) b = 10; (3) c = a + b; (4) d = 5 + 20; (5) e = 100",opts:["(1) → (2) → (4) → (5) → (3)","(1) → (3) → (4) → (2) → (5)","(1) → (2) → (3) → (4) → (5)","(1) → (5) → (3) → (4) → (2)"],ans:[0]},
+    {n:10,type:'single',text:"Cuda là lõi của loại vi xử lý nào?",opts:["TPU","CPU","FPGA","GPU"],ans:[3]},
+    {n:11,type:'single',text:"TPU tính toán song song dựa trên các đối tượng nào?",opts:["Các vi xử lý đa luồng","Các phép toán đơn thực hiện trong một chu kỳ","Các ma trận","Các lõi Cuda"],ans:[2]},
+    {n:12,type:'single',text:"Đâu là mô tả đúng về giai đoạn nhập lệnh (Fetch) trong Pipeline?",opts:["Truy cập bộ nhớ để xác định toán hạng cần đọc/ghi","Nạp lệnh từ bộ nhớ chính (hoặc bộ nhớ cache) vào pipeline","Giải mã lệnh đã nạp","Thực thi lệnh"],ans:[1]},
+    {n:13,type:'fill',text:"Cho vi xử lý gồm 2 Pipeline 5 giai đoạn. Hỏi sau 1000 chu kỳ, máy tính thực hiện được bao nhiêu lệnh? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 20)",ans_text:"1992"},
+    {n:14,type:'fill',text:"Cho vi xử lý gồm 4 Pipeline 5 giai đoạn. Hỏi sau 20 chu kỳ, máy tính thực hiện được bao nhiêu lệnh? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 20)",ans_text:"64"},
+    {n:15,type:'fill',text:"Cho vi xử lý gồm 6 Pipeline 5 giai đoạn. Hỏi sau 20 chu kỳ, máy tính thực hiện được bao nhiêu lệnh? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 20)",ans_text:"96"},
+    {n:16,type:'fill',text:"Cho vi xử lý gồm 6 Pipeline 5 giai đoạn. Nếu máy tính này thực hiện 1200 lệnh thì hết bao nhiêu chu kỳ máy? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 40)",ans_text:"204"},
+    {n:17,type:'fill',text:"Thực hiện phép cộng hai ma trận A₄ₓ₅ và B₄ₓ₅ có cùng kích thước 4x5. Hãy cho biết nếu sử dụng CPU thì mất bao nhiêu chu kỳ máy để hoàn thành việc tính toán ma trận tổng C₄ₓ₅. (Nhập số ở hệ 10, VD: 40)",ans_text:"20"},
+    {n:18,type:'fill',text:"Thực hiện phép cộng hai ma trận A₃ₓ₅ và B₃ₓ₅ có cùng kích thước 3x5. Hãy cho biết nếu sử dụng GPU thì cần bao nhiêu luồng để tính toán ma trận tổng C₃ₓ₅. (Nhập số ở hệ 10, VD: 40)",ans_text:"15"},
+    {n:19,type:'single',text:"Hãy cho biết GPU được mô tả dưới đây có kích thước RAM là bao nhiêu?",img:true,opts:["2GB","1.5GHz","350MHz","5GB"],ans:[0]},
+    {n:20,type:'single',text:"Hãy cho biết GPU sau đây có bao nhiêu lõi xử lý song song?",img:true,opts:["32","48","128","768"],ans:[3]},
+    {n:21,type:'single',text:"Hãy cho biết GPU sau đây có kích thước RAM là bao nhiêu GB?",img:true,opts:["48","4","128","768"],ans:[1]},
+    {n:22,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU này có thể thực thi tối đa bao nhiêu luồng (Thread) chạy song song? (Nhập số ở hệ 10, VD: 20)",img:true,ans_text:"8"},
+    {n:23,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU này có bao nhiêu lõi (core) và có thể thực thi song song tối đa bao nhiêu luồng (Thread)? (Điền: số_luồng/số_lõi, VD: 4/4)",img:true,ans_text:"4/4"},
+    {n:24,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU này có bao nhiêu lõi (core) và có thể thực thi song song tối đa bao nhiêu luồng (Thread)? (Điền: số_luồng/số_lõi, VD: 4/4)",img:true,ans_text:"8/4"},
+    {n:25,type:'fill',text:"Cho vi điều khiển gồm một Pipeline 5 giai đoạn. Nếu máy tính này thực hiện 1000 lệnh thì hết bao nhiêu chu kỳ máy? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 40)",img:true,ans_text:"1004"},
+    {n:26,type:'fill',text:"Cho vi điều khiển gồm một Pipeline 5 giai đoạn. Hỏi sau 1000 chu kỳ, máy tính thực hiện được bao nhiêu lệnh? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ máy. (Nhập số ở hệ 10, VD: 20)",img:true,ans_text:"996"},
+    {n:27,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết trong 1000 chu kỳ máy CPU thực hiện được bao nhiêu lệnh đồng thời trên các luồng song song? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ đơn. (Nhập số ở hệ 10, VD: 20)",img:true,ans_text:"7968"},
+    {n:28,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU thực hiện 3000 lệnh độc lập trên các luồng song song thì hết bao nhiêu chu kỳ máy? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ đơn. (Nhập số ở hệ 10, VD: 20)",img:true,ans_text:"754"},
+    {n:29,type:'fill',text:"Cho thông tin mô tả về một CPU như sau. Hãy cho biết CPU thực hiện 4000 lệnh độc lập trên các luồng song song thì hết bao nhiêu chu kỳ máy? Giả sử mỗi lệnh chỉ thực hiện trong một chu kỳ đơn. (Nhập số ở hệ 10, VD: 20)",img:true,ans_text:"504"},
+  ]
+}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let curLesson = -1;
+let userAnswers = {}; // { qIdx: answer }
+let submitted = false;
+
+// ── INIT HOME ──────────────────────────────────────────────────────────────────
+function initHome() {
+  const grid = document.getElementById('lesson-grid');
+  grid.innerHTML = LESSONS.map((l,i)=>`
+    <div class="lesson-card" onclick="showLesson(${i},null)">
+      <div class="lc-num">Bài ${i+1}</div>
+      <div class="lc-title">${l.title.replace(`Bài ${i+1} – `, '')}</div>
+      <div class="lc-count">${l.questions.length} câu hỏi</div>
+      <div class="lc-arrow">→</div>
+    </div>
+  `).join('');
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showHome(btn) {
+  document.getElementById('home-view').style.display='block';
+  document.getElementById('lesson-view').style.display='none';
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.querySelector('.sb-btn').classList.add('active');
+  curLesson=-1;
+}
+
+function showLesson(idx, btn) {
+  curLesson=idx;
+  userAnswers={};
+  submitted=false;
+  document.getElementById('home-view').style.display='none';
+  document.getElementById('lesson-view').style.display='block';
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.sb-btn')[idx+1].classList.add('active');
+
+  const l=LESSONS[idx];
+  document.getElementById('lh-title').textContent=l.title;
+  const meta=document.getElementById('lh-meta');
+  const multi=l.questions.filter(q=>q.type==='multi').length;
+  const fill=l.questions.filter(q=>q.type==='fill').length;
+  meta.innerHTML=`
+    <span class="lh-chip">${l.questions.length} câu hỏi</span>
+    ${multi?`<span class="lh-chip orange">${multi} câu chọn nhiều</span>`:''}
+    ${fill?`<span class="lh-chip green">${fill} câu điền</span>`:''}
+  `;
+
+  renderDots();
+  renderQuestions();
+  document.getElementById('result-bar').style.display='none';
+  document.getElementById('lesson-view').scrollIntoView({behavior:'smooth'});
+}
+
+// ── DOTS ──────────────────────────────────────────────────────────────────────
+function renderDots() {
+  const l=LESSONS[curLesson];
+  document.getElementById('q-dots').innerHTML=l.questions.map((q,i)=>`
+    <div class="q-dot${userAnswers[i]!==undefined?' answered':''}" id="dot-${i}" onclick="scrollToQ(${i})" title="Câu ${i+1}">${i+1}</div>
+  `).join('');
+}
+
+function scrollToQ(i) {
+  document.getElementById(`q-card-${i}`)?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function updateDot(i) {
+  const d=document.getElementById(`dot-${i}`);
+  if(d) d.classList.toggle('answered', userAnswers[i]!==undefined);
+}
+
+// ── RENDER QUESTIONS ──────────────────────────────────────────────────────────
+function renderQuestions() {
+  const l=LESSONS[curLesson];
+  const container=document.getElementById('q-list');
+  container.innerHTML=l.questions.map((q,i)=>renderQ(q,i,l)).join('');
+}
+
+function imgKey(lessonIdx, q) {
+  return `${lessonIdx+1}_${q.n}`;
+}
+
+function renderQ(q, i, l) {
+  const lIdx=curLesson;
+  const key=`${lIdx+1}_${q.n}`;
+  const imgSrc=IMG_Q[key];
+  const imgHtml=imgSrc?`<div class="q-img"><img src="${imgSrc}" alt="Hình câu ${q.n}" onerror="this.parentElement.style.display='none'" loading="lazy"/></div>`:'';
+
+  let bodyHtml='';
+  if(q.type==='single'||q.type==='multi') {
+    const labels=['A','B','C','D','E','F'];
+    bodyHtml=`<div class="opts" id="opts-${i}">${q.opts.map((o,j)=>`
+      <div class="opt" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})">
+        <span class="opt-key">${labels[j]}</span>
+        <span>${o}</span>
+        <span class="opt-mark" id="mark-${i}-${j}"></span>
+      </div>`).join('')}</div>`;
+  } else {
+    bodyHtml=`<div class="fill-wrap">
+      <input class="fill-input" id="fill-${i}" type="text" placeholder="Nhập đáp án..."
+        oninput="saveFill(${i})" onkeydown="if(event.key==='Enter')checkFill(${i})"/>
+      <div id="fill-hint-${i}" style="display:none"></div>
+    </div>`;
+  }
+
+  const typeLabel=q.type==='multi'?'Chọn nhiều đáp án':q.type==='fill'?'Điền câu trả lời':'Chọn một đáp án';
+
+  return `<div class="q-card" id="q-card-${i}">
+    <div class="q-head">
+      <div class="q-num ${q.type}" title="${typeLabel}">${i+1}</div>
+      <div>
+        <div class="q-type-tag">${typeLabel}</div>
+        <div class="q-text">${q.text}</div>
+      </div>
+    </div>
+    ${imgHtml}
+    ${bodyHtml}
+    <div id="feedback-${i}" style="display:none"></div>
+    ${q.type!=='fill'?`<div class="q-action"><span></span><button class="btn btn-primary btn-sm" onclick="checkAnswer(${i})">Kiểm tra</button></div>`:''}
+  </div>`;
+}
+
+// ── ANSWER LOGIC ──────────────────────────────────────────────────────────────
+function selectOpt(qi, oi) {
+  if(submitted) return;
+  const q=LESSONS[curLesson].questions[qi];
+  if(q.type==='single') {
+    userAnswers[qi]=[oi];
+    for(let j=0;j<q.opts.length;j++) {
+      const el=document.getElementById(`opt-${qi}-${j}`);
+      if(el) el.classList.toggle('selected',j===oi);
+    }
+  } else {
+    if(!userAnswers[qi]) userAnswers[qi]=[];
+    const arr=userAnswers[qi];
+    const idx=arr.indexOf(oi);
+    if(idx===-1) arr.push(oi); else arr.splice(idx,1);
+    const el=document.getElementById(`opt-${qi}-${oi}`);
+    if(el) el.classList.toggle('selected');
+  }
+  updateDot(qi);
+}
+
+function saveFill(qi) {
+  const val=document.getElementById(`fill-${qi}`)?.value||'';
+  userAnswers[qi]=val;
+  updateDot(qi);
+}
+
+function checkAnswer(qi) {
+  if(submitted) return;
+  const q=LESSONS[curLesson].questions[qi];
+  const ua=userAnswers[qi];
+  if(ua===undefined||(Array.isArray(ua)&&ua.length===0)) return;
+  revealQ(qi, q, ua, true);
+}
+
+function checkFill(qi) { checkAnswer(qi); }
+
+function revealQ(qi, q, ua, single) {
+  const labels=['A','B','C','D','E','F'];
+  if(q.type==='single'||q.type==='multi') {
+    const correct=new Set(q.ans);
+    const selected=new Set(Array.isArray(ua)?ua:[ua]);
+    for(let j=0;j<q.opts.length;j++) {
+      const el=document.getElementById(`opt-${qi}-${j}`);
+      if(!el) continue;
+      el.classList.remove('selected');
+      el.classList.add('revealed');
+      if(correct.has(j)) { el.classList.add('correct-ans'); document.getElementById(`mark-${qi}-${j}`).textContent='✓'; }
+      else if(selected.has(j)) { el.classList.add('wrong-ans'); document.getElementById(`mark-${qi}-${j}`).textContent='✗'; }
+    }
+    const isCorrect=[...correct].every(c=>selected.has(c))&&[...selected].every(s=>correct.has(s));
+    showFeedback(qi, isCorrect, q.ans.map(a=>labels[a]).join(', '));
+  } else {
+    const inp=document.getElementById(`fill-${qi}`);
+    const val=(ua||'').toString().trim().toLowerCase();
+    const correct=q.ans_text.trim().toLowerCase();
+    const ok=val===correct||val.replace(/\s/g,'')===correct.replace(/\s/g,'');
+    if(inp){ inp.classList.add(ok?'correct-fill':'wrong-fill'); inp.disabled=true; }
+    const hint=document.getElementById(`fill-hint-${qi}`);
+    if(hint){
+      hint.style.display='block';
+      hint.className=`fill-hint${ok?'':' wrong'}`;
+      hint.textContent=ok?'✓ Chính xác!':'✗ Đáp án đúng: '+q.ans_text;
+    }
+  }
+}
+
+function showFeedback(qi, isCorrect, correctLabel) {
+  const fb=document.getElementById(`feedback-${qi}`);
+  if(!fb) return;
+  fb.className='q-feedback '+(isCorrect?'ok':'fail');
+  fb.textContent=isCorrect?'✓ Chính xác!':'✗ Chưa đúng. Đáp án: '+correctLabel;
+  fb.style.display='block';
+}
+
+// ── SUBMIT ALL ────────────────────────────────────────────────────────────────
+function submitAll() {
+  submitted=true;
+  const l=LESSONS[curLesson];
+  let correct=0;
+  l.questions.forEach((q,i)=>{
+    const ua=userAnswers[i];
+    revealQ(i, q, ua, false);
+    if(isCorrectAnswer(q,ua)) correct++;
+  });
+  // Remove check buttons
+  document.querySelectorAll('.q-action').forEach(a=>a.style.display='none');
+  // Show result
+  const pct=Math.round(correct/l.questions.length*100);
+  const bar=document.getElementById('result-bar');
+  bar.style.display='flex';
+  bar.innerHTML=`
+    <div class="result-score" style="color:${pct>=70?'var(--green)':pct>=50?'var(--orange)':'var(--red)'}">${pct}%</div>
+    <div class="result-info">
+      <div style="font-weight:700;font-size:1rem">${pct>=70?'🎉 Xuất sắc!':pct>=50?'👍 Khá tốt!':'📚 Cần ôn thêm!'}</div>
+      <p>Đúng ${correct}/${l.questions.length} câu hỏi</p>
+      <div class="result-chips">
+        <span class="lh-chip green">✓ ${correct} đúng</span>
+        <span class="lh-chip" style="background:var(--red-l);color:var(--red)">✗ ${l.questions.length-correct} sai</span>
+      </div>
+    </div>`;
+  bar.scrollIntoView({behavior:'smooth'});
+}
+
+function isCorrectAnswer(q, ua) {
+  if(ua===undefined) return false;
+  if(q.type==='fill') {
+    const v=(ua||'').toString().trim().toLowerCase();
+    const c=q.ans_text.trim().toLowerCase();
+    return v===c||v.replace(/\s/g,'')===c.replace(/\s/g,'');
+  }
+  const correct=new Set(q.ans);
+  const selected=new Set(Array.isArray(ua)?ua:[ua]);
+  return [...correct].every(c=>selected.has(c))&&[...selected].every(s=>correct.has(s));
+}
+
+// ── RESET ──────────────────────────────────────────────────────────────────────
+function resetLesson() {
+  userAnswers={};
+  submitted=false;
+  renderDots();
+  renderQuestions();
+  document.getElementById('result-bar').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+initHome();
+</script>
+</body>
+</html>

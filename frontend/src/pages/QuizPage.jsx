@@ -1,0 +1,733 @@
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useData } from '../context/DataContext';
+import { resultsAPI } from '../api/api';
+import Navbar from '../components/Navbar';
+import { Button, EmptyState } from '../components/UI';
+
+const TYPE_LABELS = { single:'Một đáp án', multiple:'Nhiều đáp án', truefalse:'Đúng / Sai', fill:'Điền vào chỗ trống', drag:'Kéo & Thả' };
+const TIME_PER_QUESTION_SECONDS = 90;
+const COMPARE_TEXT_LIMIT = 120;
+const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
+const optionLabel = (index) => String.fromCharCode(65 + index);
+
+const formatTime = (seconds) => {
+  const safe = Math.max(0, Number(seconds) || 0);
+  const mins = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+};
+
+const shuffleWithNoImmediateRepeat = (items, storageKey) => {
+  if (items.length <= 1) return items;
+
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  const lastOrder = localStorage.getItem(storageKey);
+  const nextOrder = shuffled.map((q) => q.id).join(',');
+
+  if (lastOrder && lastOrder === nextOrder) {
+    const first = shuffled.shift();
+    if (first) shuffled.push(first);
+  }
+
+  localStorage.setItem(storageKey, shuffled.map((q) => q.id).join(','));
+  return shuffled;
+};
+
+const evaluateQuestion = (question, userAnswer) => {
+  if (question.type === 'single') {
+    const ok = isAnswerCorrect(question.answers.find((a) => a.id === userAnswer));
+    return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+  }
+
+  if (question.type === 'multiple') {
+    const ok = Array.isArray(userAnswer)
+      && question.answers.filter((a) => isAnswerCorrect(a)).every((a) => userAnswer.includes(a.id))
+      && question.answers.filter((a) => !isAnswerCorrect(a)).every((a) => !userAnswer?.includes(a.id));
+    return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+  }
+
+  if (question.type === 'fill') {
+    const expected = question.answers.map((a) => String(a.text || '').toLowerCase().trim()).filter(Boolean);
+    const ok = expected.includes(String(userAnswer || '').toLowerCase().trim());
+    return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+  }
+
+  if (question.type === 'truefalse') {
+    const picks = userAnswer || {};
+    const totalUnits = question.answers.length || 1;
+    const earnedUnits = question.answers.reduce((sum, answer, idx) => {
+      const expected = isAnswerCorrect(answer);
+      return sum + (picks[idx] === expected ? 1 : 0);
+    }, 0);
+    return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
+  }
+
+  return { earnedUnits: 0, totalUnits: 1, fullyCorrect: false };
+};
+
+const buildComparison = (question, userAnswer) => {
+  if (question.type === 'single') {
+    const correctIndex = question.answers.findIndex((a) => isAnswerCorrect(a));
+    const userIndex = question.answers.findIndex((a) => a.id === userAnswer);
+    const chosenItems = userIndex >= 0
+      ? [{
+          label: optionLabel(userIndex),
+          text: question.answers[userIndex]?.text || '(đáp án ảnh)',
+          imageUrl: question.answers[userIndex]?.imageUrl || '',
+        }]
+      : [];
+    const correctItems = correctIndex >= 0
+      ? [{
+          label: optionLabel(correctIndex),
+          text: question.answers[correctIndex]?.text || '(đáp án ảnh)',
+          imageUrl: question.answers[correctIndex]?.imageUrl || '',
+        }]
+      : [];
+    return { chosenItems, correctItems };
+  }
+
+  if (question.type === 'multiple') {
+    const selected = Array.isArray(userAnswer) ? userAnswer : [];
+    const chosenItems = question.answers
+      .map((a, idx) => ({ a, idx }))
+      .filter(({ a }) => selected.includes(a.id))
+      .map(({ a, idx }) => ({
+        label: optionLabel(idx),
+        text: a.text || '(đáp án ảnh)',
+        imageUrl: a.imageUrl || '',
+      }));
+
+    const correctItems = question.answers
+      .map((a, idx) => ({ a, idx }))
+      .filter(({ a }) => isAnswerCorrect(a))
+      .map(({ a, idx }) => ({
+        label: optionLabel(idx),
+        text: a.text || '(đáp án ảnh)',
+        imageUrl: a.imageUrl || '',
+      }));
+
+    return { chosenItems, correctItems };
+  }
+
+  if (question.type === 'truefalse') {
+    const picks = userAnswer || {};
+    const chosenItems = question.answers.map((a, idx) => ({
+      label: `Ý ${idx + 1}`,
+      text: (picks[idx] === undefined) ? 'Chưa chọn' : (picks[idx] ? 'Đúng' : 'Sai'),
+      imageUrl: a.imageUrl || '',
+    }));
+    const correctItems = question.answers.map((a, idx) => ({
+      label: `Ý ${idx + 1}`,
+      text: isAnswerCorrect(a) ? 'Đúng' : 'Sai',
+      imageUrl: a.imageUrl || '',
+    }));
+    return { chosenItems, correctItems };
+  }
+
+  if (question.type === 'fill') {
+    return {
+      chosenItems: [{ label: 'Trả lời', text: String(userAnswer || '').trim() || 'Chưa nhập', imageUrl: '' }],
+      correctItems: [{ label: 'Đáp án', text: question.answers.map((a) => a.text).join(' | ') || 'Không xác định', imageUrl: '' }],
+    };
+  }
+
+  if (question.type === 'drag') {
+    return {
+      chosenItems: [{ label: 'Thứ tự', text: Array.isArray(userAnswer) && userAnswer.length ? userAnswer.join(' → ') : 'Chưa sắp xếp', imageUrl: '' }],
+      correctItems: [{
+        label: 'Đúng',
+        text: [...(question.answers || [])]
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map((a) => a.text)
+          .join(' → ') || 'Không xác định',
+        imageUrl: '',
+      }],
+    };
+  }
+
+  return { chosenItems: [], correctItems: [] };
+};
+
+function ExpandableText({ text, limit = COMPARE_TEXT_LIMIT }) {
+  const [expanded, setExpanded] = useState(false);
+  const safe = String(text || '');
+  const tooLong = safe.length > limit;
+  const display = expanded || !tooLong ? safe : `${safe.slice(0, limit)}...`;
+
+  return (
+    <div>
+      <span>{display}</span>
+      {tooLong && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          style={{
+            marginLeft: 6,
+            border: 'none',
+            background: 'transparent',
+            color: 'var(--blue)',
+            cursor: 'pointer',
+            fontSize: '.76rem',
+            fontWeight: 600,
+          }}
+        >
+          {expanded ? 'Thu gọn' : 'Xem thêm'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function CompareAnswerBlock({ title, items }) {
+  return (
+    <div style={{ marginTop: 6, fontSize: '.78rem' }}>
+      <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
+      {items.length === 0 && <div style={{ color: 'var(--muted)' }}>Không có</div>}
+      {items.map((item, idx) => (
+        <div key={`${title}-${idx}`} style={{ marginBottom: 6, padding: 6, border: '1px dashed var(--border)', borderRadius: 8 }}>
+          <div style={{ color: 'var(--text-2)', marginBottom: 4 }}>
+            {item.label}: <ExpandableText text={item.text} />
+          </div>
+          {item.imageUrl && (
+            <img
+              src={item.imageUrl}
+              alt={`${title}-${item.label}`}
+              style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SingleChoice({ q, answer, onAnswer, submitted, onOpenImage }) {
+  return (
+    <div className="answers-list">
+      {q.answers.map((a,i) => {
+        let cls='answer-row';
+        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(answer===a.id)cls+=' wrong';cls+=' disabled';}
+        else if(answer===a.id)cls+=' selected';
+        return (
+          <div key={a.id} className={cls} onClick={()=>!submitted&&onAnswer(a.id)}>
+            <div className="opt-key">{optionLabel(i)}</div>
+            <span className="opt-text" style={{ display: 'grid', gap: 6 }}>
+              {a.text}
+              {a.imageUrl && <img src={a.imageUrl} alt={`option-${i + 1}`} onClick={(e) => { e.stopPropagation(); onOpenImage?.(a.imageUrl); }} style={{ maxHeight: 140, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, cursor: 'zoom-in' }} />}
+            </span>
+            {submitted&&isAnswerCorrect(a)&&<span className="opt-mark">✓</span>}
+            {submitted&&answer===a.id&&!isAnswerCorrect(a)&&<span className="opt-mark">✗</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MultiChoice({ q, answer=[], onAnswer, submitted, onOpenImage }) {
+  const toggle=(id)=>{ if(submitted)return; const next=answer.includes(id)?answer.filter(x=>x!==id):[...answer,id]; onAnswer(next); };
+  return (
+    <div className="answers-list">
+      <div style={{fontSize:'.75rem',color:'var(--muted)',marginBottom:6}}>Có thể chọn nhiều đáp án</div>
+      {q.answers.map((a,i)=>{
+        let cls='answer-row';
+        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(answer.includes(a.id))cls+=' wrong';cls+=' disabled';}
+        else if(answer.includes(a.id))cls+=' selected';
+        return (
+          <div key={a.id} className={cls} onClick={()=>toggle(a.id)}>
+            <div className="opt-key" style={{borderRadius:4}}>{optionLabel(i)}</div>
+            <span className="opt-text" style={{ display: 'grid', gap: 6 }}>
+              {a.text}
+              {a.imageUrl && <img src={a.imageUrl} alt={`option-${i + 1}`} onClick={(e) => { e.stopPropagation(); onOpenImage?.(a.imageUrl); }} style={{ maxHeight: 140, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, cursor: 'zoom-in' }} />}
+            </span>
+            {submitted&&isAnswerCorrect(a)&&<span className="opt-mark">✓</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function TrueFalse({ q, answer = {}, onAnswer, submitted, onOpenImage }) {
+  const tfItems = Array.isArray(q.answers) ? q.answers : [];
+  const pick = (idx, value) => {
+    if (submitted) return;
+    onAnswer({ ...(answer || {}), [idx]: value });
+  };
+
+  return (
+    <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
+      {tfItems.map((item, idx) => {
+        const selected = (answer || {})[idx];
+        const actual = isAnswerCorrect(item);
+        const isCorrectPick = selected === actual;
+        return (
+          <div key={`${idx}-${item.text}`} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10 }}>
+            <div style={{ marginBottom: 8, fontWeight: 600, fontSize: '.9rem' }}>
+              {idx + 1}. {item.text}
+              {item.imageUrl && <div style={{ marginTop: 6 }}><img src={item.imageUrl} alt={`tf-${idx + 1}`} onClick={() => onOpenImage?.(item.imageUrl)} style={{ maxHeight: 140, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, cursor: 'zoom-in' }} /></div>}
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                type="button"
+                className={`btn btn-sm ${selected === true ? 'btn-primary' : 'btn-ghost'}`}
+                onClick={() => pick(idx, true)}
+                disabled={submitted}
+              >
+                Đúng
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm ${selected === false ? 'btn-secondary' : 'btn-ghost'}`}
+                onClick={() => pick(idx, false)}
+                disabled={submitted}
+              >
+                Sai
+              </button>
+            </div>
+            {submitted && (
+              <div style={{ marginTop: 6, fontSize: '.78rem', color: isCorrectPick ? 'var(--success)' : 'var(--danger)' }}>
+                {isCorrectPick ? '✓ Chính xác' : `✗ Đáp án đúng: ${actual ? 'Đúng' : 'Sai'}`}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FillBlank({ q, answer='', onAnswer, submitted }) {
+  const correct=q.answers.map(a=>String(a.text || '').toLowerCase().trim()).filter(Boolean);
+  const isOk=correct.includes(String(answer || '').toLowerCase().trim());
+  return (
+    <div style={{marginTop:16}}>
+      <input className="form-input fill-input"
+        style={submitted?{borderColor:isOk?'var(--success)':'var(--danger)',background:isOk?'var(--success-bg)':'var(--danger-bg)'}:{}}
+        placeholder="Nhập câu trả lời của bạn..." value={answer}
+        onChange={e=>!submitted&&onAnswer(e.target.value)} disabled={submitted} />
+      {submitted&&<div style={{marginTop:8,fontSize:'.8rem',color:isOk?'var(--success)':'var(--muted)'}}>
+        {isOk?'✓ Chính xác!':'Gợi ý: '+q.answers.map(a=>a.text).join(', ')}
+      </div>}
+    </div>
+  );
+}
+
+function DragDrop({ q, onAnswer, submitted }) {
+  const [pool,setPool]=useState(()=>q.answers.map(a=>a.text));
+  const [dropped,setDropped]=useState([]);
+  const [over,setOver]=useState(false);
+  const handleDrop=(e)=>{ e.preventDefault();setOver(false); const val=e.dataTransfer.getData('text'); if(pool.includes(val)){ const next=[...dropped,val]; setDropped(next);setPool(p=>p.filter(x=>x!==val));onAnswer(next); }};
+  const remove=(val)=>{ if(submitted)return; setDropped(d=>d.filter(x=>x!==val));setPool(p=>[...p,val]);onAnswer(dropped.filter(x=>x!==val)); };
+  return (
+    <div>
+      <div className="drag-pool">
+        {pool.length===0&&<span style={{fontSize:'.8rem',color:'var(--muted)'}}>Đã dùng hết</span>}
+        {pool.map(item=><div key={item} className="drag-chip" draggable onDragStart={e=>e.dataTransfer.setData('text',item)}>{item}</div>)}
+      </div>
+      <div className={`drop-zone${over?' over':''}`} onDragOver={e=>{e.preventDefault();setOver(true);}} onDragLeave={()=>setOver(false)} onDrop={handleDrop}>
+        {dropped.length===0&&<span style={{fontSize:'.8rem',color:'var(--muted)'}}>Kéo thẻ vào đây theo thứ tự đúng...</span>}
+        {dropped.map((d,i)=>(
+          <div key={d} className="drag-chip" style={{cursor:'default'}}>
+            <span style={{marginRight:5,color:'var(--muted)',fontSize:'.7rem'}}>{i+1}.</span>{d}
+            {!submitted&&<button onClick={()=>remove(d)} style={{marginLeft:7,background:'none',border:'none',cursor:'pointer',color:'var(--danger)',fontSize:'.85rem'}}>×</button>}
+          </div>
+        ))}
+      </div>
+      {submitted&&<div style={{marginTop:8,fontSize:'.8rem',color:'var(--muted)'}}>Thứ tự tham khảo: {[...(q.answers || [])].sort((a,b)=>(a.order||0)-(b.order||0)).map(a=>a.text).join(' → ')}</div>}
+    </div>
+  );
+}
+
+export default function QuizPage() {
+  const { lessonId } = useParams();
+  const navigate = useNavigate();
+  const { data } = useData();
+  const lesson = data.lessons.find((l) => String(l.id) === String(lessonId));
+  const subject = data.subjects.find(s=>s.id===lesson?.subjectId);
+  const baseQuestions = useMemo(
+    () => data.questions.filter((item) => String(item.lessonId) === String(lessonId)),
+    [data.questions, lessonId]
+  );
+  const [questions, setQuestions] = useState([]);
+  const [qIdx,setQIdx]=useState(0);
+  const [answers,setAnswers]=useState({});
+  const [submitted,setSubmitted]=useState(false);
+  const [showResult,setShowResult]=useState(false);
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [timeoutTriggered, setTimeoutTriggered] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [isSubmittingResult, setIsSubmittingResult] = useState(false);
+  const [serverSubmitted, setServerSubmitted] = useState(false);
+  const q=questions[qIdx];
+  const progress=questions.length?((qIdx+1)/questions.length)*100:0;
+  const handleAnswer=useCallback((val)=>setAnswers(prev=>({...prev,[qIdx]:val})),[qIdx]);
+
+  const reshuffleQuiz = useCallback(() => {
+    const key = `qm_last_order_${lessonId}`;
+    const next = shuffleWithNoImmediateRepeat(baseQuestions, key);
+    setQuestions(next);
+    setQIdx(0);
+    setAnswers({});
+    setSubmitted(false);
+    setShowResult(false);
+    setTimeoutTriggered(false);
+    setServerSubmitted(false);
+    setRemainingSeconds(next.length * TIME_PER_QUESTION_SECONDS);
+  }, [lessonId, baseQuestions]);
+
+  useEffect(() => {
+    reshuffleQuiz();
+  }, [reshuffleQuiz]);
+
+  useEffect(() => {
+    if (showResult || questions.length === 0) return;
+    const timer = setInterval(() => {
+      setRemainingSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setTimeoutTriggered(true);
+          setShowResult(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showResult, questions.length]);
+
+  useEffect(() => {
+    if (!showResult || serverSubmitted || !lessonId || !questions.length) return;
+    const token = localStorage.getItem('qm_token');
+    if (!token || token === 'admin-token' || token.startsWith('token-')) return;
+
+    const toSubmitAnswer = (question, answerValue) => {
+      if (question.type === 'single') {
+        return answerValue != null ? String(answerValue) : '';
+      }
+      if (question.type === 'multiple') {
+        const selectedIds = Array.isArray(answerValue) ? answerValue : [];
+        return selectedIds.map((id) => String(id));
+      }
+      if (question.type === 'fill') {
+        return String(answerValue || '');
+      }
+      if (question.type === 'truefalse') {
+        return answerValue || {};
+      }
+      if (question.type === 'drag') {
+        return Array.isArray(answerValue) ? answerValue : [];
+      }
+      return answerValue;
+    };
+
+    const submitResult = async () => {
+      try {
+        setIsSubmittingResult(true);
+        const payloadAnswers = questions.map((question, idx) => ({
+          questionId: String(question.id),
+          answer: toSubmitAnswer(question, answers[idx]),
+        }));
+
+        const totalQuizSeconds = questions.length * TIME_PER_QUESTION_SECONDS;
+        const spent = Math.max(0, totalQuizSeconds - remainingSeconds);
+
+        await resultsAPI.submit({
+          lessonId: String(lessonId),
+          answers: payloadAnswers,
+          timeSpent: spent,
+        });
+        setServerSubmitted(true);
+
+        let currentUser = {};
+        try {
+          currentUser = JSON.parse(localStorage.getItem('qm_user') || '{}') || {};
+        } catch {
+          currentUser = {};
+        }
+
+        navigate('/leaderboard', {
+          state: {
+            priorityRefresh: true,
+            fromQuizSubmit: true,
+            submittedAt: Date.now(),
+            highlightHint: {
+              id: currentUser._id || currentUser.id || '',
+              username: currentUser.username || '',
+            },
+          },
+        });
+      } catch {
+        // Keep local result view even if submit API fails.
+      } finally {
+        setIsSubmittingResult(false);
+      }
+    };
+
+    submitResult();
+  }, [answers, lessonId, navigate, questions, remainingSeconds, serverSubmitted, showResult]);
+
+  const openPreview = (src) => {
+    if (!src) return;
+    setPreviewImage(src);
+  };
+
+  const closePreview = () => setPreviewImage('');
+
+  if (lesson?.locked) {
+    return (
+      <div className="app-wrapper"><Navbar/>
+        <div className="page-content" style={{paddingTop:60}}>
+          <Button variant="ghost" onClick={()=>navigate(-1)} style={{marginBottom:12}}>← Quay lại</Button>
+          <EmptyState icon="🔒" text="Bài học này đang bị khoá" />
+        </div>
+      </div>
+    );
+  }
+
+  if(!questions.length) return (
+    <div className="app-wrapper"><Navbar/>
+      <div className="page-content" style={{textAlign:'center',paddingTop:60}}>
+        <div style={{fontSize:'2.5rem'}}>📭</div>
+        <p style={{color:'var(--muted)',marginTop:12}}>Bài học chưa có câu hỏi.</p>
+        <Button variant="ghost" onClick={()=>navigate(-1)} style={{marginTop:16}}>← Quay lại</Button>
+      </div>
+    </div>
+  );
+
+  if(showResult){
+    const details = questions.map((question, index) => {
+      const result = evaluateQuestion(question, answers[index]);
+      const compare = buildComparison(question, answers[index]);
+      return {
+        question,
+        index,
+        compare,
+        ...result,
+      };
+    });
+
+    const summary = details.reduce((acc, item) => {
+      const questionPoints = Number(item.question?.points || 1);
+      return {
+        earnedUnits: acc.earnedUnits + item.earnedUnits,
+        totalUnits: acc.totalUnits + item.totalUnits,
+        fullyCorrect: acc.fullyCorrect + (item.fullyCorrect ? 1 : 0),
+        earnedScore: acc.earnedScore + (item.fullyCorrect ? questionPoints : 0),
+        totalScore: acc.totalScore + questionPoints,
+      };
+    }, { earnedUnits: 0, totalUnits: 0, fullyCorrect: 0, earnedScore: 0, totalScore: 0 });
+
+    const pct = summary.totalScore ? Math.round((summary.earnedScore / summary.totalScore) * 100) : 0;
+    return (
+      <div className="app-wrapper"><Navbar/>
+        <div className="page-content">
+          <div className="result-shell">
+            <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'var(--r-xl)',padding:36,textAlign:'center'}}>
+              <div className={`score-ring${pct>=70?' pass':''}`}><span className="score-num">{pct}%</span></div>
+              <div style={{fontSize:'1.3rem',fontWeight:700,marginBottom:8}}>{pct>=70?'🎉 Xuất sắc!':pct>=50?'👍 Khá tốt!':'📚 Cần ôn thêm!'}</div>
+              <p style={{color:'var(--muted)',fontSize:'.875rem',marginBottom:24}}>
+                Đúng {summary.fullyCorrect}/{questions.length} câu • Điểm {summary.earnedScore}/{summary.totalScore} • {lesson?.name}
+              </p>
+              {isSubmittingResult && (
+                <div style={{ marginBottom: 14, fontSize: '.82rem', color: 'var(--muted)' }}>
+                  Đang đồng bộ kết quả lên server...
+                </div>
+              )}
+              {timeoutTriggered && (
+                <div style={{ marginBottom: 14, fontSize: '.82rem', color: 'var(--danger)' }}>
+                  Hết thời gian làm bài. Hệ thống đã tự nộp kết quả.
+                </div>
+              )}
+              <div className="stat-row" style={{marginBottom:24}}>
+                {[['Đúng',summary.fullyCorrect,'var(--success)'],['Sai',questions.length-summary.fullyCorrect,'var(--danger)'],['Điểm',`${summary.earnedScore}/${summary.totalScore}`,'var(--blue)']].map(([l,v,c])=>(
+                  <div key={l} style={{background:'var(--bg)',border:'1px solid var(--border)',borderRadius:'var(--r)',padding:'14px 10px',textAlign:'center'}}>
+                    <div style={{fontSize:'1.5rem',fontWeight:800,color:c}}>{v}</div>
+                    <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:3}}>{l}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{display:'flex',gap:10,justifyContent:'center'}}>
+                <Button variant="ghost" onClick={()=>navigate(-1)}>← Về danh sách bài</Button>
+                <Button variant="primary" onClick={reshuffleQuiz}>Làm lại</Button>
+              </div>
+
+              <div style={{ marginTop: 18, textAlign: 'left' }}>
+                <div style={{ fontWeight: 700, marginBottom: 8 }}>Đối chiếu kết quả từng câu</div>
+                <div style={{ display: 'grid', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
+                  {details.map((item) => (
+                    <div
+                      key={item.question.id || item.index}
+                      style={{
+                        border: '1px solid var(--border)',
+                        borderRadius: 10,
+                        padding: '10px 12px',
+                        background: item.fullyCorrect ? 'var(--success-bg)' : 'var(--danger-bg)',
+                      }}
+                    >
+                      <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                        Câu {item.index + 1}: {item.question.text || item.question.question}
+                      </div>
+                      <div style={{ fontSize: '.8rem', color: item.fullyCorrect ? 'var(--success)' : 'var(--danger)' }}>
+                        {item.fullyCorrect ? 'Đúng' : 'Sai'}
+                        {item.question.type === 'truefalse' && ` (${item.earnedUnits}/${item.totalUnits} ý đúng)`}
+                      </div>
+                      <CompareAnswerBlock title="User chọn" items={item.compare.chosenItems || []} />
+                      <CompareAnswerBlock title="Đáp án đúng" items={item.compare.correctItems || []} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isCorrect=(()=>{
+    if(!submitted)return null;
+    return evaluateQuestion(q, answers[qIdx]).fullyCorrect;
+  })();
+
+  const currentResult = (() => {
+    if (!submitted || !q) return null;
+    return evaluateQuestion(q, answers[qIdx]);
+  })();
+
+  const canCheckCurrent = (() => {
+    if (!q) return false;
+    const current = answers[qIdx];
+    if (q.type === 'truefalse') {
+      return q.answers.every((_, idx) => typeof (current || {})[idx] === 'boolean');
+    }
+    if (q.type === 'fill') {
+      return typeof current === 'string' && current.trim().length > 0;
+    }
+    if (q.type === 'multiple') {
+      return Array.isArray(current) && current.length > 0;
+    }
+    if (q.type === 'single') {
+      return current !== undefined;
+    }
+    return null;
+  })();
+
+  return (
+    <div className="app-wrapper"><Navbar/>
+      <div className="page-content">
+        <div className="quiz-layout">
+          <div className="quiz-topbar">
+            <div>
+              <div style={{fontWeight:700,fontSize:'.9rem'}}>Câu {qIdx+1}/{questions.length}</div>
+              <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:2}}>{lesson?.name}</div>
+            </div>
+            <div className="quiz-progress-block">
+              <div className="progress-label">Tiến trình</div>
+              <div className="progress-bar"><div className="progress-fill" style={{width:`${progress}%`}}/></div>
+            </div>
+            <div
+              style={{
+                minWidth: 90,
+                textAlign: 'center',
+                fontWeight: 700,
+                color: remainingSeconds <= 30 ? 'var(--danger)' : 'var(--orange)',
+              }}
+            >
+              ⏱ {formatTime(remainingSeconds)}
+            </div>
+            <Button variant="ghost" size="sm" onClick={()=>navigate(-1)}>✕ Thoát</Button>
+          </div>
+          <div className="question-card">
+            <div className="q-type-pill">✦ {TYPE_LABELS[q.type]}</div>
+            <div className="q-text">{q.text || q.question}</div>
+            {q.imageUrl && (
+              <div style={{ marginTop: 14 }}>
+                <img
+                  src={q.imageUrl}
+                  alt="question"
+                  onClick={() => openPreview(q.imageUrl)}
+                  style={{ width: '100%', maxHeight: 280, objectFit: 'contain', border: '1px solid var(--border)', borderRadius: 10, cursor: 'zoom-in' }}
+                />
+              </div>
+            )}
+            {q.type==='single'&&<SingleChoice q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
+            {q.type==='multiple'&&<MultiChoice q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
+            {q.type==='truefalse'&&<TrueFalse q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
+            {q.type==='fill'&&<FillBlank q={q} answer={answers[qIdx]||''} onAnswer={handleAnswer} submitted={submitted}/>}
+            {q.type==='drag'&&<DragDrop key={qIdx} q={q} onAnswer={handleAnswer} submitted={submitted}/>}
+            {submitted&&isCorrect!==null&&(
+              <div className={`quiz-feedback${isCorrect?' ok':' fail'}`}>
+                {q.type === 'truefalse'
+                  ? `Bạn đúng ${currentResult?.earnedUnits || 0}/${currentResult?.totalUnits || 0} ý nhỏ.`
+                  : isCorrect
+                    ? '✓ Chính xác! Câu trả lời của bạn đúng.'
+                    : '✗ Chưa đúng. Xem đáp án được đánh dấu màu xanh.'}
+              </div>
+            )}
+            <div className="quiz-nav">
+              <Button variant="ghost" onClick={()=>{if(submitted)setSubmitted(false);if(qIdx>0)setQIdx(i=>i-1);}} disabled={qIdx===0}>← Câu trước</Button>
+              <div style={{display:'flex',gap:8}}>
+                {!submitted&&q.type!=='drag'&&<Button variant="ghost" onClick={()=>setSubmitted(true)} disabled={!canCheckCurrent}>Kiểm tra</Button>}
+                {qIdx<questions.length-1?<Button variant="primary" onClick={()=>{if(submitted)setSubmitted(false);setQIdx(i=>i+1);}}>Câu tiếp →</Button>:<Button variant="secondary" onClick={()=>setShowResult(true)}>Nộp bài ✓</Button>}
+              </div>
+            </div>
+          </div>
+          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:14,justifyContent:'center'}}>
+            {questions.map((_,i)=>(
+              <button key={i} onClick={()=>{setQIdx(i);setSubmitted(false);}}
+                style={{width:30,height:30,borderRadius:6,border:`1.5px solid ${i===qIdx?'var(--blue)':answers[i]!==undefined?'var(--success)':'var(--border)'}`,background:i===qIdx?'var(--blue-light)':answers[i]!==undefined?'var(--success-bg)':'var(--surface)',color:i===qIdx?'var(--blue)':answers[i]!==undefined?'var(--success)':'var(--muted)',fontWeight:600,fontSize:'.78rem',cursor:'pointer',transition:'all .15s ease'}}>
+                {i+1}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {previewImage && (
+        <div
+          onClick={closePreview}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.75)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '95vw', maxHeight: '90vh' }} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={closePreview}
+              style={{
+                position: 'absolute',
+                top: -10,
+                right: -10,
+                width: 34,
+                height: 34,
+                borderRadius: '50%',
+                border: 'none',
+                background: '#fff',
+                color: '#111',
+                cursor: 'pointer',
+                fontWeight: 700,
+              }}
+            >
+              X
+            </button>
+            <img
+              src={previewImage}
+              alt="preview"
+              style={{ maxWidth: '95vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: 10, background: '#fff' }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

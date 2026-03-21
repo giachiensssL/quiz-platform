@@ -1,0 +1,78 @@
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { authAPI } from '../api/api';
+const AuthContext = createContext(null);
+const ADMIN_CREDS = { username: 'Janscient125', password: 'Janscient2005' };
+const USERS_STORAGE_KEY = 'qm_mock_users';
+const REFRESH_TOKEN_KEY = 'qm_refresh_token';
+const INIT_USERS = [
+  { id: 1, username: 'sinhvien01', password: '123456', role: 'user', name: 'Nguyễn Văn A', blocked: false, email: 'a@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
+  { id: 2, username: 'sinhvien02', password: '123456', role: 'user', name: 'Trần Thị B', blocked: false, email: 'b@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
+];
+
+const normalizeUser = (user) => ({
+  ...user,
+  blocked: Boolean(user?.blocked),
+  attempts: Array.isArray(user?.attempts) ? user.attempts : [],
+  totalScore: Number(user?.totalScore || 0),
+  quizzesTaken: Number(user?.quizzesTaken || 0),
+});
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(() => { try { return JSON.parse(localStorage.getItem('qm_user')) || null; } catch { return null; } });
+  const [mockUsers, setMockUsers] = useState(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || 'null');
+      if (Array.isArray(raw) && raw.length) return raw.map(normalizeUser);
+    } catch {
+      // fallback to seed users
+    }
+    return INIT_USERS.map(normalizeUser);
+  });
+
+  useEffect(() => {
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(mockUsers));
+  }, [mockUsers]);
+
+  const login = useCallback(async (username, password) => {
+    try {
+      const response = await authAPI.login({ username, password });
+      const payload = response?.data || {};
+      const backendUser = payload?.user || {};
+      const u = {
+        id: backendUser.id,
+        username: backendUser.username || username,
+        role: payload.role || backendUser.role || 'user',
+        name: backendUser.username || username,
+      };
+      setUser(u);
+      localStorage.setItem('qm_user', JSON.stringify(u));
+      localStorage.setItem('qm_token', payload.token || '');
+      if (payload.refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
+      return { success: true, role: u.role };
+    } catch {
+      // Fallback to local mock auth when backend is unavailable.
+    }
+
+    if (username === ADMIN_CREDS.username && password === ADMIN_CREDS.password) {
+      const u = { username, role: 'admin', name: 'Admin' };
+      setUser(u); localStorage.setItem('qm_user', JSON.stringify(u)); localStorage.setItem('qm_token', 'admin-token');
+      return { success: true, role: 'admin' };
+    }
+    const found = mockUsers.find(u => u.username === username && u.password === password);
+    if (found) {
+      if (found.blocked) return { success: false, error: 'Tài khoản bị khoá. Liên hệ admin.' };
+      const u = { id: found.id, username: found.username, role: 'user', name: found.name };
+      setUser(u); localStorage.setItem('qm_user', JSON.stringify(u)); localStorage.setItem('qm_token', `token-${found.id}`);
+      return { success: true, role: 'user' };
+    }
+    return { success: false, error: 'Tên đăng nhập hoặc mật khẩu không đúng.' };
+  }, [mockUsers]);
+  const logout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('qm_user');
+    localStorage.removeItem('qm_token');
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+  }, []);
+  return <AuthContext.Provider value={{ user, login, logout, mockUsers, setMockUsers }}>{children}</AuthContext.Provider>;
+}
+export const useAuth = () => useContext(AuthContext);
