@@ -53,7 +53,6 @@ export default function LessonPage() {
                   <div style={{width:36,height:36,borderRadius:'50%',background:'var(--blue-light)',color:'var(--blue)',fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'.85rem'}}>{i+1}</div>
                   <div style={{flex:1, opacity: l.locked ? 0.6 : 1}}>
                     <div style={{fontWeight:600,fontSize:'.95rem'}}>{l.name}</div>
-                    <div style={{fontSize:'.78rem',color:'var(--muted)',marginTop:2}}>{l.questions} câu hỏi</div>
                   </div>
                   <Badge color={l.locked ? 'red' : 'green'}>{l.locked ? 'Đã khoá 🔒' : 'Bắt đầu →'}</Badge>
                 </div>

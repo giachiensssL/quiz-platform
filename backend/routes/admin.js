@@ -368,7 +368,8 @@ router.post(
 router.put(
   "/faculties/:id",
   asyncHandler(async (req, res) => {
-    const updated = await Faculty.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Faculty.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy khoa" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -407,7 +408,8 @@ router.post(
 router.put(
   "/years/:id",
   asyncHandler(async (req, res) => {
-    const updated = await Year.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Year.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy năm học" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -446,7 +448,8 @@ router.post(
 router.put(
   "/semesters/:id",
   asyncHandler(async (req, res) => {
-    const updated = await Semester.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Semester.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy học kỳ" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -489,13 +492,10 @@ router.put(
     const name = String(req.body?.name || "").trim();
     const updated = await Subject.findByIdAndUpdate(
       req.params.id,
-      {
-        ...req.body,
-        name,
-        icon: inferSubjectIcon(name),
-      },
-      { new: true }
+      { ...req.body, name, icon: inferSubjectIcon(name) },
+      { new: true, runValidators: false }
     );
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy môn học" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -531,7 +531,8 @@ router.post(
 router.put(
   "/lessons/:id",
   asyncHandler(async (req, res) => {
-    const updated = await Lesson.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Lesson.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy bài học" });
     notifyCatalogUpdated();
     res.json(updated);
   })

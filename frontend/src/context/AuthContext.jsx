@@ -4,6 +4,7 @@ const AuthContext = createContext(null);
 const ADMIN_CREDS = { username: 'Janscient125', password: 'Janscient2005' };
 const USERS_STORAGE_KEY = 'qm_mock_users';
 const REFRESH_TOKEN_KEY = 'qm_refresh_token';
+const ENABLE_LOCAL_AUTH_FALLBACK = String(process.env.REACT_APP_ENABLE_LOCAL_AUTH || '').toLowerCase() === 'true';
 const INIT_USERS = [
   { id: 1, username: 'sinhvien01', password: '123456', role: 'user', name: 'Nguyễn Văn A', blocked: false, email: 'a@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
   { id: 2, username: 'sinhvien02', password: '123456', role: 'user', name: 'Trần Thị B', blocked: false, email: 'b@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
@@ -33,6 +34,18 @@ export function AuthProvider({ children }) {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(mockUsers));
   }, [mockUsers]);
 
+  useEffect(() => {
+    if (ENABLE_LOCAL_AUTH_FALLBACK) return;
+    const token = localStorage.getItem('qm_token') || '';
+    const isLocalToken = token === 'admin-token' || token.startsWith('token-');
+    if (!isLocalToken) return;
+
+    setUser(null);
+    localStorage.removeItem('qm_user');
+    localStorage.removeItem('qm_token');
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+  }, []);
+
   const login = useCallback(async (username, password) => {
     try {
       const response = await authAPI.login({ username, password });
@@ -50,7 +63,11 @@ export function AuthProvider({ children }) {
       if (payload.refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
       return { success: true, role: u.role };
     } catch {
-      // Fallback to local mock auth when backend is unavailable.
+      // Only allow local fallback when explicitly enabled.
+    }
+
+    if (!ENABLE_LOCAL_AUTH_FALLBACK) {
+      return { success: false, error: 'Không thể kết nối máy chủ. Vui lòng thử lại sau.' };
     }
 
     if (username === ADMIN_CREDS.username && password === ADMIN_CREDS.password) {

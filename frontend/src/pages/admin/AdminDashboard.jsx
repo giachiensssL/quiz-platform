@@ -512,9 +512,7 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
   );
 }
 
-function LessonsPanel({ data, lessonsCrud }) {
-  const [subjectId, setSubjectId] = useState('');
-  const [onlySelectedSubject, setOnlySelectedSubject] = useState(true);
+function LessonsPanel({ data, lessonsCrud, subjectId, setSubjectId, onlySelectedSubject, setOnlySelectedSubject }) {
 
   useEffect(() => {
     if (!subjectId && data.subjects?.length) setSubjectId(String(data.subjects[0].id));
@@ -548,6 +546,11 @@ function LessonsPanel({ data, lessonsCrud }) {
     await lessonsCrud.add({ ...form, subjectId: resolvedSubjectId });
   };
 
+  const handleUpdateLesson = async (id, form) => {
+    const resolvedSubjectId = form.subjectId || subjectId || '';
+    await lessonsCrud.update(id, { ...form, subjectId: resolvedSubjectId });
+  };
+
   return (
     <>
       <div style={{ marginBottom: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, maxWidth: 680 }}>
@@ -574,7 +577,7 @@ function LessonsPanel({ data, lessonsCrud }) {
         fields={fields}
         createDefaults={createDefaults}
         onAdd={handleAddLesson}
-        onUpdate={lessonsCrud.update}
+        onUpdate={handleUpdateLesson}
         onRemove={lessonsCrud.remove}
         onToggleLock={(id, locked) => lessonsCrud.update(id, { locked })}
         showLockColumn
@@ -590,6 +593,10 @@ function YearsPanel({ data, yearsCrud }) {
     ? (data.years || []).filter((year) => String(year.facultyId || '') === String(facultyId))
     : (data.years || []);
 
+  const facultyOptions = facultyId
+    ? (data.faculties || []).filter((f) => String(f.id) === String(facultyId))
+    : (data.faculties || []);
+
   const fields = [
     { key: 'name', label: 'Tên năm học', required: true, placeholder: 'Năm 1' },
     {
@@ -597,10 +604,24 @@ function YearsPanel({ data, yearsCrud }) {
       label: 'Khoa',
       required: true,
       type: 'select',
-      options: (data.faculties || []).map((f) => ({ value: f.id, label: f.name })),
+      options: facultyOptions.map((f) => ({ value: f.id, label: f.name })),
       render: (item) => (data.faculties || []).find((f) => String(f.id) === String(item.facultyId || ''))?.name || item.facultyId,
     },
   ];
+
+  const createDefaults = () => ({
+    facultyId: facultyId || '',
+  });
+
+  const handleAddYear = async (form) => {
+    const resolvedFacultyId = form.facultyId || facultyId || '';
+    await yearsCrud.add({ ...form, facultyId: resolvedFacultyId });
+  };
+
+  const handleUpdateYear = async (id, form) => {
+    const resolvedFacultyId = form.facultyId || facultyId || '';
+    await yearsCrud.update(id, { ...form, facultyId: resolvedFacultyId });
+  };
 
   return (
     <>
@@ -617,8 +638,9 @@ function YearsPanel({ data, yearsCrud }) {
         icon="📅"
         items={filteredYears}
         fields={fields}
-        onAdd={yearsCrud.add}
-        onUpdate={yearsCrud.update}
+        createDefaults={createDefaults}
+        onAdd={handleAddYear}
+        onUpdate={handleUpdateYear}
         onRemove={yearsCrud.remove}
         onToggleLock={(id, locked) => yearsCrud.update(id, { locked })}
         showLockColumn
@@ -672,6 +694,11 @@ function SemestersPanel({ data, semestersCrud }) {
     await semestersCrud.add({ ...form, yearId: resolvedYearId });
   };
 
+  const handleUpdateSemester = async (id, form) => {
+    const resolvedYearId = form.yearId || yearId || (yearOptions.length === 1 ? String(yearOptions[0].id) : '');
+    await semestersCrud.update(id, { ...form, yearId: resolvedYearId });
+  };
+
   return (
     <>
       <div style={{ marginBottom: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, maxWidth: 640 }}>
@@ -695,7 +722,7 @@ function SemestersPanel({ data, semestersCrud }) {
         fields={fields}
         createDefaults={createDefaults}
         onAdd={handleAddSemester}
-        onUpdate={semestersCrud.update}
+        onUpdate={handleUpdateSemester}
         onRemove={semestersCrud.remove}
       />
     </>
@@ -726,6 +753,13 @@ function SubjectsPanel({ data, subjectsCrud }) {
     return String(semester.yearId || '') === String(yearId);
   });
 
+  const hasId = (list, id) => (list || []).some((item) => String(item.id) === String(id || ''));
+  const pickId = (preferred, fallback, list) => {
+    if (preferred && hasId(list, preferred)) return String(preferred);
+    if (fallback && hasId(list, fallback)) return String(fallback);
+    return list?.length ? String(list[0].id) : '';
+  };
+
   useEffect(() => {
     if (!semesterId) return;
     const exists = semesterOptions.some((semester) => String(semester.id) === String(semesterId));
@@ -739,6 +773,10 @@ function SubjectsPanel({ data, subjectsCrud }) {
     return true;
   });
 
+  const facultyOptions = facultyId
+    ? (data.faculties || []).filter((faculty) => String(faculty.id) === String(facultyId))
+    : (data.faculties || []);
+
   const fields = [
     { key: 'name', label: 'Tên môn học', required: true, placeholder: 'Cấu trúc dữ liệu' },
     {
@@ -746,7 +784,7 @@ function SubjectsPanel({ data, subjectsCrud }) {
       label: 'Khoa',
       required: true,
       type: 'select',
-      options: (data.faculties || []).map((f) => ({ value: f.id, label: f.name })),
+      options: facultyOptions.map((f) => ({ value: f.id, label: f.name })),
       render: (item) => (data.faculties || []).find((f) => String(f.id) === String(item.facultyId || ''))?.name || item.facultyId,
     },
     {
@@ -786,13 +824,47 @@ function SubjectsPanel({ data, subjectsCrud }) {
   });
 
   const handleAddSubject = async (form) => {
+    const resolvedFacultyId = pickId(form.facultyId, facultyId, data.faculties || []);
+    const resolvedYearOptions = (data.years || []).filter((year) => {
+      if (!resolvedFacultyId) return true;
+      return String(year.facultyId || '') === String(resolvedFacultyId);
+    });
+    const resolvedYearId = pickId(form.yearId, yearId, resolvedYearOptions);
+    const resolvedSemesterOptions = (data.semesters || []).filter((semester) => {
+      if (!resolvedYearId) return true;
+      return String(semester.yearId || '') === String(resolvedYearId);
+    });
+    const resolvedSemesterId = pickId(form.semesterId, semesterId, resolvedSemesterOptions);
+
     const resolved = {
       ...form,
-      facultyId: form.facultyId || facultyId || '',
-      yearId: form.yearId || yearId || '',
-      semesterId: form.semesterId || semesterId || '',
+      facultyId: resolvedFacultyId,
+      yearId: resolvedYearId,
+      semesterId: resolvedSemesterId,
     };
     await subjectsCrud.add(resolved);
+  };
+
+  const handleUpdateSubject = async (id, form) => {
+    const resolvedFacultyId = pickId(form.facultyId, facultyId, data.faculties || []);
+    const resolvedYearOptions = (data.years || []).filter((year) => {
+      if (!resolvedFacultyId) return true;
+      return String(year.facultyId || '') === String(resolvedFacultyId);
+    });
+    const resolvedYearId = pickId(form.yearId, yearId, resolvedYearOptions);
+    const resolvedSemesterOptions = (data.semesters || []).filter((semester) => {
+      if (!resolvedYearId) return true;
+      return String(semester.yearId || '') === String(resolvedYearId);
+    });
+    const resolvedSemesterId = pickId(form.semesterId, semesterId, resolvedSemesterOptions);
+
+    const resolved = {
+      ...form,
+      facultyId: resolvedFacultyId,
+      yearId: resolvedYearId,
+      semesterId: resolvedSemesterId,
+    };
+    await subjectsCrud.update(id, resolved);
   };
 
   return (
@@ -825,7 +897,7 @@ function SubjectsPanel({ data, subjectsCrud }) {
         tableFields={fields}
         createDefaults={createDefaults}
         onAdd={handleAddSubject}
-        onUpdate={subjectsCrud.update}
+        onUpdate={handleUpdateSubject}
         onRemove={subjectsCrud.remove}
         onToggleLock={(id, locked) => subjectsCrud.update(id, { locked })}
         showLockColumn
@@ -858,7 +930,7 @@ function SubjectStatsBoard({ data }) {
 }
 
 // ── QUESTIONS PANEL ────────────────────────────────────────────
-function QuestionsPanel({ data, questionsCrud }) {
+function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
   const makeDefaultByType = (type) => {
     if (type === 'truefalse') {
       return [
@@ -879,9 +951,8 @@ function QuestionsPanel({ data, questionsCrud }) {
   const [importFileName, setImportFileName] = useState('');
   const [questionImageFileName, setQuestionImageFileName] = useState('');
   const [answerImageFileNames, setAnswerImageFileNames] = useState({});
-  const [filterSubjectId, setFilterSubjectId] = useState('');
-  const [filterLessonId, setFilterLessonId] = useState('');
-  const [onlySelectedSubject, setOnlySelectedSubject] = useState(true);
+  const [imagePreview, setImagePreview] = useState({ url: '', title: 'Xem hình ảnh câu hỏi' });
+  // filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject → lifted to AdminDashboard
   const [form, setForm] = useState({
     lessonId: '',
     type: 'single',
@@ -1170,7 +1241,8 @@ function QuestionsPanel({ data, questionsCrud }) {
   };
 
   const saveQuestion = async () => {
-    if (!form.lessonId || !form.text.trim()) {
+    const resolvedLessonId = form.lessonId || filterLessonId || (lessonOptions.length === 1 ? String(lessonOptions[0].id) : '');
+    if (!resolvedLessonId || !form.text.trim()) {
       setToast('Vui lòng nhập đầy đủ bài học và nội dung câu hỏi.');
       return;
     }
@@ -1219,7 +1291,7 @@ function QuestionsPanel({ data, questionsCrud }) {
       }
 
       const payload = {
-        lessonId: form.lessonId,
+        lessonId: resolvedLessonId,
         type: form.type,
         text: form.text.trim(),
         imageUrl: form.imageUrl || '',
@@ -1280,7 +1352,7 @@ function QuestionsPanel({ data, questionsCrud }) {
     }
 
     const payload = {
-      lessonId: form.lessonId,
+      lessonId: resolvedLessonId,
       type: form.type,
       text: form.text.trim(),
       imageUrl: form.imageUrl || '',
@@ -1316,6 +1388,21 @@ function QuestionsPanel({ data, questionsCrud }) {
           setConfirm(null);
           setToast('Đã xoá!');
         }} onCancel={() => setConfirm(null)} />
+
+      <Modal
+        open={Boolean(imagePreview.url)}
+        title={imagePreview.title || 'Xem hình ảnh câu hỏi'}
+        onClose={() => setImagePreview({ url: '', title: 'Xem hình ảnh câu hỏi' })}
+        footer={<Button variant="ghost" onClick={() => setImagePreview({ url: '', title: 'Xem hình ảnh câu hỏi' })}>Đóng</Button>}
+      >
+        {imagePreview.url ? (
+          <img
+            src={imagePreview.url}
+            alt="question-full-preview"
+            style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: 10, border: '1px solid var(--border)' }}
+          />
+        ) : null}
+      </Modal>
 
       <Modal
         open={importModal}
@@ -1589,7 +1676,17 @@ function QuestionsPanel({ data, questionsCrud }) {
                   <td style={{ color: 'var(--muted)' }}>{i + 1}</td>
                   <td style={{ maxWidth: 260 }}><div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{q.text || q.question}</div></td>
                   <td><Badge color={q.type === 'single' ? 'blue' : q.type === 'multiple' ? 'orange' : 'gray'}>{q.type}</Badge></td>
-                  <td>{q.imageUrl ? '🖼️ Có' : '–'}</td>
+                  <td>
+                    {q.imageUrl ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setImagePreview({ url: q.imageUrl, title: `Ảnh câu hỏi #${i + 1}` })}
+                      >
+                        🖼️ Xem ảnh
+                      </Button>
+                    ) : '–'}
+                  </td>
                   <td style={{ fontSize: '.8rem', color: 'var(--muted)' }}>{data.lessons.find(l => l.id === q.lessonId)?.name || '–'}</td>
                   <td><div className="td-actions">
                     <Button variant="ghost" size="sm" onClick={() => openEdit(q)}>Sửa</Button>
@@ -1624,6 +1721,13 @@ export default function AdminDashboard() {
   const { faculties, years, semesters, subjects, lessons, questions } = useData();
   const { user } = useAuth();
 
+  // ── Filter states lifted here so they survive data re-syncs ──
+  const [lessonsSubjectId, setLessonsSubjectId] = useState('');
+  const [lessonsOnlySelected, setLessonsOnlySelected] = useState(true);
+  const [qFilterSubjectId, setQFilterSubjectId] = useState('');
+  const [qFilterLessonId, setQFilterLessonId] = useState('');
+  const [qOnlySelected, setQOnlySelected] = useState(true);
+
   useEffect(() => {
     syncFromServer?.().catch(() => {});
   }, [syncFromServer]);
@@ -1654,8 +1758,13 @@ export default function AdminDashboard() {
       case 'years': return <YearsPanel data={data} yearsCrud={years} />;
       case 'semesters': return <SemestersPanel data={data} semestersCrud={semesters} />;
       case 'subjects': return <SubjectsPanel data={data} subjectsCrud={subjects} />;
-      case 'lessons': return <LessonsPanel data={data} lessonsCrud={lessons} />;
-      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions} />;
+      case 'lessons': return <LessonsPanel data={data} lessonsCrud={lessons}
+        subjectId={lessonsSubjectId} setSubjectId={setLessonsSubjectId}
+        onlySelectedSubject={lessonsOnlySelected} setOnlySelectedSubject={setLessonsOnlySelected} />;
+      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions}
+        filterSubjectId={qFilterSubjectId} setFilterSubjectId={setQFilterSubjectId}
+        filterLessonId={qFilterLessonId} setFilterLessonId={setQFilterLessonId}
+        onlySelectedSubject={qOnlySelected} setOnlySelectedSubject={setQOnlySelected} />;
       default: return null;
     }
   };

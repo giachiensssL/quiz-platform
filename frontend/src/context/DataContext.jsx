@@ -1,11 +1,12 @@
 // src/context/DataContext.jsx
 // Mock data - thay bằng API calls khi có backend
-import { createContext, useCallback, useContext, useState, useEffect } from 'react';
+import { createContext, useCallback, useContext, useState, useEffect, useRef } from 'react';
 import { KTMT_SEED } from '../data/ktmtSeed';
 import { API_BASE_URL, adminDataAPI, facultiesAPI, lessonsAPI, questionsAPI, semestersAPI, subjectsAPI, yearsAPI } from '../api/api';
 
 const DataContext = createContext(null);
 const DATA_STORAGE_KEY = 'qm_data_store';
+const ENABLE_LOCAL_DATA_FALLBACK = String(process.env.REACT_APP_ENABLE_LOCAL_DATA_FALLBACK || '').toLowerCase() === 'true';
 
 const normalizeType = (type) => {
   if (type === 'true_false') return 'truefalse';
@@ -87,8 +88,9 @@ const ensureKtmtSeed = (source) => {
   };
 };
 
-const normalizeData = (source) => {
-  const seeded = ensureKtmtSeed(source);
+const normalizeData = (source, options = {}) => {
+  const includeKtmtSeed = options.includeKtmtSeed !== false;
+  const seeded = includeKtmtSeed ? ensureKtmtSeed(source) : (source && typeof source === 'object' ? source : {});
   return {
     ...seeded,
     faculties: (Array.isArray(seeded?.faculties) ? seeded.faculties : []).map((item) => ({ ...item, locked: Boolean(item?.locked) })),
@@ -185,13 +187,21 @@ const INIT = {
 export function DataProvider({ children }) {
   const [realtimeStatus, setRealtimeStatus] = useState('disconnected');
   const [data, setData] = useState(() => {
+    const hasServerSession = Boolean(localStorage.getItem('qm_token'));
     try {
       const raw = JSON.parse(localStorage.getItem(DATA_STORAGE_KEY) || 'null');
-      if (raw && typeof raw === 'object') return normalizeData(raw);
+      if (raw && typeof raw === 'object') {
+        return normalizeData(raw, { includeKtmtSeed: !hasServerSession });
+      }
     } catch {
       // fallback to INIT
     }
-    return normalizeData(INIT);
+
+    if (hasServerSession) {
+      return normalizeData({ faculties: [], years: [], semesters: [], subjects: [], lessons: [], questions: [], leaderboard: [] }, { includeKtmtSeed: false });
+    }
+
+    return normalizeData(INIT, { includeKtmtSeed: true });
   });
 
   useEffect(() => {
@@ -199,47 +209,21 @@ export function DataProvider({ children }) {
   }, [data]);
 
   const syncFromServer = useCallback(async () => {
-    const token = localStorage.getItem('qm_token');
-    if (!token) return false;
+    const [facRes, yearRes, semRes, subRes] = await Promise.all([
+      facultiesAPI.list(),
+      yearsAPI.list(),
+      semestersAPI.list(),
+      subjectsAPI.list(),
+    ]);
 
-    let facRes;
-    let yearRes;
-    let semRes;
-    let subRes;
-    let lesRes;
-    let quesRes;
+    const subjectItems = Array.isArray(subRes?.data) ? subRes.data : [];
+    const lessonResponses = await Promise.all(subjectItems.map((subject) => lessonsAPI.listBySubject(subject._id || subject.id)));
+    const lessonItems = lessonResponses.flatMap((res) => (Array.isArray(res?.data) ? res.data : []));
+    const questionAllRes = await questionsAPI.listAll();
+    const questionItems = Array.isArray(questionAllRes?.data) ? questionAllRes.data : [];
 
-    try {
-      [facRes, yearRes, semRes, subRes, lesRes, quesRes] = await Promise.all([
-        adminDataAPI.listFaculties(),
-        adminDataAPI.listYears(),
-        adminDataAPI.listSemesters(),
-        adminDataAPI.listSubjects(),
-        adminDataAPI.listLessons(),
-        adminDataAPI.listQuestions(),
-      ]);
-    } catch {
-      // Fallback for normal user roles without admin permissions.
-      const [facPublic, yearPublic, semPublic, subPublic] = await Promise.all([
-        facultiesAPI.list(),
-        yearsAPI.list(),
-        semestersAPI.list(),
-        subjectsAPI.list(),
-      ]);
-
-      const subjectItems = Array.isArray(subPublic?.data) ? subPublic.data : [];
-      const lessonResponses = await Promise.all(subjectItems.map((subject) => lessonsAPI.listBySubject(subject._id || subject.id)));
-      const lessonItems = lessonResponses.flatMap((res) => (Array.isArray(res?.data) ? res.data : []));
-      const questionResponses = await Promise.all(lessonItems.map((lesson) => questionsAPI.listByLesson(lesson._id || lesson.id)));
-      const questionItems = questionResponses.flatMap((res) => (Array.isArray(res?.data) ? res.data : []));
-
-      facRes = facPublic;
-      yearRes = yearPublic;
-      semRes = semPublic;
-      subRes = subPublic;
-      lesRes = { data: lessonItems };
-      quesRes = { data: questionItems };
-    }
+    const lesRes = { data: lessonItems };
+    const quesRes = { data: questionItems };
 
     const faculties = (facRes.data || []).map((f) => ({
       id: String(f._id),
@@ -301,37 +285,47 @@ export function DataProvider({ children }) {
       dropTargets: Array.isArray(q.dropTargets) ? q.dropTargets : [],
     }));
 
-    setData((prev) => normalizeData({
-      ...prev,
+    setData(() => normalizeData({
       faculties,
       years,
       semesters,
       subjects,
       lessons,
       questions,
-    }));
+    }, { includeKtmtSeed: false }));
     return true;
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('qm_token');
-    if (!token) return undefined;
+  const syncDebounceRef = useRef(null);
 
-    syncFromServer().catch(() => {});
-    const timer = window.setInterval(() => {
+  // Debounced sync: collapses rapid consecutive calls (e.g. multiple WS events) into one
+  const debouncedSync = useCallback(() => {
+    if (syncDebounceRef.current) clearTimeout(syncDebounceRef.current);
+    syncDebounceRef.current = setTimeout(() => {
       syncFromServer().catch(() => {});
-    }, 120000);
-
-    return () => window.clearInterval(timer);
+    }, 300);
   }, [syncFromServer]);
 
   useEffect(() => {
-    const token = localStorage.getItem('qm_token');
-    if (!token) {
-      setRealtimeStatus('disconnected');
-      return undefined;
-    }
+    syncFromServer().catch(() => {});
+    const timer = window.setInterval(debouncedSync, 30000); // reduced from 10s to 30s
 
+    const handleFocus = () => debouncedSync();
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') debouncedSync();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [syncFromServer, debouncedSync]);
+
+  useEffect(() => {
     const wsBase = API_BASE_URL.replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
     const wsUrl = `${wsBase}/ws`;
 
@@ -350,7 +344,7 @@ export function DataProvider({ children }) {
         try {
           const payload = JSON.parse(event.data || '{}');
           if (payload?.event === 'catalog-updated') {
-            syncFromServer().catch(() => {});
+            debouncedSync();
           }
         } catch {
           // Ignore malformed websocket payloads.
@@ -381,14 +375,14 @@ export function DataProvider({ children }) {
       }
       setRealtimeStatus('disconnected');
     };
-  }, [syncFromServer]);
+  }, [syncFromServer, debouncedSync]);
 
   const crud = (key) => ({
     list: () => data[key],
     add: async (item) => {
       let nextItem = { ...item, id: item?.id || Date.now(), locked: Boolean(item?.locked) };
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token && token !== 'admin-token');
+      const shouldUseServer = Boolean(token);
       let serverSynced = false;
 
       try {
@@ -464,7 +458,7 @@ export function DataProvider({ children }) {
           serverSynced = true;
         }
       } catch (error) {
-        if (shouldUseServer) throw error;
+        if (shouldUseServer || !ENABLE_LOCAL_DATA_FALLBACK) throw error;
         // Keep local fallback when backend API is unavailable or data shape is incompatible.
       }
 
@@ -478,7 +472,7 @@ export function DataProvider({ children }) {
     },
     update: async (id, changes) => {
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token && token !== 'admin-token');
+      const shouldUseServer = Boolean(token);
       let serverSynced = false;
       try {
         if (key === 'faculties') {
@@ -486,37 +480,48 @@ export function DataProvider({ children }) {
           serverSynced = true;
         }
         if (key === 'years') {
+          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
           const value = Number(changes.value || parseNumberFromLabel(changes.name, 1));
+          const facultyId = changes.facultyId || currentItem?.facultyId || undefined;
           await adminDataAPI.updateYear(id, {
             value,
             label: changes.name || `Năm ${value}`,
-            faculty: changes.facultyId || undefined,
+            faculty: facultyId || undefined,
           });
           serverSynced = true;
         }
         if (key === 'semesters') {
+          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
           const value = Number(changes.value || parseNumberFromLabel(changes.name, 1));
+          const yearId = changes.yearId || currentItem?.yearId || undefined;
           await adminDataAPI.updateSemester(id, {
             value,
             label: changes.name || `Học kỳ ${value}`,
-            year: changes.yearId || undefined,
+            year: yearId || undefined,
           });
           serverSynced = true;
         }
         if (key === 'subjects') {
+          // Lấy item hiện tại từ data để dùng làm fallback nếu user không chọn lại dropdown
+          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
+          const facultyId = changes.facultyId || currentItem?.facultyId || undefined;
+          const yearId = changes.yearId || currentItem?.yearId || undefined;
+          const semesterId = changes.semesterId || currentItem?.semesterId || undefined;
           await adminDataAPI.updateSubject(id, {
             name: changes.name,
             description: changes.desc || '',
-            faculty: changes.facultyId,
-            year: changes.yearId,
-            semester: changes.semesterId,
+            faculty: facultyId || undefined,
+            year: yearId || undefined,
+            semester: semesterId || undefined,
             code: changes.code || '',
           });
           serverSynced = true;
         }
         if (key === 'lessons') {
+          const currentItem = data[key]?.find((x) => String(x.id) === String(id));
+          const subjectId = changes.subjectId || currentItem?.subjectId || undefined;
           await adminDataAPI.updateLesson(id, {
-            subject: changes.subjectId,
+            subject: subjectId || undefined,
             title: normalizeLessonTitle(changes.name, changes.order),
             description: changes.desc || '',
             order: Number(changes.order || 0),
@@ -539,7 +544,7 @@ export function DataProvider({ children }) {
           serverSynced = true;
         }
       } catch (error) {
-        if (shouldUseServer) throw error;
+        if (shouldUseServer || !ENABLE_LOCAL_DATA_FALLBACK) throw error;
         // Keep local update fallback.
       }
 
@@ -564,7 +569,7 @@ export function DataProvider({ children }) {
     },
     remove: async (id) => {
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token && token !== 'admin-token');
+      const shouldUseServer = Boolean(token);
       let serverSynced = false;
       try {
         if (key === 'faculties') { await adminDataAPI.removeFaculty(id); serverSynced = true; }
@@ -574,7 +579,7 @@ export function DataProvider({ children }) {
         if (key === 'lessons') { await adminDataAPI.removeLesson(id); serverSynced = true; }
         if (key === 'questions') { await adminDataAPI.removeQuestion(id); serverSynced = true; }
       } catch (error) {
-        if (shouldUseServer) throw error;
+        if (shouldUseServer || !ENABLE_LOCAL_DATA_FALLBACK) throw error;
         // Keep local delete fallback.
       }
 

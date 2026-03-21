@@ -25,8 +25,32 @@ const analyticsRoutes = require("./routes/analytics");
 const app = express();
 const server = http.createServer(app);
 const requestBodyLimit = process.env.REQUEST_BODY_LIMIT || "8mb";
+const allowedOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const localOriginPatterns = [
+  /^http:\/\/localhost(:\d+)?$/i,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/i,
+  /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$/i,
+  /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/i,
+  /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}(:\d+)?$/i,
+];
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  return localOriginPatterns.some((pattern) => pattern.test(origin));
+};
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
 };
 
@@ -38,8 +62,14 @@ const limiter = rateLimit({
   message: { message: "Quá nhiều yêu cầu, vui lòng thử lại sau." },
 });
 
+const enableRateLimit = String(
+  process.env.ENABLE_RATE_LIMIT || (process.env.NODE_ENV === "production" ? "true" : "false")
+).toLowerCase() === "true";
+
 app.use(helmet());
-app.use(limiter);
+if (enableRateLimit) {
+  app.use(limiter);
+}
 app.use(cors(corsOptions));
 app.use(express.json({ limit: requestBodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: requestBodyLimit }));
@@ -67,6 +97,17 @@ app.get("/api/ping", (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err);
   if (res.headersSent) return next(err);
+
+  if (err?.name === "CastError") {
+    return res.status(400).json({ message: "Dữ liệu liên kết không hợp lệ. Vui lòng chọn lại danh mục." });
+  }
+  if (err?.name === "ValidationError") {
+    return res.status(400).json({ message: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường bắt buộc." });
+  }
+  if (err?.code === 11000) {
+    return res.status(409).json({ message: "Môn học đã tồn tại trong danh mục đã chọn." });
+  }
+
   const statusCode = Number(err.statusCode || err.status || 500);
   return res.status(statusCode).json({ message: err.message || "Lỗi hệ thống" });
 });
