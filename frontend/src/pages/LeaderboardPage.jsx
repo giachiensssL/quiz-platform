@@ -141,29 +141,75 @@ export default function LeaderboardPage() {
     return Math.round((correct / total) * 100);
   };
 
+  const topThree = lb.slice(0, 3);
+  const others = lb.slice(3);
+  const bestScore = Number(lb[0]?.totalScore || 0);
+
   return (
     <div className="app-wrapper"><Navbar/>
-      <div className="page-content" style={{maxWidth:720,margin:'0 auto'}}>
+      <div className="page-content leaderboard-page">
         <div className="page-header">
           <div className="page-title">🏆 Bảng xếp hạng</div>
           <div className="page-sub">Top sinh viên toàn hệ thống</div>
         </div>
+
+        <div className="lb-hero">
+          <div className="lb-hero-stat">
+            <span className="lb-hero-label">Người tham gia</span>
+            <strong>{lb.length}</strong>
+          </div>
+          <div className="lb-hero-stat">
+            <span className="lb-hero-label">Điểm cao nhất</span>
+            <strong>{bestScore.toLocaleString()}</strong>
+          </div>
+          <div className="lb-hero-stat">
+            <span className="lb-hero-label">Chu kỳ</span>
+            <strong>{tab === 'all' ? 'Toàn bộ' : tab === 'week' ? 'Tuần này' : 'Tháng này'}</strong>
+          </div>
+        </div>
+
         <div className="tab-bar">
           {[['all','Tất cả'],['week','Tuần này'],['month','Tháng này']].map(([k,v])=>(
             <button key={k} className={`tab-btn${tab===k?' active':''}`} onClick={()=>setTab(k)}>{v}</button>
           ))}
         </div>
-        <div className="table-wrap">
+
+        <div className="table-wrap lb-list-wrap" style={{ marginBottom: 12 }}>
+          {topThree.map((r, i) => {
+            const rowKey = getRowKey(r) || `top-${i}`;
+            const isPromoted = highlightedKey && highlightedKey === rowKey;
+            const topRowClass = i === 0 ? ' lb-row-top1 lb-row-sparkle-1' : i === 1 ? ' lb-row-top2 lb-row-sparkle-2' : ' lb-row-top3 lb-row-sparkle-3';
+            return (
+              <div key={rowKey} className={`lb-row${topRowClass}${isPromoted ? ' lb-row-promoted' : ''}`}>
+                <div className={`lb-rank${i===0?' gold':i===1?' silver':' bronze'}`}>
+                  {i===0?'🥇':i===1?'🥈':'🥉'}
+                </div>
+                <div className="lb-avatar">{toDisplayName(r).split(' ').pop()?.[0] || 'U'}</div>
+                <div className="lb-name">
+                  <strong>
+                    {toDisplayName(r)}
+                    {isPromoted && <span className="lb-up-badge">↑ Tăng hạng</span>}
+                  </strong>
+                  <span className="lb-meta">{accuracy(r)}% chính xác • {r.attempts || 0} lượt làm</span>
+                </div>
+                <div className="lb-pts">{Number(r.totalScore || 0).toLocaleString()} điểm</div>
+              </div>
+            );
+          })}
+          {!loading && topThree.length === 0 && <EmptyState icon="🏆" text="Chưa có dữ liệu xếp hạng từ người dùng" />}
+        </div>
+
+        <div className="table-wrap lb-list-wrap">
           {loading && <div style={{ padding: 16, color: 'var(--muted)' }}>Đang tải bảng xếp hạng...</div>}
           {!loading && lb.length === 0 && <EmptyState icon="🏆" text="Chưa có dữ liệu xếp hạng từ người dùng" />}
-          {lb.map((r,i)=>{
-            const rowKey = getRowKey(r) || `row-${i}`;
+          {others.map((r,i)=>{
+            const absoluteRank = i + 4;
+            const rowKey = getRowKey(r) || `row-${absoluteRank}`;
             const isPromoted = highlightedKey && highlightedKey === rowKey;
-            const topRowClass = i === 0 ? ' lb-row-top1' : i === 1 ? ' lb-row-top2' : i === 2 ? ' lb-row-top3' : '';
             return (
-            <div key={rowKey} className={`lb-row${topRowClass}${isPromoted ? ' lb-row-promoted' : ''}`}>
-              <div className={`lb-rank${i===0?' gold':i===1?' silver':i===2?' bronze':''}`}>
-                {i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}
+            <div key={rowKey} className={`lb-row${isPromoted ? ' lb-row-promoted' : ''}`}>
+              <div className="lb-rank">
+                #{absoluteRank}
               </div>
               <div className="lb-avatar">{toDisplayName(r).split(' ').pop()?.[0] || 'U'}</div>
               <div className="lb-name">

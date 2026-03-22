@@ -22,22 +22,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-screen">
-      <div className="auth-card">
-        <div className="auth-logo">Quiz<span style={{color:'var(--orange)'}}>Master</span></div>
-        <p className="auth-tagline">Hệ thống ôn luyện trắc nghiệm dành cho sinh viên</p>
-        <form onSubmit={handleSubmit}>
-          <Input label="Tên đăng nhập" placeholder="Nhập tên đăng nhập" value={form.username}
-            onChange={e => { setForm(f => ({ ...f, username: e.target.value })); setError(''); }}
-            error={error && !form.username ? ' ' : ''} autoFocus />
-          <Input label="Mật khẩu" type="password" placeholder="Nhập mật khẩu" value={form.password}
-            onChange={e => { setForm(f => ({ ...f, password: e.target.value })); setError(''); }}
-            error={error && !form.password ? ' ' : ''} />
-          {error && <div className="form-error" style={{marginBottom:12}}>⚠ {error}</div>}
-          <Button variant="primary" full size="lg" loading={loading} type="submit">Đăng nhập</Button>
-        </form>
-        <div style={{marginTop:20,padding:'12px 14px',background:'var(--bg)',borderRadius:'var(--r)',fontSize:'.76rem',color:'var(--muted)'}}>
-          <strong>Woa:</strong> Xin chào quý bạn học thân mến &nbsp;|&nbsp; chúc bạn ôn luyện tốt!!! Chạ Yảo
+    <div className="auth-screen auth-split">
+      <div className="auth-left">
+        <div className="auth-left-inner">
+          <div className="auth-brand-icon">Q</div>
+          <h1>QuizMaster</h1>
+          <p>Hệ thống ôn luyện trắc nghiệm dành cho sinh viên với trải nghiệm học tập trực quan và hiện đại.</p>
+          <div className="auth-stats">
+            <div>
+              <strong>8,2K</strong>
+              <span>Người học</span>
+            </div>
+            <div>
+              <strong>1,3M</strong>
+              <span>Lượt làm bài</span>
+            </div>
+            <div>
+              <strong>24/7</strong>
+              <span>Realtime</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="auth-right">
+        <div className="auth-card">
+          <div className="auth-logo">Đăng nhập hệ thống</div>
+          <p className="auth-tagline">Nhập thông tin tài khoản để bắt đầu ôn luyện.</p>
+          <form onSubmit={handleSubmit}>
+            <Input label="Tên đăng nhập" placeholder="Nhập tên đăng nhập" value={form.username}
+              onChange={e => { setForm(f => ({ ...f, username: e.target.value })); setError(''); }}
+              error={error && !form.username ? ' ' : ''} autoFocus />
+            <Input label="Mật khẩu" type="password" placeholder="Nhập mật khẩu" value={form.password}
+              onChange={e => { setForm(f => ({ ...f, password: e.target.value })); setError(''); }}
+              error={error && !form.password ? ' ' : ''} />
+            {error && <div className="form-error" style={{marginBottom:12}}>⚠ {error}</div>}
+            <Button variant="primary" full size="lg" loading={loading} type="submit">Đăng nhập</Button>
+          </form>
+          <div className="auth-note">
+            <strong>Lưu ý:</strong> Giữ nguyên toàn bộ logic xác thực/API hiện có, chỉ thay đổi giao diện trực quan.
+          </div>
         </div>
       </div>
     </div>

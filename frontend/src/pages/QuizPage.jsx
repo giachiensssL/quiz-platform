@@ -10,6 +10,7 @@ const TIME_PER_QUESTION_SECONDS = 90;
 const COMPARE_TEXT_LIMIT = 120;
 const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
 const optionLabel = (index) => String.fromCharCode(65 + index);
+const sameId = (left, right) => String(left ?? '') === String(right ?? '');
 
 const formatTime = (seconds) => {
   const safe = Math.max(0, Number(seconds) || 0);
@@ -36,14 +37,15 @@ const shuffleWithNoImmediateRepeat = (items, storageKey) => {
 
 const evaluateQuestion = (question, userAnswer) => {
   if (question.type === 'single') {
-    const ok = isAnswerCorrect(question.answers.find((a) => a.id === userAnswer));
+    const ok = isAnswerCorrect(question.answers.find((a) => sameId(a.id, userAnswer)));
     return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
   }
 
   if (question.type === 'multiple') {
+    const selectedIds = Array.isArray(userAnswer) ? userAnswer.map((id) => String(id)) : [];
     const ok = Array.isArray(userAnswer)
-      && question.answers.filter((a) => isAnswerCorrect(a)).every((a) => userAnswer.includes(a.id))
-      && question.answers.filter((a) => !isAnswerCorrect(a)).every((a) => !userAnswer?.includes(a.id));
+      && question.answers.filter((a) => isAnswerCorrect(a)).every((a) => selectedIds.includes(String(a.id)))
+      && question.answers.filter((a) => !isAnswerCorrect(a)).every((a) => !selectedIds.includes(String(a.id)));
     return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
   }
 
@@ -96,7 +98,7 @@ const evaluateQuestion = (question, userAnswer) => {
 const buildComparison = (question, userAnswer) => {
   if (question.type === 'single') {
     const correctIndex = question.answers.findIndex((a) => isAnswerCorrect(a));
-    const userIndex = question.answers.findIndex((a) => a.id === userAnswer);
+    const userIndex = question.answers.findIndex((a) => sameId(a.id, userAnswer));
     const chosenItems = userIndex >= 0
       ? [{
           label: optionLabel(userIndex),
@@ -115,10 +117,10 @@ const buildComparison = (question, userAnswer) => {
   }
 
   if (question.type === 'multiple') {
-    const selected = Array.isArray(userAnswer) ? userAnswer : [];
+    const selected = Array.isArray(userAnswer) ? userAnswer.map((id) => String(id)) : [];
     const chosenItems = question.answers
       .map((a, idx) => ({ a, idx }))
-      .filter(({ a }) => selected.includes(a.id))
+      .filter(({ a }) => selected.includes(String(a.id)))
       .map(({ a, idx }) => ({
         label: optionLabel(idx),
         text: a.text || '(đáp án ảnh)',
@@ -262,17 +264,17 @@ function SingleChoice({ q, answer, onAnswer, submitted, onOpenImage }) {
     <div className="answers-list">
       {q.answers.map((a,i) => {
         let cls='answer-row';
-        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(answer===a.id)cls+=' wrong';cls+=' disabled';}
-        else if(answer===a.id)cls+=' selected';
+        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(sameId(answer, a.id))cls+=' wrong';cls+=' disabled';}
+        else if(sameId(answer, a.id))cls+=' selected';
         return (
-          <div key={a.id} className={cls} onClick={()=>!submitted&&onAnswer(a.id)}>
+          <div key={`${a.id}-${i}`} className={cls} onClick={()=>!submitted&&onAnswer(String(a.id))}>
             <div className="opt-key">{optionLabel(i)}</div>
             <span className="opt-text" style={{ display: 'grid', gap: 6 }}>
               {a.text}
               {a.imageUrl && <img src={a.imageUrl} alt={`option-${i + 1}`} onClick={(e) => { e.stopPropagation(); onOpenImage?.(a.imageUrl); }} style={{ maxHeight: 140, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, cursor: 'zoom-in' }} />}
             </span>
             {submitted&&isAnswerCorrect(a)&&<span className="opt-mark">✓</span>}
-            {submitted&&answer===a.id&&!isAnswerCorrect(a)&&<span className="opt-mark">✗</span>}
+            {submitted&&sameId(answer, a.id)&&!isAnswerCorrect(a)&&<span className="opt-mark">✗</span>}
           </div>
         );
       })}
@@ -281,16 +283,24 @@ function SingleChoice({ q, answer, onAnswer, submitted, onOpenImage }) {
 }
 
 function MultiChoice({ q, answer=[], onAnswer, submitted, onOpenImage }) {
-  const toggle=(id)=>{ if(submitted)return; const next=answer.includes(id)?answer.filter(x=>x!==id):[...answer,id]; onAnswer(next); };
+  const selectedIds = Array.isArray(answer) ? answer.map((id) => String(id)) : [];
+  const toggle=(id)=>{
+    if(submitted)return;
+    const idStr = String(id);
+    const next = selectedIds.includes(idStr)
+      ? selectedIds.filter((x)=>x!==idStr)
+      : [...selectedIds,idStr];
+    onAnswer(next);
+  };
   return (
     <div className="answers-list">
       <div style={{fontSize:'.75rem',color:'var(--muted)',marginBottom:6}}>Có thể chọn nhiều đáp án</div>
       {q.answers.map((a,i)=>{
         let cls='answer-row';
-        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(answer.includes(a.id))cls+=' wrong';cls+=' disabled';}
-        else if(answer.includes(a.id))cls+=' selected';
+        if(submitted){if(isAnswerCorrect(a))cls+=' correct';else if(selectedIds.includes(String(a.id)))cls+=' wrong';cls+=' disabled';}
+        else if(selectedIds.includes(String(a.id)))cls+=' selected';
         return (
-          <div key={a.id} className={cls} onClick={()=>toggle(a.id)}>
+          <div key={`${a.id}-${i}`} className={cls} onClick={()=>toggle(a.id)}>
             <div className="opt-key" style={{borderRadius:4}}>{optionLabel(i)}</div>
             <span className="opt-text" style={{ display: 'grid', gap: 6 }}>
               {a.text}
@@ -637,17 +647,7 @@ export default function QuizPage() {
           currentUser = {};
         }
 
-        navigate('/leaderboard', {
-          state: {
-            priorityRefresh: true,
-            fromQuizSubmit: true,
-            submittedAt: Date.now(),
-            highlightHint: {
-              id: currentUser._id || currentUser.id || '',
-              username: currentUser.username || '',
-            },
-          },
-        });
+        // Keep user on result screen; leaderboard is opened manually from navigation.
       } catch {
         // Keep local result view even if submit API fails.
       } finally {
@@ -656,7 +656,7 @@ export default function QuizPage() {
     };
 
     submitResult();
-  }, [answers, lessonId, navigate, questions, remainingSeconds, serverSubmitted, showResult]);
+  }, [answers, lessonId, questions, remainingSeconds, serverSubmitted, showResult]);
 
   const openPreview = (src) => {
     if (!src) return;
@@ -709,12 +709,27 @@ export default function QuizPage() {
       };
     }, { earnedUnits: 0, totalUnits: 0, fullyCorrect: 0, earnedScore: 0, totalScore: 0 });
 
+    const chosenCorrect = details
+      .filter((item) => item.fullyCorrect)
+      .map((item) => ({
+        label: `Câu ${item.index + 1}`,
+        text: (item.compare.chosenItems || []).map((x) => `${x.label}: ${x.text}`).join(' | ') || 'Không chọn',
+      }));
+
+    const chosenWrong = details
+      .filter((item) => !item.fullyCorrect)
+      .map((item) => ({
+        label: `Câu ${item.index + 1}`,
+        text: (item.compare.chosenItems || []).map((x) => `${x.label}: ${x.text}`).join(' | ') || 'Không chọn',
+      }));
+
     const pct = summary.totalScore ? Math.round((summary.earnedScore / summary.totalScore) * 100) : 0;
     return (
       <div className="app-wrapper"><Navbar/>
-        <div className="page-content">
-          <div className="result-shell">
-            <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'var(--r-xl)',padding:36,textAlign:'center'}}>
+        <div className="page-content quiz-result-view">
+          <div className="result-shell result-shell-full">
+            <div className="result-card">
+              <div className="result-top-summary">
               <div className={`score-ring${pct>=70?' pass':''}`}><span className="score-num">{pct}%</span></div>
               <div style={{fontSize:'1.3rem',fontWeight:700,marginBottom:8}}>{pct>=70?'🎉 Xuất sắc!':pct>=50?'👍 Khá tốt!':'📚 Cần ôn thêm!'}</div>
               <p style={{color:'var(--muted)',fontSize:'.875rem',marginBottom:24}}>
@@ -742,31 +757,60 @@ export default function QuizPage() {
                 <Button variant="ghost" onClick={()=>navigate(-1)}>← Về danh sách bài</Button>
                 <Button variant="primary" onClick={startNewAttempt}>Làm lại</Button>
               </div>
+              </div>
 
-              <div style={{ marginTop: 18, textAlign: 'left' }}>
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>Đối chiếu kết quả từng câu</div>
-                <div style={{ display: 'grid', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
-                  {details.map((item) => (
-                    <div
-                      key={item.question.id || item.index}
-                      style={{
-                        border: '1px solid var(--border)',
-                        borderRadius: 10,
-                        padding: '10px 12px',
-                        background: item.fullyCorrect ? 'var(--success-bg)' : 'var(--danger-bg)',
-                      }}
-                    >
-                      <div style={{ fontWeight: 600, marginBottom: 4 }}>
-                        Câu {item.index + 1}: {item.question.text || item.question.question}
-                      </div>
-                      <div style={{ fontSize: '.8rem', color: item.fullyCorrect ? 'var(--success)' : 'var(--danger)' }}>
-                        {item.fullyCorrect ? 'Đúng' : 'Sai'}
-                        {item.question.type === 'truefalse' && ` (${item.earnedUnits}/${item.totalUnits} ý đúng)`}
-                      </div>
-                      <CompareAnswerBlock title="User chọn" items={item.compare.chosenItems || []} />
-                      <CompareAnswerBlock title="Đáp án đúng" items={item.compare.correctItems || []} />
+              <div className="result-detail-scroll">
+                <div className="result-picked-grid">
+                  <div className="result-picked-box result-picked-correct">
+                    <div className="result-picked-title">Đáp án user đã chọn đúng</div>
+                    <div className="result-picked-list">
+                      {chosenCorrect.length === 0 && <div style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Chưa có câu nào đúng.</div>}
+                      {chosenCorrect.map((item) => (
+                        <div key={`ok-${item.label}`} style={{ fontSize: '.8rem', marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600 }}>{item.label}:</span> <ExpandableText text={item.text} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="result-picked-box result-picked-wrong">
+                    <div className="result-picked-title">Đáp án user đã chọn sai</div>
+                    <div className="result-picked-list">
+                      {chosenWrong.length === 0 && <div style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Không có đáp án sai.</div>}
+                      {chosenWrong.map((item) => (
+                        <div key={`wrong-${item.label}`} style={{ fontSize: '.8rem', marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600 }}>{item.label}:</span> <ExpandableText text={item.text} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="result-compare-wrap">
+                  <div style={{ fontWeight: 700, marginBottom: 8 }}>Đối chiếu kết quả từng câu</div>
+                  <div className="result-compare-scroll">
+                    {details.map((item) => (
+                      <div
+                        key={item.question.id || item.index}
+                        style={{
+                          border: '1px solid var(--border)',
+                          borderRadius: 10,
+                          padding: '10px 12px',
+                          background: item.fullyCorrect ? 'var(--success-bg)' : 'var(--danger-bg)',
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                          Câu {item.index + 1}: {item.question.text || item.question.question}
+                        </div>
+                        <div style={{ fontSize: '.8rem', color: item.fullyCorrect ? 'var(--success)' : 'var(--danger)' }}>
+                          {item.fullyCorrect ? 'Đúng' : 'Sai'}
+                          {item.question.type === 'truefalse' && ` (${item.earnedUnits}/${item.totalUnits} ý đúng)`}
+                        </div>
+                        <CompareAnswerBlock title="User chọn" items={item.compare.chosenItems || []} />
+                        <CompareAnswerBlock title="Đáp án đúng" items={item.compare.correctItems || []} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -806,28 +850,57 @@ export default function QuizPage() {
 
   return (
     <div className="app-wrapper"><Navbar/>
-      <div className="page-content">
-        <div className="quiz-layout">
+      <div className="quiz-shell">
+        <aside className="quiz-sidepanel">
+          <div className="quiz-side-block">
+            <div className="quiz-side-label">Bài học</div>
+            <div className="quiz-side-title">{lesson?.name}</div>
+            <div className="quiz-side-meta">{subject?.name || 'Quiz Practice'}</div>
+          </div>
+
+          <div className="quiz-side-block">
+            <div className="quiz-side-label">Tiến trình</div>
+            <div className="progress-bar"><div className="progress-fill" style={{width:`${progress}%`}}/></div>
+            <div className="quiz-side-meta">Câu {qIdx + 1}/{questions.length}</div>
+          </div>
+
+          <div className="quiz-side-block">
+            <div className="quiz-side-label">Thời gian</div>
+            <div className={`quiz-time${remainingSeconds <= 30 ? ' warn' : ''}`}>⏱ {formatTime(remainingSeconds)}</div>
+          </div>
+
+          <div className="quiz-side-block quiz-side-block-grow">
+            <div className="quiz-side-label">Danh sách câu</div>
+            <div className="quiz-dot-grid">
+              {questions.map((_,i)=>{
+                const answered = answers[i] !== undefined;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`quiz-dot${i===qIdx?' cur':''}${answered?' done':''}`}
+                    onClick={()=>{setQIdx(i);setSubmitted(false);}}
+                  >
+                    {i+1}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <Button variant="ghost" size="sm" onClick={()=>navigate(-1)}>✕ Thoát</Button>
+        </aside>
+
+        <div className="quiz-main-panel">
           <div className="quiz-topbar">
             <div>
-              <div style={{fontWeight:700,fontSize:'.9rem'}}>Câu {qIdx+1}/{questions.length}</div>
+              <div style={{fontWeight:700,fontSize:'.9rem'}}>Câu {qIdx+1}</div>
               <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:2}}>{lesson?.name}</div>
             </div>
             <div className="quiz-progress-block">
               <div className="progress-label">Tiến trình</div>
               <div className="progress-bar"><div className="progress-fill" style={{width:`${progress}%`}}/></div>
             </div>
-            <div
-              style={{
-                minWidth: 90,
-                textAlign: 'center',
-                fontWeight: 700,
-                color: remainingSeconds <= 30 ? 'var(--danger)' : 'var(--orange)',
-              }}
-            >
-              ⏱ {formatTime(remainingSeconds)}
-            </div>
-            <Button variant="ghost" size="sm" onClick={()=>navigate(-1)}>✕ Thoát</Button>
           </div>
           <div className="question-card">
             <div className="q-type-pill">✦ {TYPE_LABELS[q.type]}</div>
@@ -863,14 +936,6 @@ export default function QuizPage() {
                 {qIdx<questions.length-1?<Button variant="primary" onClick={()=>{if(submitted)setSubmitted(false);setQIdx(i=>i+1);}}>Câu tiếp →</Button>:<Button variant="secondary" onClick={()=>setShowResult(true)}>Nộp bài ✓</Button>}
               </div>
             </div>
-          </div>
-          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:14,justifyContent:'center'}}>
-            {questions.map((_,i)=>(
-              <button key={i} onClick={()=>{setQIdx(i);setSubmitted(false);}}
-                style={{width:30,height:30,borderRadius:6,border:`1.5px solid ${i===qIdx?'var(--blue)':answers[i]!==undefined?'var(--success)':'var(--border)'}`,background:i===qIdx?'var(--blue-light)':answers[i]!==undefined?'var(--success-bg)':'var(--surface)',color:i===qIdx?'var(--blue)':answers[i]!==undefined?'var(--success)':'var(--muted)',fontWeight:600,fontSize:'.78rem',cursor:'pointer',transition:'all .15s ease'}}>
-                {i+1}
-              </button>
-            ))}
           </div>
         </div>
       </div>

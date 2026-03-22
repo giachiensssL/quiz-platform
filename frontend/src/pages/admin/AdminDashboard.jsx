@@ -1802,18 +1802,25 @@ export default function AdminDashboard() {
   return (
     <div className="app-wrapper">
       <Navbar />
-      <div className="page-content">
-        <div className="page-header">
-          <div className="page-title">⚙️ Admin Dashboard</div>
-          <div className="page-sub">Quản lý toàn bộ hệ thống QuizMaster</div>
-        </div>
-        <div className="admin-layout">
-          <div className="admin-sidebar">
+      <div className="main-layout admin-main-layout">
+        <aside className="admin-nav-shell">
+          <div className="admin-nav-head">
+            <div className="admin-nav-title">Quản trị hệ thống</div>
+            <div className="admin-nav-sub">QuizMaster Admin</div>
+          </div>
+          <div className="admin-nav-list">
             {SECTIONS.map(s => (
-              <button key={s.id} className={`as-btn${section === s.id ? ' active' : ''}`} onClick={() => setSection(s.id)}>
+              <button key={s.id} className={`admin-nav-item${section === s.id ? ' active' : ''}`} onClick={() => setSection(s.id)}>
                 <span>{s.icon}</span>{s.label}
               </button>
             ))}
+          </div>
+        </aside>
+
+        <div className="page-content admin-page-content">
+          <div className="page-header admin-header">
+            <div className="page-title">⚙️ Admin Dashboard</div>
+            <div className="page-sub">Quản lý toàn bộ hệ thống QuizMaster</div>
           </div>
           <div className="admin-main">{renderContent()}</div>
         </div>

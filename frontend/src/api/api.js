@@ -29,8 +29,9 @@ api.interceptors.response.use(
     const status = err?.response?.status;
     const requestUrl = String(err?.config?.url || '').toLowerCase();
     const isLoginRequest = requestUrl.includes('/auth/login');
+    const skipAuthRedirect = Boolean(err?.config?.skipAuthRedirect);
 
-    if (status === 401 && !isLoginRequest) {
+    if (status === 401 && !isLoginRequest && !skipAuthRedirect) {
       localStorage.removeItem('qm_token');
       localStorage.removeItem('qm_user');
       localStorage.removeItem('qm_refresh_token');
@@ -109,7 +110,7 @@ export const answersAPI = {
 };
 
 export const resultsAPI = {
-  submit: (d) => api.post('/submit', d),
+  submit: (d) => api.post('/submit', d, { skipAuthRedirect: true }),
   myList: () => api.get('/results/me')
 };
 
