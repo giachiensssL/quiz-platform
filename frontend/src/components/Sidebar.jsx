@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const ITEMS = [
-  { label: 'Tất cả Khoa', icon: '🏛️', path: '/' },
+  { label: 'Tất cả ngành học', icon: '🏛️', path: '/' },
   { label: 'Lịch sử làm bài', icon: '⏱️', path: '/profile' },
   { label: 'Đã lưu', icon: '🔖', path: '/saved' },
 ];
@@ -24,3 +24,6 @@ export default function Sidebar() {
     </aside>
   );
 }
+
+
+

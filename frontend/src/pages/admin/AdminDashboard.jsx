@@ -14,7 +14,7 @@ function Overview({ data, analytics }) {
     { label: 'Câu hỏi', val: data.questions.length, icon: '❓', color: 'var(--orange)' },
     { label: 'Môn học', val: data.subjects.length, icon: '📚', color: 'var(--success)' },
     { label: 'Bài học', val: data.lessons.length, icon: '📝', color: '#8B5CF6' },
-    { label: 'Khoa', val: data.faculties.length, icon: '🏛️', color: '#0891B2' },
+    { label: 'Ngành học', val: data.faculties.length, icon: '🏛️', color: '#0891B2' },
     { label: 'Học kỳ', val: data.semesters.length, icon: '📋', color: '#D97706' },
     { label: 'Lượt truy cập', val: analytics?.totalVisits || 0, icon: '📈', color: '#0EA5E9' },
     { label: 'Đang online', val: analytics?.onlineUsers || 0, icon: '🟢', color: 'var(--success)' },
@@ -621,7 +621,7 @@ function YearsPanel({ data, yearsCrud }) {
     },
     {
       key: 'facultyId',
-      label: 'Khoa',
+      label: 'Ngành học',
       required: true,
       type: 'select',
       options: facultyOptions.map((f) => ({ value: f.id, label: f.name })),
@@ -647,10 +647,10 @@ function YearsPanel({ data, yearsCrud }) {
     <>
       <div style={{ marginBottom: 10, maxWidth: 420 }}>
         <Select
-          label="Lọc theo khoa"
+          label="Lọc theo ngành học"
           value={facultyId}
           onChange={(e) => setFacultyId(e.target.value)}
-          options={[{ value: '', label: 'Tất cả khoa' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
+          options={[{ value: '', label: 'Tất cả ngành học' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
         />
       </div>
       <CrudTable
@@ -733,10 +733,10 @@ function SemestersPanel({ data, semestersCrud }) {
     <>
       <div style={{ marginBottom: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, maxWidth: 640 }}>
         <Select
-          label="Lọc theo khoa"
+          label="Lọc theo ngành học"
           value={facultyId}
           onChange={(e) => { setFacultyId(e.target.value); setYearId(''); }}
-          options={[{ value: '', label: 'Tất cả khoa' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
+          options={[{ value: '', label: 'Tất cả ngành học' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
         />
         <Select
           label="Lọc theo năm học"
@@ -811,7 +811,7 @@ function SubjectsPanel({ data, subjectsCrud }) {
     { key: 'name', label: 'Tên môn học', required: true, placeholder: 'Cấu trúc dữ liệu' },
     {
       key: 'facultyId',
-      label: 'Khoa',
+      label: 'Ngành học',
       required: true,
       type: 'select',
       options: facultyOptions.map((f) => ({ value: f.id, label: f.name })),
@@ -901,10 +901,10 @@ function SubjectsPanel({ data, subjectsCrud }) {
     <>
       <div style={{ marginBottom: 10, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 8, maxWidth: 920 }}>
         <Select
-          label="Lọc theo khoa"
+          label="Lọc theo ngành học"
           value={facultyId}
           onChange={(e) => { setFacultyId(e.target.value); setYearId(''); setSemesterId(''); }}
-          options={[{ value: '', label: 'Tất cả khoa' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
+          options={[{ value: '', label: 'Tất cả ngành học' }, ...(data.faculties || []).map((f) => ({ value: f.id, label: f.name }))]}
         />
         <Select
           label="Lọc theo năm học"
@@ -1736,7 +1736,7 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
 const SECTIONS = [
   { id: 'overview', icon: '📊', label: 'Tổng quan' },
   { id: 'users', icon: '👥', label: 'Người dùng' },
-  { id: 'faculties', icon: '🏛️', label: 'Khoa' },
+  { id: 'faculties', icon: '🏛️', label: 'Ngành học' },
   { id: 'years', icon: '📅', label: 'Năm học' },
   { id: 'semesters', icon: '📋', label: 'Học kỳ' },
   { id: 'subjects', icon: '📚', label: 'Môn học' },
@@ -1782,8 +1782,8 @@ export default function AdminDashboard() {
     switch (section) {
       case 'overview': return <Overview data={data} analytics={analytics} />;
       case 'users': return <UsersPanel />;
-      case 'faculties': return <CrudTable title="Khoa" icon="🏛️" items={data.faculties}
-        fields={[{key:'icon',label:'Icon',placeholder:'💻'},{key:'name',label:'Tên khoa',required:true,placeholder:'Công nghệ Thông tin'},{key:'desc',label:'Mô tả',placeholder:'Số môn học...'}]}
+      case 'faculties': return <CrudTable title="Ngành học" icon="🏛️" items={data.faculties}
+        fields={[{key:'icon',label:'Icon',placeholder:'💻'},{key:'name',label:'Tên ngành học',required:true,placeholder:'Công nghệ Thông tin'},{key:'desc',label:'Mô tả',placeholder:'Số môn học...'}]}
         onAdd={faculties.add} onUpdate={faculties.update} onRemove={faculties.remove} onToggleLock={(id, locked) => faculties.update(id, { locked })} showLockColumn />;
       case 'years': return <YearsPanel data={data} yearsCrud={years} />;
       case 'semesters': return <SemestersPanel data={data} semestersCrud={semesters} />;
@@ -1821,3 +1821,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

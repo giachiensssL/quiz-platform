@@ -27,7 +27,7 @@ const initQuestions = [
 const SECTIONS = [
   { id: "overview", icon: "📊", label: "Tổng quan" },
   { id: "users", icon: "👥", label: "Người dùng" },
-  { id: "faculties", icon: "🏛️", label: "Khoa" },
+  { id: "faculties", icon: "🏛️", label: "Ngành học" },
   { id: "subjects", icon: "📚", label: "Môn học" },
   { id: "questions", icon: "❓", label: "Câu hỏi" },
 ];
@@ -267,15 +267,15 @@ export default function AdminPage() {
       case "overview": return <Overview users={users} subjects={subjects} questions={questions} />;
       case "users": return <UsersPanel users={users} setUsers={setUsers} />;
       case "faculties": return (
-        <CRUDPanel title="Khoa" items={faculties} setItems={setFaculties}
-          fields={[{ key: "name", label: "Tên Khoa", placeholder: "VD: Công nghệ Thông tin" }]}
+        <CRUDPanel title="Ngành học" items={faculties} setItems={setFaculties}
+          fields={[{ key: "name", label: "Tên ngành học", placeholder: "VD: Công nghệ Thông tin" }]}
           renderRow={(item) => <td className="td-name">{item.name}</td>} />
       );
       case "subjects": return (
         <CRUDPanel title="Môn học" items={subjects} setItems={setSubjects}
           fields={[
             { key: "name", label: "Tên Môn", placeholder: "VD: Cấu trúc Dữ liệu" },
-            { key: "faculty", label: "Khoa", placeholder: "VD: CNTT" },
+            { key: "faculty", label: "Ngành học", placeholder: "VD: CNTT" },
           ]}
           renderRow={(item) => (<>
             <td className="td-name">{item.name}</td>
@@ -327,3 +327,6 @@ export default function AdminPage() {
     </div>
   );
 }
+
+
+

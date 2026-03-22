@@ -33,11 +33,11 @@ export default function HomePage() {
         <Sidebar />
         <div className="page-content">
           <div className="page-header">
-            <div className="page-title">Chọn Khoa</div>
-            <div className="page-sub">Bắt đầu ôn luyện bằng cách chọn khoa của bạn</div>
+            <div className="page-title">Chọn ngành học</div>
+            <div className="page-sub">Bắt đầu ôn luyện bằng cách chọn ngành học của bạn</div>
           </div>
           {data.faculties.length === 0 ? (
-            <EmptyState icon="🏛️" text="Chưa có khoa nào" />
+            <EmptyState icon="🏛️" text="Chưa có ngành học nào" />
           ) : (
             <div className="cards-grid wide">
               {data.faculties.map((f, i) => (
@@ -51,3 +51,6 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+

@@ -21,11 +21,11 @@ export function YearPage() {
         <button className="back-btn" onClick={() => navigate("/")}>← Quay lại</button>
         <Breadcrumb items={[
           { label: "Trang chủ", onClick: () => navigate("/") },
-          { label: state?.facultyName || "Khoa" },
+          { label: state?.facultyName || "Ngành học" },
         ]} />
         <div className="page-hdr">
           <h1>Chọn Năm học</h1>
-          <p>Khoa: <strong>{state?.facultyName}</strong></p>
+          <p>Ngành học: <strong>{state?.facultyName}</strong></p>
         </div>
         <div className="cards-grid sm fade-in">
           {YEARS.map((y) => (
@@ -64,7 +64,7 @@ export function SemesterPage() {
         <button className="back-btn" onClick={() => navigate(-1)}>← Quay lại</button>
         <Breadcrumb items={[
           { label: "Trang chủ", onClick: () => navigate("/") },
-          { label: state?.facultyName || "Khoa", onClick: () => navigate(-2) },
+          { label: state?.facultyName || "Ngành học", onClick: () => navigate(-2) },
           { label: state?.yearName || "Năm" },
         ]} />
         <div className="page-hdr">
@@ -111,7 +111,7 @@ export function SubjectPage() {
         <button className="back-btn" onClick={() => navigate(-1)}>← Quay lại</button>
         <Breadcrumb items={[
           { label: "Trang chủ", onClick: () => navigate("/") },
-          { label: state?.facultyName || "Khoa", onClick: () => navigate(-3) },
+          { label: state?.facultyName || "Ngành học", onClick: () => navigate(-3) },
           { label: state?.yearName || "Năm", onClick: () => navigate(-2) },
           { label: state?.semesterName || "Kỳ" },
         ]} />
@@ -186,3 +186,4 @@ export function LessonPage() {
     </AppLayout>
   );
 }
+

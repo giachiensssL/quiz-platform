@@ -19,7 +19,7 @@ export default function YearPage() {
           <Sidebar />
           <div className="page-content">
             <Button variant="ghost" size="sm" icon="←" onClick={() => navigate('/')} style={{marginBottom:12}}>Quay lại</Button>
-            <EmptyState icon="🔒" text="Khoa này đang bị khoá" />
+            <EmptyState icon="🔒" text="Ngành học này đang bị khoá" />
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@ export default function YearPage() {
           <div className="breadcrumb">
             <span className="bc-item" onClick={() => navigate('/')}>Trang chủ</span>
             <span className="bc-sep">/</span>
-            <span className="bc-item current">{faculty?.name || 'Khoa'}</span>
+            <span className="bc-item current">{faculty?.name || 'Ngành học'}</span>
           </div>
           <div className="page-header">
             <Button variant="ghost" size="sm" icon="←" onClick={() => navigate('/')} style={{marginBottom:12}}>Quay lại</Button>
@@ -61,3 +61,4 @@ export default function YearPage() {
     </div>
   );
 }
+

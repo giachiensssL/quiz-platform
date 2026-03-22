@@ -399,7 +399,7 @@ router.put(
   "/faculties/:id",
   asyncHandler(async (req, res) => {
     const updated = await Faculty.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: false });
-    if (!updated) return res.status(404).json({ message: "Không tìm thấy khoa" });
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy ngành học" });
     notifyCatalogUpdated();
     res.json(updated);
   })
@@ -410,7 +410,7 @@ router.delete(
   asyncHandler(async (req, res) => {
     await Faculty.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
-    res.json({ message: "Đã xoá khoa" });
+    res.json({ message: "Đã xoá ngành học" });
   })
 );
 
@@ -663,3 +663,4 @@ router.delete(
 );
 
 module.exports = router;
+
