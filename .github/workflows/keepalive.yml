@@ -1,0 +1,34 @@
+name: Backend Keep Alive
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate configuration
+        env:
+          BACKEND_PING_URL: ${{ secrets.BACKEND_PING_URL }}
+        run: |
+          if [ -z "$BACKEND_PING_URL" ]; then
+            echo "Missing secret BACKEND_PING_URL"
+            echo "Set BACKEND_PING_URL to your backend health endpoint (for example: https://your-backend-domain/api/ping)."
+            exit 1
+          fi
+
+      - name: Ping backend
+        env:
+          BACKEND_PING_URL: ${{ secrets.BACKEND_PING_URL }}
+        run: |
+          echo "Pinging: $BACKEND_PING_URL"
+          HTTP_CODE=$(curl --silent --show-error --location --max-time 20 --retry 2 --retry-delay 2 --output /dev/null --write-out "%{http_code}" "$BACKEND_PING_URL")
+          echo "HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 400 ]; then
+            echo "Ping failed with HTTP status $HTTP_CODE"
+            exit 1
+          fi
