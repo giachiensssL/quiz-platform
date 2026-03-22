@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { resultsAPI } from '../api/api';
@@ -529,11 +529,12 @@ export default function QuizPage() {
   const [previewImage, setPreviewImage] = useState('');
   const [isSubmittingResult, setIsSubmittingResult] = useState(false);
   const [serverSubmitted, setServerSubmitted] = useState(false);
+  const attemptLessonRef = useRef(null);
   const q=questions[qIdx];
   const progress=questions.length?((qIdx+1)/questions.length)*100:0;
   const handleAnswer=useCallback((val)=>setAnswers(prev=>({...prev,[qIdx]:val})),[qIdx]);
 
-  const reshuffleQuiz = useCallback(() => {
+  const startNewAttempt = useCallback(() => {
     const key = `qm_last_order_${lessonId}`;
     const next = shuffleWithNoImmediateRepeat(baseQuestions, key);
     setQuestions(next);
@@ -547,8 +548,24 @@ export default function QuizPage() {
   }, [lessonId, baseQuestions]);
 
   useEffect(() => {
-    reshuffleQuiz();
-  }, [reshuffleQuiz]);
+    const lessonChanged = attemptLessonRef.current !== lessonId;
+    if (lessonChanged) {
+      attemptLessonRef.current = lessonId;
+      setQuestions([]);
+      setQIdx(0);
+      setAnswers({});
+      setSubmitted(false);
+      setShowResult(false);
+      setTimeoutTriggered(false);
+      setServerSubmitted(false);
+      setRemainingSeconds(0);
+    }
+
+    // Start exactly once per lesson attempt when data becomes available.
+    if (baseQuestions.length > 0 && questions.length === 0) {
+      startNewAttempt();
+    }
+  }, [lessonId, baseQuestions.length, questions.length, startNewAttempt]);
 
   useEffect(() => {
     if (showResult || questions.length === 0) return;
@@ -723,7 +740,7 @@ export default function QuizPage() {
               </div>
               <div style={{display:'flex',gap:10,justifyContent:'center'}}>
                 <Button variant="ghost" onClick={()=>navigate(-1)}>← Về danh sách bài</Button>
-                <Button variant="primary" onClick={reshuffleQuiz}>Làm lại</Button>
+                <Button variant="primary" onClick={startNewAttempt}>Làm lại</Button>
               </div>
 
               <div style={{ marginTop: 18, textAlign: 'left' }}>
