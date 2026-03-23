@@ -11,6 +11,24 @@
     "migrate:hierarchy": "node seed/migrateHierarchy.js",
     "migrate:subject-icons:dry": "node seed/migrateSubjectIcons.js --dry-run",
     "migrate:subject-icons": "node seed/migrateSubjectIcons.js",
+    "import:monhoc:dry": "node seed/importMonhocSubjects.js --dry-run",
+    "import:monhoc": "node seed/importMonhocSubjects.js",
+    "import:monhoc:questions:dry": "node seed/importMonhocQuestionsFromPdf.js --dry-run",
+    "import:monhoc:questions": "node seed/importMonhocQuestionsFromPdf.js",
+    "extract:tmdt:answers": "python seed/extractTmdtAnswersFromImages.py",
+    "apply:tmdt:answers:dry": "node seed/applyTmdtAnswerKey.js --dry-run",
+    "apply:tmdt:answers": "node seed/applyTmdtAnswerKey.js",
+    "apply:pldc:answers:dry": "node seed/applyPldcAnswerKeyFromTxt.js --dry-run",
+    "apply:pldc:answers": "node seed/applyPldcAnswerKeyFromTxt.js",
+    "extract:answers:pldc": "python seed/extractAnswersFromImages.py --image-dir ../monhoc/_pldc_zip --output seed/answer_key_pldc.json --subject PLDC",
+    "extract:answers:qth": "python seed/extractAnswersFromImages.py --image-dir ../monhoc/_qth_zip --output seed/answer_key_qth.json --subject QTH",
+    "extract:answers:tmdt": "python seed/extractAnswersFromImages.py --image-dir ../monhoc/_tmdt_zip --output seed/answer_key_tmdt.json --subject TMDT",
+    "apply:answers:pldc:dry": "node seed/applyAnswerKey.js --subject PLDC --key seed/answer_key_pldc.json --dry-run",
+    "apply:answers:qth:dry": "node seed/applyAnswerKey.js --subject QTH --key seed/answer_key_qth.json --dry-run",
+    "apply:answers:tmdt:dry": "node seed/applyAnswerKey.js --subject TMDT --key seed/answer_key_tmdt.json --dry-run",
+    "apply:answers:pldc": "node seed/applyAnswerKey.js --subject PLDC --key seed/answer_key_pldc.json",
+    "apply:answers:qth": "node seed/applyAnswerKey.js --subject QTH --key seed/answer_key_qth.json",
+    "apply:answers:tmdt": "node seed/applyAnswerKey.js --subject TMDT --key seed/answer_key_tmdt.json",
     "test:regression:api": "node seed/regressionApiTest.js"
   },
   "dependencies": {
@@ -23,6 +41,8 @@
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.0",
     "morgan": "^1.10.0",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.5.207",
     "ws": "^8.19.0"
   },
   "devDependencies": {

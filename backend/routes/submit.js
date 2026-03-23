@@ -2,6 +2,7 @@ const express = require("express");
 const Question = require("../models/Question");
 const { protect } = require("../middleware/auth");
 const { broadcast } = require("../realtime");
+const { isLessonAccessibleForUser } = require("../utils/accessControl");
 
 const router = express.Router();
 
@@ -41,6 +42,11 @@ router.post("/", protect, async (req, res) => {
     const { lessonId, answers = [], timeSpent = 0 } = req.body;
     if (!lessonId) {
       return res.status(400).json({ message: "lessonId is required" });
+    }
+
+    const lessonAllowed = await isLessonAccessibleForUser(req.user, lessonId);
+    if (!lessonAllowed) {
+      return res.status(403).json({ message: "Bài học này đã bị khóa với tài khoản của bạn" });
     }
 
     const questions = await Question.find({ lessonId }).lean();

@@ -1,0 +1,2978 @@
+{
+  "source": "C:\\d\\Lap_Trinh_Web\\quiz-platform\\monhoc\\_pldc_zip",
+  "subject": "PLDC",
+  "eventsByLesson": {
+    "1": [
+      {
+        "option": "C",
+        "score": 0.8403916211293261,
+        "file_idx": 0,
+        "y": 357.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.78912799239478,
+        "file_idx": 0,
+        "y": 645.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.11313910640257945,
+        "file_idx": 0,
+        "y": 784.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7031726823108492,
+        "file_idx": 0,
+        "y": 823.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6984838778560751,
+        "file_idx": 0,
+        "y": 1074.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8094723183391003,
+        "file_idx": 0,
+        "y": 1288.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.776406035665295,
+        "file_idx": 0,
+        "y": 1575.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7807807807807808,
+        "file_idx": 1,
+        "y": 350.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09717898832684825,
+        "file_idx": 1,
+        "y": 530.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8269032391169796,
+        "file_idx": 1,
+        "y": 564.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8350419384902144,
+        "file_idx": 1,
+        "y": 706.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07331460674157303,
+        "file_idx": 1,
+        "y": 1067.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.736340206185567,
+        "file_idx": 1,
+        "y": 1103.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7959869734215779,
+        "file_idx": 1,
+        "y": 1317.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8574011571841852,
+        "file_idx": 1,
+        "y": 1459.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8217498875393613,
+        "file_idx": 2,
+        "y": 334.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05699013157894737,
+        "file_idx": 2,
+        "y": 512.75,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7674883411059293,
+        "file_idx": 2,
+        "y": 550.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7695730298622401,
+        "file_idx": 2,
+        "y": 689.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6498154224774405,
+        "file_idx": 2,
+        "y": 905.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7470283579555103,
+        "file_idx": 2,
+        "y": 1229.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7481517509727627,
+        "file_idx": 2,
+        "y": 1443.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0003.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7832908896738684,
+        "file_idx": 3,
+        "y": 136.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8282377919320594,
+        "file_idx": 3,
+        "y": 314.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6367904087823199,
+        "file_idx": 3,
+        "y": 494.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6588010691103475,
+        "file_idx": 3,
+        "y": 779.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8278956943602184,
+        "file_idx": 3,
+        "y": 922.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08264035332033581,
+        "file_idx": 3,
+        "y": 1281.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7391920009247487,
+        "file_idx": 3,
+        "y": 1318.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8014295103516267,
+        "file_idx": 3,
+        "y": 1533.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0004.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8537215472699344,
+        "file_idx": 4,
+        "y": 172.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8201920279313355,
+        "file_idx": 4,
+        "y": 386.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1864128885086969,
+        "file_idx": 4,
+        "y": 565.0,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8505083899943859,
+        "file_idx": 4,
+        "y": 601.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.799422063573007,
+        "file_idx": 4,
+        "y": 815.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7599462816854121,
+        "file_idx": 4,
+        "y": 1139.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      }
+    ],
+    "2": [
+      {
+        "option": "D",
+        "score": 0.8180803571428572,
+        "file_idx": 4,
+        "y": 1505.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7120594581635099,
+        "file_idx": 5,
+        "y": 262.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0568308945272296,
+        "file_idx": 5,
+        "y": 622.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.701443709551241,
+        "file_idx": 5,
+        "y": 657.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7762837837837838,
+        "file_idx": 5,
+        "y": 763.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7616550116550117,
+        "file_idx": 5,
+        "y": 1087.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7570721246333849,
+        "file_idx": 5,
+        "y": 1302.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8180880152711139,
+        "file_idx": 5,
+        "y": 1516.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7310729847494554,
+        "file_idx": 5,
+        "y": 1553.75,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7459668971296878,
+        "file_idx": 6,
+        "y": 316.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09190249369571309,
+        "file_idx": 6,
+        "y": 637.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7787959167269513,
+        "file_idx": 6,
+        "y": 673.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7749001996007985,
+        "file_idx": 6,
+        "y": 1070.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8523035924768103,
+        "file_idx": 6,
+        "y": 1429.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.864657267865824,
+        "file_idx": 6,
+        "y": 1466.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09344422700587085,
+        "file_idx": 7,
+        "y": 371.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7204416650381082,
+        "file_idx": 7,
+        "y": 407.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09935064935064936,
+        "file_idx": 7,
+        "y": 767.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8346667315127787,
+        "file_idx": 7,
+        "y": 803.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8365713669801407,
+        "file_idx": 7,
+        "y": 1270.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.80074620941494,
+        "file_idx": 7,
+        "y": 1593.75,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0008.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7438615565824046,
+        "file_idx": 8,
+        "y": 461.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07327379237491598,
+        "file_idx": 8,
+        "y": 602.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7361011201315384,
+        "file_idx": 8,
+        "y": 639.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10204899267399267,
+        "file_idx": 8,
+        "y": 926.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7419106975155809,
+        "file_idx": 8,
+        "y": 962.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.828117591275486,
+        "file_idx": 8,
+        "y": 1320.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7686130007558579,
+        "file_idx": 8,
+        "y": 1358.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.859313725490196,
+        "file_idx": 9,
+        "y": 135.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0010.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.731718898385565,
+        "file_idx": 9,
+        "y": 461.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7693248072221177,
+        "file_idx": 9,
+        "y": 638.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7355396541443053,
+        "file_idx": 9,
+        "y": 962.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0010.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7634619282480913,
+        "file_idx": 9,
+        "y": 1249.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0010.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.788118709410334,
+        "file_idx": 10,
+        "y": 173.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7999486242721773,
+        "file_idx": 10,
+        "y": 750.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.08476483828930222,
+        "file_idx": 10,
+        "y": 785.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.804822460776218,
+        "file_idx": 10,
+        "y": 928.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.08270082226438963,
+        "file_idx": 10,
+        "y": 1180.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.807111572153066,
+        "file_idx": 10,
+        "y": 1216.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7689679004761174,
+        "file_idx": 10,
+        "y": 1431.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8053091187419545,
+        "file_idx": 10,
+        "y": 1607.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7511980065171554,
+        "file_idx": 11,
+        "y": 431.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8236712598425197,
+        "file_idx": 11,
+        "y": 573.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6814789687924016,
+        "file_idx": 11,
+        "y": 968.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7434514637904468,
+        "file_idx": 11,
+        "y": 1075.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6277394636015325,
+        "file_idx": 11,
+        "y": 1287.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.773968253968254,
+        "file_idx": 11,
+        "y": 1575.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0012.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7758031442241968,
+        "file_idx": 12,
+        "y": 242.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8426101623445077,
+        "file_idx": 12,
+        "y": 599.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7106978990581985,
+        "file_idx": 12,
+        "y": 816.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09215057594109964,
+        "file_idx": 12,
+        "y": 994.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7322684348000804,
+        "file_idx": 12,
+        "y": 1030.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07734480431848853,
+        "file_idx": 12,
+        "y": 1174.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7070127086204256,
+        "file_idx": 12,
+        "y": 1209.75,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7222175976025972,
+        "file_idx": 12,
+        "y": 1423.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0580547112462006,
+        "file_idx": 13,
+        "y": 208.25,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7467023394723743,
+        "file_idx": 13,
+        "y": 245.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07283619086965502,
+        "file_idx": 13,
+        "y": 423.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7812779667084303,
+        "file_idx": 13,
+        "y": 460.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7419183621888032,
+        "file_idx": 13,
+        "y": 673.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7472033073929961,
+        "file_idx": 13,
+        "y": 890.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05806381593227697,
+        "file_idx": 13,
+        "y": 1141.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.732306338028169,
+        "file_idx": 13,
+        "y": 1177.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7124172185430463,
+        "file_idx": 13,
+        "y": 1317.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7671385671385672,
+        "file_idx": 14,
+        "y": 136.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7845532950022114,
+        "file_idx": 14,
+        "y": 351.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7973856209150327,
+        "file_idx": 14,
+        "y": 494.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7253731343283581,
+        "file_idx": 14,
+        "y": 781.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8230574324324323,
+        "file_idx": 14,
+        "y": 1029.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6904761904761906,
+        "file_idx": 14,
+        "y": 1209.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7391625161409334,
+        "file_idx": 14,
+        "y": 1496.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7214874613534867,
+        "file_idx": 15,
+        "y": 173.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.115570419918246,
+        "file_idx": 15,
+        "y": 387.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7964368863245268,
+        "file_idx": 15,
+        "y": 423.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.720619839384685,
+        "file_idx": 15,
+        "y": 637.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6287878787878788,
+        "file_idx": 15,
+        "y": 888.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6296894409937888,
+        "file_idx": 15,
+        "y": 1067.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      }
+    ],
+    "4": [
+      {
+        "option": "A",
+        "score": 0.1439994131455399,
+        "file_idx": 15,
+        "y": 1288.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7531213278495887,
+        "file_idx": 15,
+        "y": 1325.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.590153452685422,
+        "file_idx": 16,
+        "y": 135.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.1208130081300813,
+        "file_idx": 16,
+        "y": 352.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.695700322596177,
+        "file_idx": 16,
+        "y": 387.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8049160271382494,
+        "file_idx": 16,
+        "y": 529.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0755523302693114,
+        "file_idx": 16,
+        "y": 853.25,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7120395327942498,
+        "file_idx": 16,
+        "y": 888.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8062710291217079,
+        "file_idx": 16,
+        "y": 1068.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7516666666666667,
+        "file_idx": 16,
+        "y": 1105.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09545688766746822,
+        "file_idx": 16,
+        "y": 1354.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8032709914703811,
+        "file_idx": 16,
+        "y": 1390.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6976744186046512,
+        "file_idx": 16,
+        "y": 1569.25,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.1491554054054054,
+        "file_idx": 17,
+        "y": 390.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8030994625634985,
+        "file_idx": 17,
+        "y": 425.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6616797511479781,
+        "file_idx": 17,
+        "y": 672.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8285714285714285,
+        "file_idx": 17,
+        "y": 852.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7245216883306558,
+        "file_idx": 17,
+        "y": 1068.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7724881962962057,
+        "file_idx": 17,
+        "y": 1280.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7762195686383412,
+        "file_idx": 17,
+        "y": 1532.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0743144424131627,
+        "file_idx": 18,
+        "y": 242.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7988083416087388,
+        "file_idx": 18,
+        "y": 279.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6747240197944423,
+        "file_idx": 18,
+        "y": 495.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10016835016835017,
+        "file_idx": 18,
+        "y": 780.5,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06926638176638177,
+        "file_idx": 18,
+        "y": 1067.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7165433294142057,
+        "file_idx": 18,
+        "y": 1104.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07011050316489648,
+        "file_idx": 18,
+        "y": 1496.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.716796474687436,
+        "file_idx": 18,
+        "y": 1534.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.05793650793650794,
+        "file_idx": 19,
+        "y": 189.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.129393185941805,
+        "file_idx": 19,
+        "y": 404.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7604223656855236,
+        "file_idx": 19,
+        "y": 441.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09112554112554114,
+        "file_idx": 19,
+        "y": 655.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6966896447238845,
+        "file_idx": 19,
+        "y": 689.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.656987998451413,
+        "file_idx": 19,
+        "y": 869.0,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8535865756961092,
+        "file_idx": 19,
+        "y": 1119.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07817097090552468,
+        "file_idx": 19,
+        "y": 1335.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7120677002109898,
+        "file_idx": 19,
+        "y": 1371.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8210891199821089,
+        "file_idx": 19,
+        "y": 1585.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7805545743553515,
+        "file_idx": 20,
+        "y": 315.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.10204544166808317,
+        "file_idx": 20,
+        "y": 495.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8194472194472194,
+        "file_idx": 20,
+        "y": 530.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8050420168067226,
+        "file_idx": 20,
+        "y": 745.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7990453341330533,
+        "file_idx": 20,
+        "y": 965.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7896151669496322,
+        "file_idx": 20,
+        "y": 1252.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07847804223935635,
+        "file_idx": 20,
+        "y": 1540.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7512909319899245,
+        "file_idx": 20,
+        "y": 1576.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7794117647058824,
+        "file_idx": 21,
+        "y": 316.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07608642157586495,
+        "file_idx": 21,
+        "y": 602.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7903091060985798,
+        "file_idx": 21,
+        "y": 638.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05663828445285399,
+        "file_idx": 21,
+        "y": 1107.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7584020647477978,
+        "file_idx": 21,
+        "y": 1142.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8321553011448481,
+        "file_idx": 21,
+        "y": 1320.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7544677544677545,
+        "file_idx": 22,
+        "y": 209.75,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7663935512953094,
+        "file_idx": 22,
+        "y": 314.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7591074208614427,
+        "file_idx": 22,
+        "y": 565.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6054018445322793,
+        "file_idx": 22,
+        "y": 815.0,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7354402703239912,
+        "file_idx": 22,
+        "y": 1211.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6882953612479474,
+        "file_idx": 22,
+        "y": 1462.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8547934823796892,
+        "file_idx": 23,
+        "y": 333.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8120266120777891,
+        "file_idx": 23,
+        "y": 440.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.772794278226687,
+        "file_idx": 23,
+        "y": 477.0,
+        "x": 192.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.05698529411764706,
+        "file_idx": 23,
+        "y": 801.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7951990755331442,
+        "file_idx": 23,
+        "y": 836.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.74775824964132,
+        "file_idx": 23,
+        "y": 1125.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7804655188996826,
+        "file_idx": 23,
+        "y": 1301.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0831644714623438,
+        "file_idx": 24,
+        "y": 134.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7226160935838355,
+        "file_idx": 24,
+        "y": 173.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07735028054505896,
+        "file_idx": 24,
+        "y": 462.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7760180995475113,
+        "file_idx": 24,
+        "y": 498.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7996184419713831,
+        "file_idx": 24,
+        "y": 784.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7346638655462185,
+        "file_idx": 24,
+        "y": 925.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.13545627376425853,
+        "file_idx": 24,
+        "y": 1140.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7857707119581316,
+        "file_idx": 24,
+        "y": 1176.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09715447154471545,
+        "file_idx": 24,
+        "y": 1500.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7689896310585965,
+        "file_idx": 24,
+        "y": 1535.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6108690079466804,
+        "file_idx": 25,
+        "y": 262.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7589374379344588,
+        "file_idx": 25,
+        "y": 441.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.599452804377565,
+        "file_idx": 25,
+        "y": 476.5,
+        "x": 189.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.5992729306487695,
+        "file_idx": 25,
+        "y": 687.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.06077001255455252,
+        "file_idx": 25,
+        "y": 941.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8096852022058824,
+        "file_idx": 25,
+        "y": 979.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7559633027522936,
+        "file_idx": 25,
+        "y": 1190.75,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7144632592822743,
+        "file_idx": 25,
+        "y": 1332.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0026.jpg"
+      }
+    ],
+    "6": [
+      {
+        "option": "D",
+        "score": 0.7133487040865003,
+        "file_idx": 26,
+        "y": 210.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09395109395109395,
+        "file_idx": 26,
+        "y": 389.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6439093484419264,
+        "file_idx": 26,
+        "y": 425.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7212279393487447,
+        "file_idx": 26,
+        "y": 638.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10860670194003529,
+        "file_idx": 26,
+        "y": 816.5,
+        "x": 149.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7218130569194399,
+        "file_idx": 26,
+        "y": 853.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.16775777414075285,
+        "file_idx": 26,
+        "y": 994.0,
+        "x": 158.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06780045351473923,
+        "file_idx": 26,
+        "y": 1390.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7808739122384744,
+        "file_idx": 26,
+        "y": 1426.0,
+        "x": 187.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09145299145299146,
+        "file_idx": 27,
+        "y": 352.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.47186982901268615,
+        "file_idx": 27,
+        "y": 854.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0028.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10983086680761099,
+        "file_idx": 27,
+        "y": 1323.75,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0028.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7369657641530544,
+        "file_idx": 27,
+        "y": 1358.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.14754545454545454,
+        "file_idx": 28,
+        "y": 225.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7102631006740596,
+        "file_idx": 28,
+        "y": 261.25,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7225531195877161,
+        "file_idx": 28,
+        "y": 730.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6427669289808607,
+        "file_idx": 28,
+        "y": 1123.25,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.059250071558057435,
+        "file_idx": 28,
+        "y": 1162.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.12050290135396519,
+        "file_idx": 28,
+        "y": 1556.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6130818318318318,
+        "file_idx": 28,
+        "y": 1593.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.49359776643881775,
+        "file_idx": 29,
+        "y": 442.25,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.1036036036036036,
+        "file_idx": 29,
+        "y": 946.75,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7087128925088414,
+        "file_idx": 29,
+        "y": 982.75,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.07823680946474573,
+        "file_idx": 29,
+        "y": 1019.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.15735361130097972,
+        "file_idx": 29,
+        "y": 1199.75,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6550212419777638,
+        "file_idx": 29,
+        "y": 1235.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08754438677956843,
+        "file_idx": 29,
+        "y": 1522.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7278481012658228,
+        "file_idx": 29,
+        "y": 1557.75,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09403131115459883,
+        "file_idx": 30,
+        "y": 569.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0031.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6539935160624816,
+        "file_idx": 30,
+        "y": 604.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7017774851876234,
+        "file_idx": 30,
+        "y": 999.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8201302363738913,
+        "file_idx": 30,
+        "y": 1215.5,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0031.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.783449157280933,
+        "file_idx": 30,
+        "y": 1574.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0031.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8210752059267925,
+        "file_idx": 31,
+        "y": 262.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0032.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06177156177156177,
+        "file_idx": 31,
+        "y": 840.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0032.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.670371599203716,
+        "file_idx": 31,
+        "y": 874.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0032.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.12021276595744682,
+        "file_idx": 31,
+        "y": 1197.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0032.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6072013093289689,
+        "file_idx": 31,
+        "y": 1233.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6029903600236081,
+        "file_idx": 32,
+        "y": 134.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8140860718044673,
+        "file_idx": 32,
+        "y": 316.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8442147856517935,
+        "file_idx": 32,
+        "y": 892.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8370676691729324,
+        "file_idx": 32,
+        "y": 1250.75,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1340909090909091,
+        "file_idx": 32,
+        "y": 1502.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6906384170244539,
+        "file_idx": 32,
+        "y": 1538.75,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8563283614353654,
+        "file_idx": 33,
+        "y": 189.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7696338383838384,
+        "file_idx": 33,
+        "y": 227.0,
+        "x": 192.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      }
+    ],
+    "7": [
+      {
+        "option": "D",
+        "score": 0.7668831168831169,
+        "file_idx": 33,
+        "y": 701.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7804695036981456,
+        "file_idx": 33,
+        "y": 737.0,
+        "x": 192.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7447452229299363,
+        "file_idx": 33,
+        "y": 843.75,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.11505028899103445,
+        "file_idx": 33,
+        "y": 1129.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7950607074390106,
+        "file_idx": 33,
+        "y": 1166.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07439759036144579,
+        "file_idx": 33,
+        "y": 1344.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8400407672607536,
+        "file_idx": 33,
+        "y": 1381.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7896114864864865,
+        "file_idx": 34,
+        "y": 515.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.11129148629148629,
+        "file_idx": 34,
+        "y": 911.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8707145807517555,
+        "file_idx": 34,
+        "y": 946.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8489691230146987,
+        "file_idx": 34,
+        "y": 1342.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0035.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.786036036036036,
+        "file_idx": 35,
+        "y": 261.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8147574819401445,
+        "file_idx": 35,
+        "y": 621.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07667512153878674,
+        "file_idx": 35,
+        "y": 800.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7550176263219741,
+        "file_idx": 35,
+        "y": 837.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7748647836538461,
+        "file_idx": 35,
+        "y": 1013.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7271805273833671,
+        "file_idx": 35,
+        "y": 1050.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7375579363270268,
+        "file_idx": 35,
+        "y": 1300.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07849697593617294,
+        "file_idx": 35,
+        "y": 1517.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7892323461185737,
+        "file_idx": 35,
+        "y": 1553.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0036.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.786626213592233,
+        "file_idx": 36,
+        "y": 263.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.80012182387748,
+        "file_idx": 36,
+        "y": 550.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.690779014308426,
+        "file_idx": 36,
+        "y": 583.0,
+        "x": 192.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8032977558839628,
+        "file_idx": 36,
+        "y": 764.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7938455449463216,
+        "file_idx": 36,
+        "y": 1124.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.08959156785243742,
+        "file_idx": 36,
+        "y": 1555.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6264280913978495,
+        "file_idx": 36,
+        "y": 1590.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07077084977637463,
+        "file_idx": 37,
+        "y": 278.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6517647058823529,
+        "file_idx": 37,
+        "y": 316.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7947450980392157,
+        "file_idx": 37,
+        "y": 675.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7918892602436907,
+        "file_idx": 37,
+        "y": 817.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1072402677907265,
+        "file_idx": 37,
+        "y": 1069.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7226005188067446,
+        "file_idx": 37,
+        "y": 1105.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7752446183953033,
+        "file_idx": 37,
+        "y": 1282.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8333333333333334,
+        "file_idx": 37,
+        "y": 1532.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6947212993724622,
+        "file_idx": 38,
+        "y": 532.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.05943754313319531,
+        "file_idx": 38,
+        "y": 568.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.057645517499532097,
+        "file_idx": 38,
+        "y": 928.75,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7191114164662774,
+        "file_idx": 38,
+        "y": 963.75,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7253353710307352,
+        "file_idx": 38,
+        "y": 1252.75,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8062417582417583,
+        "file_idx": 38,
+        "y": 1357.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08445777111444279,
+        "file_idx": 38,
+        "y": 1571.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7071366695542081,
+        "file_idx": 38,
+        "y": 1608.75,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06911464708282333,
+        "file_idx": 39,
+        "y": 277.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7173988239363542,
+        "file_idx": 39,
+        "y": 315.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      }
+    ],
+    "8": [
+      {
+        "option": "C",
+        "score": 0.12325925925925926,
+        "file_idx": 39,
+        "y": 609.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7690268630612412,
+        "file_idx": 39,
+        "y": 645.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7499293785310734,
+        "file_idx": 39,
+        "y": 787.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7625586751800344,
+        "file_idx": 39,
+        "y": 1075.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8109038590000515,
+        "file_idx": 39,
+        "y": 1215.25,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7313218390804598,
+        "file_idx": 39,
+        "y": 1251.0,
+        "x": 191.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.771001221001221,
+        "file_idx": 39,
+        "y": 1467.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7546098011811911,
+        "file_idx": 40,
+        "y": 226.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10094054417198521,
+        "file_idx": 40,
+        "y": 477.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8132974111234981,
+        "file_idx": 40,
+        "y": 513.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7625867017459937,
+        "file_idx": 40,
+        "y": 656.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09207661481177622,
+        "file_idx": 40,
+        "y": 941.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7556576402321082,
+        "file_idx": 40,
+        "y": 978.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7975453339230429,
+        "file_idx": 40,
+        "y": 1120.0,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7573974609375,
+        "file_idx": 40,
+        "y": 1336.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8164268164268165,
+        "file_idx": 40,
+        "y": 1621.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0041.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8086807380563777,
+        "file_idx": 41,
+        "y": 315.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08043450148713306,
+        "file_idx": 41,
+        "y": 603.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7586872586872586,
+        "file_idx": 41,
+        "y": 639.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.06716245153075988,
+        "file_idx": 41,
+        "y": 817.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7928306457718223,
+        "file_idx": 41,
+        "y": 854.0,
+        "x": 158.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7920363111202806,
+        "file_idx": 41,
+        "y": 994.5,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.745,
+        "file_idx": 41,
+        "y": 1319.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.13776947886606689,
+        "file_idx": 41,
+        "y": 1424.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7861588249937764,
+        "file_idx": 41,
+        "y": 1460.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0042.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10974549968963376,
+        "file_idx": 42,
+        "y": 172.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7568754391247616,
+        "file_idx": 42,
+        "y": 209.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7998571258483153,
+        "file_idx": 42,
+        "y": 245.5,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09700176366843033,
+        "file_idx": 42,
+        "y": 460.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8341255694196871,
+        "file_idx": 42,
+        "y": 496.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07728862189545414,
+        "file_idx": 42,
+        "y": 711.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7230266686168398,
+        "file_idx": 42,
+        "y": 747.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7575805391190007,
+        "file_idx": 42,
+        "y": 890.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7992471769134253,
+        "file_idx": 42,
+        "y": 1104.0,
+        "x": 157.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.729830421377184,
+        "file_idx": 42,
+        "y": 1319.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7966922146026624,
+        "file_idx": 42,
+        "y": 1605.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7842530384237941,
+        "file_idx": 43,
+        "y": 242.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07368804664723032,
+        "file_idx": 43,
+        "y": 529.25,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7633215789989225,
+        "file_idx": 43,
+        "y": 565.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0582164058283864,
+        "file_idx": 43,
+        "y": 746.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7597750034298258,
+        "file_idx": 43,
+        "y": 781.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7607769059381962,
+        "file_idx": 43,
+        "y": 995.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09451010620075369,
+        "file_idx": 43,
+        "y": 1173.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7805898455658282,
+        "file_idx": 43,
+        "y": 1209.75,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0044.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.727473624180211,
+        "file_idx": 44,
+        "y": 136.0,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.701359654113096,
+        "file_idx": 44,
+        "y": 172.75,
+        "x": 191.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07651570489408328,
+        "file_idx": 44,
+        "y": 388.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7787345075016309,
+        "file_idx": 44,
+        "y": 423.5,
+        "x": 149.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7351881602648362,
+        "file_idx": 44,
+        "y": 674.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7962184873949579,
+        "file_idx": 44,
+        "y": 711.0,
+        "x": 194.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8179637127005548,
+        "file_idx": 44,
+        "y": 961.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6104928457869634,
+        "file_idx": 44,
+        "y": 1356.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0045.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.1670047329276538,
+        "file_idx": 45,
+        "y": 135.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0046.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8020057446083443,
+        "file_idx": 45,
+        "y": 677.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0046.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8075075075075074,
+        "file_idx": 45,
+        "y": 1001.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0046.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6547270955165692,
+        "file_idx": 45,
+        "y": 1323.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0046.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8149046646237657,
+        "file_idx": 45,
+        "y": 1573.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0046.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6879798086023766,
+        "file_idx": 46,
+        "y": 260.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10175853558206499,
+        "file_idx": 46,
+        "y": 549.25,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6692399667290496,
+        "file_idx": 46,
+        "y": 586.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6241504662557295,
+        "file_idx": 46,
+        "y": 834.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7773326572008113,
+        "file_idx": 46,
+        "y": 1087.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.807995767487866,
+        "file_idx": 46,
+        "y": 1409.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.760515938218863,
+        "file_idx": 46,
+        "y": 1484.0,
+        "x": 193.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.787632105112825,
+        "file_idx": 46,
+        "y": 1589.0,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0047.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09274556629996476,
+        "file_idx": 47,
+        "y": 387.5,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8262665066026411,
+        "file_idx": 47,
+        "y": 423.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.766798418972332,
+        "file_idx": 47,
+        "y": 565.0,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7762436993206224,
+        "file_idx": 47,
+        "y": 925.5,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7794278996865204,
+        "file_idx": 47,
+        "y": 1176.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.830519679833778,
+        "file_idx": 47,
+        "y": 1390.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0048.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7673937795889015,
+        "file_idx": 48,
+        "y": 263.5,
+        "x": 156.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7547717208734157,
+        "file_idx": 48,
+        "y": 477.5,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09273760171963764,
+        "file_idx": 48,
+        "y": 800.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7883818536637528,
+        "file_idx": 48,
+        "y": 836.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7899965144649704,
+        "file_idx": 48,
+        "y": 1050.0,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7175619834710745,
+        "file_idx": 48,
+        "y": 1373.0,
+        "x": 151.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.4333702473237357,
+        "file_idx": 48,
+        "y": 1587.5,
+        "x": 150.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0049.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.775160329243044,
+        "file_idx": 49,
+        "y": 335.0,
+        "x": 168.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0050.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07450980392156863,
+        "file_idx": 49,
+        "y": 512.75,
+        "x": 155.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0050.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7882657960437872,
+        "file_idx": 49,
+        "y": 549.5,
+        "x": 152.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0050.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08013608013608013,
+        "file_idx": 49,
+        "y": 837.5,
+        "x": 154.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0050.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.743013468013468,
+        "file_idx": 49,
+        "y": 873.0,
+        "x": 153.0,
+        "file": "PHÁP LUẬT ĐẠI CƯƠNG_page-0050.jpg"
+      }
+    ]
+  }
+}

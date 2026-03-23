@@ -1,0 +1,372 @@
+[
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg",
+    "lesson": 1,
+    "lessonsDetected": [
+      1
+    ],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 13,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 14,
+    "qMax": 20,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 21,
+    "qMax": 27,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg",
+    "lesson": 2,
+    "lessonsDetected": [
+      2
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 4,
+    "qMax": 9,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 10,
+    "qMax": 14,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 15,
+    "qMax": 20,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 21,
+    "qMax": 26,
+    "qCount": 4
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg",
+    "lesson": 3,
+    "lessonsDetected": [
+      3
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 3,
+    "qMax": 8,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 11,
+    "qMax": 16,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 17,
+    "qMax": 23,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 24,
+    "qMax": 29,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg",
+    "lesson": 4,
+    "lessonsDetected": [
+      4
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 6,
+    "qMax": 10,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 13,
+    "qMax": 17,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 18,
+    "qMax": 22,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 25,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg",
+    "lesson": 5,
+    "lessonsDetected": [
+      5
+    ],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg",
+    "lesson": 5,
+    "lessonsDetected": [],
+    "qMin": 8,
+    "qMax": 13,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg",
+    "lesson": 5,
+    "lessonsDetected": [],
+    "qMin": 14,
+    "qMax": 20,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg",
+    "lesson": 5,
+    "lessonsDetected": [],
+    "qMin": 21,
+    "qMax": 27,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg",
+    "lesson": 6,
+    "lessonsDetected": [
+      6
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 4,
+    "qMax": 10,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 11,
+    "qMax": 15,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 16,
+    "qMax": 22,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 23,
+    "qMax": 29,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg",
+    "lesson": 7,
+    "lessonsDetected": [
+      7
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 6,
+    "qMax": 12,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 13,
+    "qMax": 19,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 20,
+    "qMax": 26,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg",
+    "lesson": 8,
+    "lessonsDetected": [
+      8
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 7
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg",
+    "lesson": 8,
+    "lessonsDetected": [],
+    "qMin": 4,
+    "qMax": 9,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg",
+    "lesson": 8,
+    "lessonsDetected": [],
+    "qMin": 10,
+    "qMax": 13,
+    "qCount": 4
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0036.jpg",
+    "lesson": 8,
+    "lessonsDetected": [],
+    "qMin": 15,
+    "qMax": 19,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg",
+    "lesson": 8,
+    "lessonsDetected": [],
+    "qMin": 20,
+    "qMax": 25,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg",
+    "lesson": 9,
+    "lessonsDetected": [
+      9
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 2,
+    "qMax": 6,
+    "qCount": 4
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 11,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 12,
+    "qMax": 16,
+    "qCount": 4
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 17,
+    "qMax": 22,
+    "qCount": 6
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 23,
+    "qMax": 27,
+    "qCount": 5
+  },
+  {
+    "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0044.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 29,
+    "qMax": 30,
+    "qCount": 2
+  }
+]

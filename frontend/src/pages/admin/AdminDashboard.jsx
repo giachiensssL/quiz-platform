@@ -5,7 +5,7 @@ import { useData } from '../../context/DataContext';
 import { adminDataAPI } from '../../api/api';
 import Navbar from '../../components/Navbar';
 import { Button, Input, Select, Textarea, Modal, Confirm, Toast, Badge, EmptyState } from '../../components/UI';
-import { parseDocxQuestionsWithReport } from '../../utils/wordQuestionParser';
+import { parseDocxQuestionsWithReport, parseLessonsFromTextWithReport, parseQuestionsFromTextWithReport } from '../../utils/wordQuestionParser';
 
 // ── OVERVIEW ────────────────────────────────────────────────────
 function Overview({ data, analytics }) {
@@ -53,8 +53,31 @@ function Overview({ data, analytics }) {
 // ── USERS ────────────────────────────────────────────────────────
 function UsersPanel() {
   const { mockUsers, setMockUsers } = useAuth();
+  const emptyAccessLocks = { faculties: [], years: [], semesters: [], subjects: [], lessons: [] };
+  const normalizeAccessLocks = (locks) => ({
+    faculties: Array.from(new Set((locks?.faculties || []).map((id) => String(id)))),
+    years: Array.from(new Set((locks?.years || []).map((id) => String(id)))),
+    semesters: Array.from(new Set((locks?.semesters || []).map((id) => String(id)))),
+    subjects: Array.from(new Set((locks?.subjects || []).map((id) => String(id)))),
+    lessons: Array.from(new Set((locks?.lessons || []).map((id) => String(id)))),
+  });
+  const countUserLocks = (locks) => {
+    const normalized = normalizeAccessLocks(locks || emptyAccessLocks);
+    return normalized.faculties.length
+      + normalized.years.length
+      + normalized.semesters.length
+      + normalized.subjects.length
+      + normalized.lessons.length;
+  };
+  const mapOption = (item, labelField = 'name') => ({ id: String(item?._id || item?.id || ''), label: String(item?.[labelField] || item?.label || item?.title || item?.name || '').trim() });
+
   const [modal, setModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [accessModal, setAccessModal] = useState(false);
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [accessTarget, setAccessTarget] = useState(null);
+  const [accessForm, setAccessForm] = useState(emptyAccessLocks);
+  const [accessOptions, setAccessOptions] = useState({ faculties: [], years: [], semesters: [], subjects: [], lessons: [] });
   const [confirm, setConfirm] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -76,8 +99,15 @@ function UsersPanel() {
     email: user.email || '',
     role: user.role || 'user',
     isBlocked: Boolean(user.blocked),
+    accessLocks: normalizeAccessLocks(user.accessLocks || emptyAccessLocks),
     attempts: Array.isArray(user.attempts) ? user.attempts : [],
     createdAt: user.createdAt || new Date().toISOString(),
+  });
+
+  const mapServerUser = (user) => ({
+    ...user,
+    _id: String(user?._id || user?.id || ''),
+    accessLocks: normalizeAccessLocks(user?.accessLocks || emptyAccessLocks),
   });
 
   const loadMockUsers = () => {
@@ -97,7 +127,7 @@ function UsersPanel() {
     try {
       setLoading(true);
       const res = await adminDataAPI.listUsers();
-      setUsers(Array.isArray(res?.data) ? res.data : []);
+      setUsers((Array.isArray(res?.data) ? res.data : []).map(mapServerUser));
       setMode('server');
     } catch {
       loadMockUsers();
@@ -131,6 +161,7 @@ function UsersPanel() {
         fullName: form.fullName.trim(),
         email: form.email.trim(),
         blocked: false,
+        accessLocks: normalizeAccessLocks(emptyAccessLocks),
         attempts: [],
         createdAt: new Date().toISOString(),
       };
@@ -204,6 +235,72 @@ function UsersPanel() {
       role: user.role || 'user',
     });
     setEditModal(true);
+  };
+
+  const toggleAccessLockItem = (key, id) => {
+    const lockId = String(id || '');
+    setAccessForm((prev) => {
+      const current = Array.isArray(prev?.[key]) ? prev[key] : [];
+      const exists = current.includes(lockId);
+      return {
+        ...prev,
+        [key]: exists ? current.filter((item) => item !== lockId) : [...current, lockId],
+      };
+    });
+  };
+
+  const openAccessLocks = async (user) => {
+    if (mode === 'local') {
+      setToast('Chế độ cục bộ không hỗ trợ khóa truy cập theo user. Vui lòng đăng nhập server admin.');
+      return;
+    }
+
+    try {
+      setAccessLoading(true);
+      setAccessTarget(user);
+      const [facRes, yearRes, semRes, subRes, lessonRes, lockRes] = await Promise.all([
+        adminDataAPI.listFaculties(),
+        adminDataAPI.listYears(),
+        adminDataAPI.listSemesters(),
+        adminDataAPI.listSubjects(),
+        adminDataAPI.listLessons(),
+        adminDataAPI.getUserAccessLocks(String(user._id || user.id)),
+      ]);
+
+      setAccessOptions({
+        faculties: (Array.isArray(facRes?.data) ? facRes.data : []).map((item) => mapOption(item, 'name')),
+        years: (Array.isArray(yearRes?.data) ? yearRes.data : []).map((item) => mapOption(item, 'label')),
+        semesters: (Array.isArray(semRes?.data) ? semRes.data : []).map((item) => mapOption(item, 'label')),
+        subjects: (Array.isArray(subRes?.data) ? subRes.data : []).map((item) => mapOption(item, 'name')),
+        lessons: (Array.isArray(lessonRes?.data) ? lessonRes.data : []).map((item) => mapOption(item, 'title')),
+      });
+      setAccessForm(normalizeAccessLocks(lockRes?.data?.accessLocks || emptyAccessLocks));
+      setAccessModal(true);
+    } catch (error) {
+      setToast(error?.response?.data?.message || 'Không tải được danh sách khóa truy cập user.');
+    } finally {
+      setAccessLoading(false);
+    }
+  };
+
+  const saveAccessLocks = async () => {
+    if (!accessTarget?._id) return;
+    try {
+      setAccessLoading(true);
+      await adminDataAPI.setUserAccessLocks(String(accessTarget._id), normalizeAccessLocks(accessForm));
+      setUsers((prev) => prev.map((item) => (
+        String(item._id || item.id) === String(accessTarget._id)
+          ? { ...item, accessLocks: normalizeAccessLocks(accessForm) }
+          : item
+      )));
+      setToast('Đã cập nhật khóa truy cập theo tài khoản.');
+      setAccessModal(false);
+      setAccessTarget(null);
+    } catch (error) {
+      setToast(error?.response?.data?.message || 'Không thể lưu khóa truy cập user.');
+    } finally {
+      setAccessLoading(false);
+    }
   };
 
   const saveEdit = async () => {
@@ -299,6 +396,52 @@ function UsersPanel() {
         />
       </Modal>
 
+      <Modal
+        open={accessModal}
+        title={`Khóa truy cập theo user: @${accessTarget?.username || ''}`}
+        onClose={() => { if (!accessLoading) setAccessModal(false); }}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setAccessModal(false)} disabled={accessLoading}>Huỷ</Button>
+            <Button variant="primary" onClick={saveAccessLocks} loading={accessLoading}>Lưu khóa truy cập</Button>
+          </>
+        }
+      >
+        <div style={{ display: 'grid', gap: 12, maxHeight: '60vh', overflowY: 'auto', paddingRight: 4 }}>
+          {[
+            { key: 'faculties', title: 'Ngành học' },
+            { key: 'years', title: 'Năm học' },
+            { key: 'semesters', title: 'Học kỳ' },
+            { key: 'subjects', title: 'Môn học' },
+            { key: 'lessons', title: 'Bài học' },
+          ].map((section) => {
+            const options = accessOptions?.[section.key] || [];
+            return (
+              <div key={section.key} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '10px 12px' }}>
+                <div style={{ fontWeight: 700, marginBottom: 8 }}>
+                  {section.title} ({Array.isArray(accessForm?.[section.key]) ? accessForm[section.key].length : 0} khóa)
+                </div>
+                {options.length === 0 ? (
+                  <div style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Không có dữ liệu</div>
+                ) : (
+                  <div style={{ display: 'grid', gap: 6, maxHeight: 160, overflowY: 'auto' }}>
+                    {options.map((opt) => {
+                      const checked = (accessForm?.[section.key] || []).includes(opt.id);
+                      return (
+                        <label key={`${section.key}-${opt.id}`} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: '.84rem', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={checked} onChange={() => toggleAccessLockItem(section.key, opt.id)} />
+                          <span>{opt.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
+
       <div className="table-wrap">
         <div className="table-header">
           <div className="table-title">Danh sách người dùng</div>
@@ -316,7 +459,7 @@ function UsersPanel() {
         )}
         {loading ? <EmptyState icon="⏳" text="Đang tải danh sách người dùng..." /> : users.length === 0 ? <EmptyState icon="👥" text="Chưa có người dùng" /> : (
           <table className="data-table">
-            <thead><tr><th>Tài khoản</th><th>Thông tin</th><th>Mật khẩu</th><th>Vai trò</th><th>Trạng thái</th><th>Kết quả</th><th>Thao tác</th></tr></thead>
+            <thead><tr><th>Tài khoản</th><th>Thông tin</th><th>Mật khẩu</th><th>Vai trò</th><th>Trạng thái</th><th>Khóa riêng</th><th>Kết quả</th><th>Thao tác</th></tr></thead>
             <tbody>
               {users.map(u => (
                 <tr key={u._id}>
@@ -336,11 +479,17 @@ function UsersPanel() {
                   </td>
                   <td><Badge color={u.role === 'admin' ? 'orange' : 'blue'}>{u.role || 'user'}</Badge></td>
                   <td><Badge color={u.isBlocked ? 'red' : 'green'}>{u.isBlocked ? 'Bị khoá' : 'Hoạt động'}</Badge></td>
+                  <td>
+                    <Badge color={countUserLocks(u.accessLocks) > 0 ? 'orange' : 'green'}>
+                      {countUserLocks(u.accessLocks) > 0 ? `${countUserLocks(u.accessLocks)} mục khóa` : 'Không khóa'}
+                    </Badge>
+                  </td>
                   <td style={{ fontSize: '.8rem', color: 'var(--text-2)' }}>
                     <div>Lượt làm: {Array.isArray(u.attempts) ? u.attempts.length : 0}</div>
                   </td>
                   <td>
                     <div className="td-actions">
+                      <Button variant="ghost" size="sm" onClick={() => openAccessLocks(u)}>Khóa truy cập</Button>
                       <Button variant="ghost" size="sm" onClick={() => openEdit(u)}>Sửa</Button>
                       <Button variant="ghost" size="sm" onClick={() => toggleBlock(u._id, u.isBlocked)}>{u.isBlocked ? '🔓 Mở' : '🔒 Khoá'}</Button>
                       <Button variant="danger" size="sm" onClick={() => setConfirm(u)}>Xoá</Button>
@@ -371,6 +520,7 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
     setForm({ ...base, ...defaults });
     setModal(true);
   };
+
   const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal(true); };
   const visibleFields = Array.isArray(tableFields) && tableFields.length ? tableFields : fields.slice(0, 3);
 
@@ -920,7 +1070,7 @@ function SubjectsPanel({ data, subjectsCrud }) {
         />
       </div>
       <CrudTable
-        title="Môn học"
+        title="Môn học (có thể di chuyển ngành/năm/kỳ)"
         icon="📚"
         items={filteredSubjects}
         fields={fields}
@@ -932,6 +1082,9 @@ function SubjectsPanel({ data, subjectsCrud }) {
         onToggleLock={(id, locked) => subjectsCrud.update(id, { locked })}
         showLockColumn
       />
+      <div style={{ marginTop: 8, color: 'var(--color-muted)' }}>
+        Mẹo: bấm "Sửa" trên từng môn để đổi Ngành học, Năm học hoặc Học kỳ và di chuyển môn sang vị trí mới.
+      </div>
     </>
   );
 }
@@ -960,7 +1113,7 @@ function SubjectStatsBoard({ data }) {
 }
 
 // ── QUESTIONS PANEL ────────────────────────────────────────────
-function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
+function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
   const makeDefaultByType = (type) => {
     if (type === 'truefalse') {
       return [
@@ -977,8 +1130,12 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
   const [toast, setToast] = useState('');
   const [confirm, setConfirm] = useState(null);
   const [importLessonId, setImportLessonId] = useState('');
+  const [importMode, setImportMode] = useState('single');
+  const [importSubjectId, setImportSubjectId] = useState('');
   const [isImporting, setIsImporting] = useState(false);
   const [importFileName, setImportFileName] = useState('');
+  const [importPreview, setImportPreview] = useState(null);
+  const [importSkipLogs, setImportSkipLogs] = useState([]);
   const [questionImageFileName, setQuestionImageFileName] = useState('');
   const [answerImageFileNames, setAnswerImageFileNames] = useState({});
   const [imagePreview, setImagePreview] = useState({ url: '', title: 'Xem hình ảnh câu hỏi' });
@@ -1050,49 +1207,341 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
     event.stopPropagation();
   };
 
-  const importDocxFile = async (file) => {
-    if (!file) return;
-    setImportFileName(file.name || '');
+  const openImportModal = () => {
+    setImportMode('single');
+    setImportLessonId(filterLessonId || (lessonOptions.length === 1 ? String(lessonOptions[0].id) : ''));
+    setImportSubjectId(filterSubjectId || '');
+    setImportFileName('');
+    setImportPreview(null);
+    setImportSkipLogs([]);
+    setImportModal(true);
+  };
 
-    if (!importLessonId) {
-      setToast('Vui lòng chọn bài học trước khi import Word.');
-      return;
+  const normalizeImportedQuestion = (question) => {
+    const type = String(question?.type || 'single').trim().toLowerCase();
+    const normalizedAnswers = (Array.isArray(question?.answers) ? question.answers : [])
+      .map((answer, idx) => ({
+        id: idx + 1,
+        text: String(answer?.text || '').trim(),
+        imageUrl: String(answer?.imageUrl || '').trim(),
+        correct: Boolean(answer?.correct ?? answer?.isCorrect),
+      }));
+
+    return {
+      text: String(question?.text || '').trim(),
+      type,
+      imageUrl: String(question?.imageUrl || '').trim(),
+      answers: normalizedAnswers,
+      dragItems: Array.isArray(question?.dragItems) ? question.dragItems : [],
+      dropTargets: Array.isArray(question?.dropTargets) ? question.dropTargets : [],
+    };
+  };
+
+  const buildQuestionKey = (question) => `${String(question?.type || '').toLowerCase()}|${String(question?.text || '').trim().toLowerCase()}`;
+
+  const toSkipLog = ({ reason, lessonLabel, questionText, detail }) => ({
+    reason,
+    lessonLabel: lessonLabel || '',
+    questionText: String(questionText || '').slice(0, 180),
+    detail: detail || '',
+  });
+
+  const splitImportableQuestions = (questionsToImport, existingKeys, lessonLabel) => {
+    const localKeys = new Set(existingKeys);
+    const importable = [];
+    const skipped = [];
+
+    questionsToImport
+      .map(normalizeImportedQuestion)
+      .forEach((question) => {
+        if (!question.text) {
+          skipped.push(toSkipLog({ reason: 'Thiếu nội dung', lessonLabel, questionText: '', detail: 'Câu hỏi rỗng' }));
+          return;
+        }
+        const key = buildQuestionKey(question);
+        if (localKeys.has(key)) {
+          skipped.push(toSkipLog({ reason: 'Trùng câu hỏi', lessonLabel, questionText: question.text, detail: 'Đã tồn tại trong bài học đích' }));
+          return;
+        }
+        localKeys.add(key);
+        importable.push(question);
+      });
+
+    return { importable, skipped };
+  };
+
+  const fileToBase64 = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    let binary = '';
+    const bytes = new Uint8Array(arrayBuffer);
+    const chunkSize = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, i + chunkSize);
+      binary += String.fromCharCode(...chunk);
+    }
+    return btoa(binary);
+  };
+
+  const extractTextFromFile = async (file) => {
+    const lowerName = String(file?.name || '').toLowerCase();
+
+    if (lowerName.endsWith('.docx')) {
+      const report = await parseDocxQuestionsWithReport(file);
+      return {
+        text: String(report?.sourceText || ''),
+        parsedQuestions: report?.questions || [],
+        invalidDetails: report?.invalidDetails || [],
+        report,
+      };
     }
 
-    if (!file.name.toLowerCase().endsWith('.docx')) {
-      setToast('Chỉ hỗ trợ file Word .docx');
+    if (lowerName.endsWith('.pdf')) {
+      const fileContentBase64 = await fileToBase64(file);
+      const response = await adminDataAPI.extractDocumentText({
+        fileName: file.name,
+        fileContentBase64,
+      });
+      const text = String(response?.data?.text || '');
+      const highlightedTexts = Array.isArray(response?.data?.highlightedTexts) ? response.data.highlightedTexts : [];
+      const report = parseQuestionsFromTextWithReport(text, { highlightedAnswers: highlightedTexts });
+      return {
+        text,
+        parsedQuestions: report.questions,
+        invalidDetails: report.invalidDetails || [],
+        highlightedTexts,
+        report,
+      };
+    }
+
+    if (lowerName.endsWith('.txt')) {
+      const text = await file.text();
+      const report = parseQuestionsFromTextWithReport(text);
+      return {
+        text,
+        parsedQuestions: report.questions,
+        invalidDetails: report.invalidDetails || [],
+        report,
+      };
+    }
+
+    throw new Error('Chỉ hỗ trợ file .docx, .pdf, .txt');
+  };
+
+  const findOrCreateLessonForAutoImport = async (subjectId, lessonNumber, lessonTitle) => {
+    const normalizedSubjectId = String(subjectId || '');
+    const normalizedNumber = Number(lessonNumber || 0);
+    const titlePrefix = normalizedNumber > 0 ? `bài ${normalizedNumber}` : '';
+
+    const existing = (data.lessons || []).find((lesson) => {
+      if (String(lesson.subjectId) !== normalizedSubjectId) return false;
+      if (normalizedNumber > 0 && Number(lesson.order || 0) === normalizedNumber) return true;
+      if (!titlePrefix) return false;
+      return String(lesson.name || '').toLowerCase().includes(titlePrefix);
+    });
+    if (existing) return { lesson: existing, created: false };
+
+    const lessonName = normalizedNumber > 0
+      ? (lessonTitle ? `Bài ${normalizedNumber}: ${lessonTitle}` : `Bài ${normalizedNumber}`)
+      : (lessonTitle || `Bài ${Date.now()}`);
+
+    const created = await lessonsCrud.add({
+      subjectId: normalizedSubjectId,
+      name: lessonName,
+      order: normalizedNumber > 0 ? normalizedNumber : 0,
+      desc: '',
+    });
+    return { lesson: created, created: true };
+  };
+
+  const findLessonForAutoImportPreview = (subjectId, lessonNumber, lessonTitle) => {
+    const normalizedSubjectId = String(subjectId || '');
+    const normalizedNumber = Number(lessonNumber || 0);
+    const titlePrefix = normalizedNumber > 0 ? `bài ${normalizedNumber}` : '';
+
+    return (data.lessons || []).find((lesson) => {
+      if (String(lesson.subjectId) !== normalizedSubjectId) return false;
+      if (normalizedNumber > 0 && Number(lesson.order || 0) === normalizedNumber) return true;
+      if (!titlePrefix) return false;
+      return String(lesson.name || '').toLowerCase().includes(titlePrefix)
+        || (lessonTitle && String(lesson.name || '').toLowerCase().includes(String(lessonTitle).toLowerCase()));
+    }) || null;
+  };
+
+  const normalizeInvalidLogs = (items, fallbackLessonLabel = '') => {
+    return (Array.isArray(items) ? items : []).map((item) => {
+      const lessonLabel = item?.lessonNumber
+        ? `Bài ${item.lessonNumber}${item?.lessonTitle ? `: ${item.lessonTitle}` : ''}`
+        : fallbackLessonLabel;
+      return toSkipLog({
+        reason: 'Sai định dạng',
+        lessonLabel,
+        questionText: item?.questionHead || item?.sample || '',
+        detail: item?.message || item?.reason || 'Không parse được câu hỏi',
+      });
+    });
+  };
+
+  const prepareImportPreview = async (file) => {
+    if (!file) return;
+    setImportFileName(file.name || '');
+    setImportPreview(null);
+    setImportSkipLogs([]);
+
+    if (importMode === 'single' && !importLessonId) {
+      setToast('Vui lòng chọn bài học trước khi import.');
+      return;
+    }
+    if (importMode === 'auto' && !importSubjectId) {
+      setToast('Vui lòng chọn môn học để tự tạo bài học.');
       return;
     }
 
     try {
       setIsImporting(true);
-      const report = await parseDocxQuestionsWithReport(file);
-      const parsed = report.questions;
-      if (!parsed.length) {
-        setToast('Không tìm thấy câu hỏi hợp lệ trong file Word.');
-        return;
-      }
+      const extracted = await extractTextFromFile(file);
+      const allSkipLogs = [...normalizeInvalidLogs(extracted.invalidDetails)];
+      const lessonPlans = [];
 
-      const chunkSize = 5;
-      for (let i = 0; i < parsed.length; i += chunkSize) {
-        const chunk = parsed.slice(i, i + chunkSize);
-        await Promise.all(chunk.map((question) => questionsCrud.add({
-          ...question,
-          lessonId: importLessonId,
-          answers: question.answers.map((answer, idx) => ({ id: idx + 1, ...answer })),
-        })));
-      }
+      if (importMode === 'single') {
+        const lesson = (data.lessons || []).find((item) => String(item.id) === String(importLessonId));
+        const lessonLabel = lesson?.name || `Lesson ${importLessonId}`;
+        const existingKeys = new Set(
+          (data.questions || [])
+            .filter((q) => String(q.lessonId) === String(importLessonId))
+            .map(buildQuestionKey)
+        );
+        const split = splitImportableQuestions(extracted.parsedQuestions, existingKeys, lessonLabel);
+        allSkipLogs.push(...split.skipped);
 
-      if (report.invalidCount > 0) {
-        setToast(`Đã import ${parsed.length} câu hợp lệ. Bỏ qua ${report.invalidCount}/${report.candidateCount} câu sai định dạng.`);
+        lessonPlans.push({
+          subjectId: String(lesson?.subjectId || ''),
+          lessonId: String(importLessonId),
+          lessonLabel,
+          willCreate: false,
+          lessonNumber: null,
+          lessonTitle: '',
+          totalParsed: extracted.parsedQuestions.length,
+          toImportCount: split.importable.length,
+          questionsToImport: split.importable,
+        });
       } else {
-        setToast(`Đã import ${parsed.length} câu hỏi từ file Word.`);
+        const lessonReport = parseLessonsFromTextWithReport(extracted.text, { highlightedAnswers: extracted.highlightedTexts || [] });
+        allSkipLogs.push(...normalizeInvalidLogs(lessonReport.invalidDetails));
+
+        lessonReport.lessons.forEach((group) => {
+          const existingLesson = findLessonForAutoImportPreview(importSubjectId, group.lessonNumber, group.title);
+          const lessonLabel = existingLesson
+            ? String(existingLesson.name || '')
+            : `Bài ${group.lessonNumber || '?'}${group.title ? `: ${group.title}` : ''}`;
+
+          const existingKeys = new Set(
+            (data.questions || [])
+              .filter((q) => existingLesson && String(q.lessonId) === String(existingLesson.id))
+              .map(buildQuestionKey)
+          );
+
+          const split = splitImportableQuestions(group.questions, existingKeys, lessonLabel);
+          allSkipLogs.push(...split.skipped);
+
+          lessonPlans.push({
+            subjectId: String(importSubjectId),
+            lessonId: existingLesson ? String(existingLesson.id) : '',
+            lessonLabel,
+            willCreate: !existingLesson,
+            lessonNumber: group.lessonNumber,
+            lessonTitle: group.title,
+            totalParsed: group.questions.length,
+            toImportCount: split.importable.length,
+            questionsToImport: split.importable,
+          });
+        });
       }
+
+      const summary = lessonPlans.reduce((acc, item) => ({
+        totalParsed: acc.totalParsed + Number(item.totalParsed || 0),
+        toImport: acc.toImport + Number(item.toImportCount || 0),
+        willCreateLessons: acc.willCreateLessons + (item.willCreate ? 1 : 0),
+      }), { totalParsed: 0, toImport: 0, willCreateLessons: 0 });
+
+      setImportSkipLogs(allSkipLogs);
+      setImportPreview({
+        mode: importMode,
+        fileName: file.name || '',
+        lessonPlans,
+        summary: {
+          ...summary,
+          skipped: allSkipLogs.length,
+        },
+      });
+    } catch (error) {
+      setToast(`Không thể phân tích file: ${error?.response?.data?.message || error.message || 'Lỗi không xác định'}`);
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const runImportWithPreview = async () => {
+    if (!importPreview) {
+      setToast('Vui lòng chọn file để xem trước trước khi import.');
+      return;
+    }
+
+    try {
+      setIsImporting(true);
+      let importedQuestions = 0;
+      let createdLessons = 0;
+      const runtimeSkipLogs = [];
+
+      for (const plan of importPreview.lessonPlans) {
+        let lessonId = plan.lessonId;
+
+        if (!lessonId && plan.willCreate) {
+          const { lesson } = await findOrCreateLessonForAutoImport(plan.subjectId, plan.lessonNumber, plan.lessonTitle);
+          lessonId = String(lesson?.id || '');
+          if (lessonId) createdLessons += 1;
+        }
+
+        if (!lessonId) {
+          runtimeSkipLogs.push(toSkipLog({
+            reason: 'Không xác định bài học',
+            lessonLabel: plan.lessonLabel,
+            questionText: '',
+            detail: 'Không tìm thấy hoặc tạo được bài học đích',
+          }));
+          continue;
+        }
+
+        const chunkSize = 5;
+        for (let i = 0; i < plan.questionsToImport.length; i += chunkSize) {
+          const chunk = plan.questionsToImport.slice(i, i + chunkSize);
+          const results = await Promise.allSettled(
+            chunk.map((question) => questionsCrud.add({ ...question, lessonId }))
+          );
+
+          results.forEach((result, idx) => {
+            const currentQuestion = chunk[idx];
+            if (result.status === 'fulfilled') {
+              importedQuestions += 1;
+              return;
+            }
+            runtimeSkipLogs.push(toSkipLog({
+              reason: 'Lỗi khi lưu',
+              lessonLabel: plan.lessonLabel,
+              questionText: currentQuestion?.text || '',
+              detail: result.reason?.response?.data?.message || result.reason?.message || 'Không lưu được câu hỏi',
+            }));
+          });
+        }
+      }
+
+      const totalSkipped = importSkipLogs.length + runtimeSkipLogs.length;
+      setImportSkipLogs((prev) => [...prev, ...runtimeSkipLogs]);
+      setToast(`Đã import ${importedQuestions} câu. Tạo mới ${createdLessons} bài. Bỏ qua ${totalSkipped} mục.`);
       setImportModal(false);
-      setImportLessonId('');
+      setImportPreview(null);
       setImportFileName('');
     } catch (error) {
-      setToast(`Import thất bại: ${error.message || 'Không thể đọc file Word'}`);
+      setToast(`Import thất bại: ${error?.response?.data?.message || error.message || 'Không thể import dữ liệu'}`);
     } finally {
       setIsImporting(false);
     }
@@ -1100,14 +1549,58 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
 
   const handleImportDocx = async (event) => {
     const file = event.target.files?.[0];
-    await importDocxFile(file);
+    await prepareImportPreview(file);
     event.target.value = '';
   };
 
   const onImportDrop = async (event) => {
     preventDropDefaults(event);
     const file = event.dataTransfer?.files?.[0];
-    await importDocxFile(file);
+    await prepareImportPreview(file);
+  };
+
+  const escapeCsvCell = (value) => {
+    const text = String(value || '');
+    if (/[,"\n]/.test(text)) {
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+    return text;
+  };
+
+  const downloadTextFile = (content, fileName, mimeType) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportSkipLogs = (format) => {
+    if (!importSkipLogs.length) {
+      setToast('Hiện chưa có log bỏ qua để export.');
+      return;
+    }
+
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    if (format === 'csv') {
+      const header = ['Reason', 'Lesson', 'Question', 'Detail'];
+      const rows = importSkipLogs.map((item) => [
+        item.reason || '',
+        item.lessonLabel || '',
+        item.questionText || '',
+        item.detail || '',
+      ]);
+      const csv = [header, ...rows].map((row) => row.map(escapeCsvCell).join(',')).join('\n');
+      downloadTextFile(csv, `import-skip-logs-${stamp}.csv`, 'text/csv;charset=utf-8');
+      return;
+    }
+
+    const txt = importSkipLogs.map((item, idx) => (
+      `${idx + 1}. [${item.reason || 'Unknown'}]\nBài: ${item.lessonLabel || 'Không xác định'}\nCâu: ${item.questionText || '(trống)'}\nLý do: ${item.detail || ''}\n`
+    )).join('\n');
+    downloadTextFile(txt, `import-skip-logs-${stamp}.txt`, 'text/plain;charset=utf-8');
   };
 
   const openEdit = (q) => {
@@ -1436,28 +1929,98 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
 
       <Modal
         open={importModal}
-        title="Import câu hỏi từ Word (.docx)"
+        title="Import câu hỏi từ tài liệu"
         onClose={() => setImportModal(false)}
-        footer={<><Button variant="ghost" onClick={() => setImportModal(false)}>Đóng</Button></>}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setImportModal(false)} disabled={isImporting}>Đóng</Button>
+            <Button variant="primary" onClick={runImportWithPreview} disabled={!importPreview || isImporting} loading={isImporting}>Xác nhận import</Button>
+          </>
+        }
       >
         <Select
-          label="Bài học để lưu câu hỏi *"
-          value={importLessonId}
-          onChange={(e) => setImportLessonId(e.target.value)}
-          options={lessonOptions.map((lesson) => ({ value: lesson.id, label: lesson.name }))}
+          label="Chế độ import"
+          value={importMode}
+          onChange={(e) => setImportMode(e.target.value)}
+          options={[
+            { value: 'single', label: 'Import vào một bài học đã chọn' },
+            { value: 'auto', label: 'Tự tách Bài 1, Bài 2... và tự tạo bài học' },
+          ]}
         />
+
+        {importMode === 'single' ? (
+          <Select
+            label="Bài học để lưu câu hỏi *"
+            value={importLessonId}
+            onChange={(e) => setImportLessonId(e.target.value)}
+            options={lessonOptions.map((lesson) => ({ value: lesson.id, label: lesson.name }))}
+          />
+        ) : (
+          <Select
+            label="Môn học để tạo bài tự động *"
+            value={importSubjectId}
+            onChange={(e) => setImportSubjectId(e.target.value)}
+            options={(data.subjects || []).map((subject) => ({ value: subject.id, label: subject.name }))}
+          />
+        )}
+
         <div className="form-group">
-          <label className="form-label">File Word (.docx)</label>
+          <label className="form-label">File tài liệu (.docx, .pdf, .txt)</label>
           <label className="upload-trigger" onDragOver={preventDropDefaults} onDrop={onImportDrop}>
-            <input className="file-picker-input" type="file" accept=".docx" disabled={isImporting} onChange={handleImportDocx} />
-            <span>{isImporting ? 'Đang xử lý...' : 'Kéo thả hoặc chọn file Word để import'}</span>
+            <input className="file-picker-input" type="file" accept=".docx,.pdf,.txt" disabled={isImporting} onChange={handleImportDocx} />
+            <span>{isImporting ? 'Đang xử lý...' : 'Kéo thả hoặc chọn file để import'}</span>
           </label>
           <div className="file-picked-name">{importFileName || 'Chưa chọn file nào'}</div>
           <div style={{ fontSize: '.78rem', color: 'var(--muted)' }}>
             Hỗ trợ định dạng như: "Câu 1:", "Question 1", "1)", "1." cùng đáp án kiểu "A.", "a)", "B)".
-            Đáp án đúng có thể đánh dấu bằng * hoặc [x] hoặc (đúng).
+            Đáp án đúng có thể đánh dấu bằng * hoặc [x] hoặc (đúng). Ở chế độ tự tách, nên có tiêu đề "Bài 1", "Bài 2"...
           </div>
         </div>
+
+        {importPreview && (
+          <div style={{ marginTop: 12, border: '1px solid var(--border)', borderRadius: 10, padding: 10 }}>
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Xem trước import</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+              <Badge color="blue">File: {importPreview.fileName}</Badge>
+              <Badge color="orange">Bài xử lý: {importPreview.lessonPlans.length}</Badge>
+              <Badge color="success">Sẽ import: {importPreview.summary.toImport} câu</Badge>
+              <Badge color="gray">Bỏ qua: {importPreview.summary.skipped}</Badge>
+              <Badge color="blue">Sẽ tạo bài mới: {importPreview.summary.willCreateLessons}</Badge>
+            </div>
+
+            <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px dashed var(--border)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
+              {(importPreview.lessonPlans || []).map((plan, idx) => (
+                <div key={`plan-${idx}`} style={{ marginBottom: 6, fontSize: '.83rem' }}>
+                  <strong>{plan.lessonLabel || `Bài ${idx + 1}`}</strong>
+                  <span style={{ marginLeft: 6, color: 'var(--muted)' }}>
+                    parsed: {plan.totalParsed} • import: {plan.toImportCount} {plan.willCreate ? '• sẽ tạo mới' : '• đã tồn tại'}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
+              <div style={{ fontWeight: 600 }}>Log bỏ qua chi tiết</div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <Button variant="ghost" size="sm" onClick={() => exportSkipLogs('csv')} disabled={!importSkipLogs.length}>Export CSV</Button>
+                <Button variant="ghost" size="sm" onClick={() => exportSkipLogs('txt')} disabled={!importSkipLogs.length}>Export TXT</Button>
+              </div>
+            </div>
+            <div style={{ maxHeight: 220, overflowY: 'auto', border: '1px dashed var(--border)', borderRadius: 8, padding: 8 }}>
+              {importSkipLogs.length === 0 ? (
+                <div style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Không có mục bị bỏ qua trong bước phân tích.</div>
+              ) : (
+                importSkipLogs.map((log, idx) => (
+                  <div key={`skip-${idx}`} style={{ marginBottom: 8, fontSize: '.8rem' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--danger)' }}>[{log.reason}] {log.lessonLabel || 'Không xác định bài'}</div>
+                    {log.questionText ? <div style={{ color: 'var(--text-2)' }}>Câu: {log.questionText}</div> : null}
+                    {log.detail ? <div style={{ color: 'var(--muted)' }}>Lý do: {log.detail}</div> : null}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
 
       <Modal open={modal} title={editing ? 'Sửa câu hỏi' : 'Thêm câu hỏi'} onClose={() => setModal(false)}
@@ -1693,7 +2256,7 @@ function QuestionsPanel({ data, questionsCrud, filterSubjectId, setFilterSubject
             </label>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <Button variant="ghost" size="sm" icon="⬆" onClick={() => setImportModal(true)}>Import Word</Button>
+            <Button variant="ghost" size="sm" icon="⬆" onClick={openImportModal}>Import tài liệu</Button>
             <Button variant="primary" size="sm" icon="+" onClick={openAdd}>Thêm câu hỏi</Button>
           </div>
         </div>
@@ -1791,7 +2354,7 @@ export default function AdminDashboard() {
       case 'lessons': return <LessonsPanel data={data} lessonsCrud={lessons}
         subjectId={lessonsSubjectId} setSubjectId={setLessonsSubjectId}
         onlySelectedSubject={lessonsOnlySelected} setOnlySelectedSubject={setLessonsOnlySelected} />;
-      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions}
+      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions} lessonsCrud={lessons}
         filterSubjectId={qFilterSubjectId} setFilterSubjectId={setQFilterSubjectId}
         filterLessonId={qFilterLessonId} setFilterLessonId={setQFilterLessonId}
         onlySelectedSubject={qOnlySelected} setOnlySelectedSubject={setQOnlySelected} />;

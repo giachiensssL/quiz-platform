@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AUTH_NOTICE_KEY } from '../api/api';
 import { Button, Input } from '../components/UI';
 
 export default function LoginPage() {
@@ -9,6 +10,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const notice = sessionStorage.getItem(AUTH_NOTICE_KEY);
+    if (!notice) return;
+    setError(notice);
+    sessionStorage.removeItem(AUTH_NOTICE_KEY);
+  }, []);
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
@@ -60,7 +68,7 @@ export default function LoginPage() {
             <Button variant="primary" full size="lg" loading={loading} type="submit">Đăng nhập</Button>
           </form>
           <div className="auth-note">
-            <strong>Lưu ý:</strong> Giữ nguyên toàn bộ logic xác thực/API hiện có, chỉ thay đổi giao diện trực quan.
+            <strong>Lưu ý:</strong> Mỗi phiên đăng nhập chỉ được phép trên một thiết bị. Nếu bạn đăng nhập ở thiết bị khác, phiên hiện tại sẽ bị đăng xuất.
           </div>
         </div>
       </div>

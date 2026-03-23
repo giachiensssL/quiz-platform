@@ -1,0 +1,2952 @@
+{
+  "source": "C:\\d\\Lap_Trinh_Web\\quiz-platform\\monhoc\\_tmdt_zip",
+  "subject": "TMDT",
+  "eventsByLesson": {
+    "1": [
+      {
+        "option": "A",
+        "score": 0.08958981871452115,
+        "file_idx": 0,
+        "y": 311.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8241247916170517,
+        "file_idx": 0,
+        "y": 349.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7704661182922052,
+        "file_idx": 0,
+        "y": 599.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8333603896103896,
+        "file_idx": 0,
+        "y": 885.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6150405367626502,
+        "file_idx": 0,
+        "y": 1135.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.741570702355016,
+        "file_idx": 0,
+        "y": 1315.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7262641898864809,
+        "file_idx": 1,
+        "y": 135.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7797013504670117,
+        "file_idx": 1,
+        "y": 241.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.13553341635533417,
+        "file_idx": 1,
+        "y": 494.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8093060309217515,
+        "file_idx": 1,
+        "y": 530.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07521739130434783,
+        "file_idx": 1,
+        "y": 817.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8537921588769046,
+        "file_idx": 1,
+        "y": 852.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7195121951219512,
+        "file_idx": 1,
+        "y": 993.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10593157029732557,
+        "file_idx": 1,
+        "y": 1208.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8469747899159664,
+        "file_idx": 1,
+        "y": 1245.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.644145490782262,
+        "file_idx": 1,
+        "y": 1496.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7459432676823982,
+        "file_idx": 2,
+        "y": 135.25,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6506808408982322,
+        "file_idx": 2,
+        "y": 314.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6548022598870056,
+        "file_idx": 2,
+        "y": 636.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09523809523809523,
+        "file_idx": 2,
+        "y": 816.75,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6793380614657211,
+        "file_idx": 2,
+        "y": 850.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.682632360217714,
+        "file_idx": 2,
+        "y": 1065.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07885065152021382,
+        "file_idx": 2,
+        "y": 1318.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7001605731225297,
+        "file_idx": 2,
+        "y": 1353.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09569013303769401,
+        "file_idx": 2,
+        "y": 1568.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6073795948639503,
+        "file_idx": 2,
+        "y": 1604.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05867308560252745,
+        "file_idx": 3,
+        "y": 317.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7431314830389684,
+        "file_idx": 3,
+        "y": 351.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8395010395010395,
+        "file_idx": 3,
+        "y": 565.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05823381984372696,
+        "file_idx": 3,
+        "y": 782.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7726464235802312,
+        "file_idx": 3,
+        "y": 818.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7217490992466427,
+        "file_idx": 3,
+        "y": 1031.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.683601134215501,
+        "file_idx": 3,
+        "y": 1280.25,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09491862880886426,
+        "file_idx": 3,
+        "y": 1534.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7342862552063613,
+        "file_idx": 3,
+        "y": 1569.75,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0004.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7703187250996015,
+        "file_idx": 4,
+        "y": 244.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.057585139318885446,
+        "file_idx": 4,
+        "y": 462.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7482791102094052,
+        "file_idx": 4,
+        "y": 497.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.056038047973531846,
+        "file_idx": 4,
+        "y": 675.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7250154089988553,
+        "file_idx": 4,
+        "y": 711.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7323170731707317,
+        "file_idx": 4,
+        "y": 888.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      }
+    ],
+    "2": [
+      {
+        "option": "A",
+        "score": 0.8325686036529409,
+        "file_idx": 4,
+        "y": 1137.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7707438760070339,
+        "file_idx": 4,
+        "y": 1173.5,
+        "x": 249.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7574926900584795,
+        "file_idx": 4,
+        "y": 1424.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0005.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09680566483084185,
+        "file_idx": 5,
+        "y": 173.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7980800472603752,
+        "file_idx": 5,
+        "y": 209.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7260237249514108,
+        "file_idx": 5,
+        "y": 424.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07795542070253239,
+        "file_idx": 5,
+        "y": 711.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7677579165829819,
+        "file_idx": 5,
+        "y": 747.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7721059577677225,
+        "file_idx": 5,
+        "y": 889.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8351680672268909,
+        "file_idx": 5,
+        "y": 1247.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7844857844857844,
+        "file_idx": 5,
+        "y": 1390.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09620236785922237,
+        "file_idx": 6,
+        "y": 173.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7966207759699624,
+        "file_idx": 6,
+        "y": 210.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7173255344897136,
+        "file_idx": 6,
+        "y": 498.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07842338146250583,
+        "file_idx": 6,
+        "y": 639.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7685552072860606,
+        "file_idx": 6,
+        "y": 675.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7440342131234658,
+        "file_idx": 6,
+        "y": 1144.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7895227350762741,
+        "file_idx": 6,
+        "y": 1393.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0727778687182845,
+        "file_idx": 6,
+        "y": 1498.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.768432519206513,
+        "file_idx": 6,
+        "y": 1536.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7884393063583816,
+        "file_idx": 7,
+        "y": 279.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07442244224422442,
+        "file_idx": 7,
+        "y": 565.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8341190977007326,
+        "file_idx": 7,
+        "y": 602.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.08794587945879458,
+        "file_idx": 7,
+        "y": 852.75,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8070954278125593,
+        "file_idx": 7,
+        "y": 889.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7314044943820225,
+        "file_idx": 7,
+        "y": 1069.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6918241965973535,
+        "file_idx": 7,
+        "y": 1319.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7158782951465879,
+        "file_idx": 8,
+        "y": 135.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7766515837104073,
+        "file_idx": 8,
+        "y": 314.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7898302615283748,
+        "file_idx": 8,
+        "y": 566.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6699766355140186,
+        "file_idx": 8,
+        "y": 780.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7509217427428987,
+        "file_idx": 8,
+        "y": 1030.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.1143783542039356,
+        "file_idx": 8,
+        "y": 1390.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7135582915336678,
+        "file_idx": 8,
+        "y": 1427.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0009.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7941256830601093,
+        "file_idx": 9,
+        "y": 246.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7276854928017719,
+        "file_idx": 9,
+        "y": 462.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8318864990930293,
+        "file_idx": 9,
+        "y": 602.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.734750098386462,
+        "file_idx": 9,
+        "y": 851.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8088974283180609,
+        "file_idx": 9,
+        "y": 1068.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      }
+    ],
+    "3": [
+      {
+        "option": "C",
+        "score": 0.7444461868172076,
+        "file_idx": 9,
+        "y": 1460.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0010.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7496923076923077,
+        "file_idx": 10,
+        "y": 210.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7660076587407605,
+        "file_idx": 10,
+        "y": 388.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7848314606741573,
+        "file_idx": 10,
+        "y": 529.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08062006569469256,
+        "file_idx": 10,
+        "y": 817.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.787826164395761,
+        "file_idx": 10,
+        "y": 853.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7883596141817822,
+        "file_idx": 10,
+        "y": 1067.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6581237911025145,
+        "file_idx": 10,
+        "y": 1245.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06034482758620689,
+        "file_idx": 10,
+        "y": 1387.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8384083044982699,
+        "file_idx": 10,
+        "y": 1422.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7215302491103203,
+        "file_idx": 11,
+        "y": 136.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7069056404849763,
+        "file_idx": 11,
+        "y": 351.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7992142266335814,
+        "file_idx": 11,
+        "y": 565.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.058510638297872335,
+        "file_idx": 11,
+        "y": 818.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8373871481678172,
+        "file_idx": 11,
+        "y": 852.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.691916971916972,
+        "file_idx": 11,
+        "y": 1030.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05870646766169154,
+        "file_idx": 11,
+        "y": 1282.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7633699633699634,
+        "file_idx": 11,
+        "y": 1318.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6705980066445183,
+        "file_idx": 11,
+        "y": 1532.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0012.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07266887483689652,
+        "file_idx": 12,
+        "y": 208.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8240349264705882,
+        "file_idx": 12,
+        "y": 246.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6616938616938617,
+        "file_idx": 12,
+        "y": 387.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7697112654523216,
+        "file_idx": 12,
+        "y": 638.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7839966832504146,
+        "file_idx": 12,
+        "y": 781.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07604562737642585,
+        "file_idx": 12,
+        "y": 1067.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7624488763334317,
+        "file_idx": 12,
+        "y": 1104.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.803247692136581,
+        "file_idx": 12,
+        "y": 1317.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8311108721367888,
+        "file_idx": 12,
+        "y": 1460.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7925035126869989,
+        "file_idx": 13,
+        "y": 136.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7651267767960046,
+        "file_idx": 13,
+        "y": 388.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7828028278591482,
+        "file_idx": 13,
+        "y": 638.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7798883442265795,
+        "file_idx": 13,
+        "y": 890.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7616425607817287,
+        "file_idx": 13,
+        "y": 1030.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.742704280155642,
+        "file_idx": 13,
+        "y": 1318.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0014.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7024457225762993,
+        "file_idx": 14,
+        "y": 137.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09431045145330859,
+        "file_idx": 14,
+        "y": 351.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7435996563573883,
+        "file_idx": 14,
+        "y": 388.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      }
+    ],
+    "4": [
+      {
+        "option": "D",
+        "score": 0.6597760551248923,
+        "file_idx": 14,
+        "y": 708.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.14072727272727273,
+        "file_idx": 14,
+        "y": 815.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7482065997130559,
+        "file_idx": 14,
+        "y": 851.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.06270627062706272,
+        "file_idx": 14,
+        "y": 1063.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7020692567567567,
+        "file_idx": 14,
+        "y": 1101.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7714987714987716,
+        "file_idx": 14,
+        "y": 1313.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.137541944761975,
+        "file_idx": 14,
+        "y": 1493.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7356032503091327,
+        "file_idx": 14,
+        "y": 1530.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0015.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6746866054683645,
+        "file_idx": 15,
+        "y": 335.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6780698363612936,
+        "file_idx": 15,
+        "y": 513.25,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.18108974358974358,
+        "file_idx": 15,
+        "y": 728.0,
+        "x": 217.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.140217673720373,
+        "file_idx": 15,
+        "y": 1014.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6861349693251534,
+        "file_idx": 15,
+        "y": 1052.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07379115422809564,
+        "file_idx": 15,
+        "y": 1194.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6551620648259304,
+        "file_idx": 15,
+        "y": 1230.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7054658492358173,
+        "file_idx": 15,
+        "y": 1408.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.744209903333991,
+        "file_idx": 16,
+        "y": 136.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.771939390460885,
+        "file_idx": 16,
+        "y": 315.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6652494331065759,
+        "file_idx": 16,
+        "y": 352.0,
+        "x": 249.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07518427518427517,
+        "file_idx": 16,
+        "y": 675.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7722176324796413,
+        "file_idx": 16,
+        "y": 710.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07419391787411947,
+        "file_idx": 16,
+        "y": 998.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8342047930283225,
+        "file_idx": 16,
+        "y": 1034.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7641538163395255,
+        "file_idx": 16,
+        "y": 1070.5,
+        "x": 249.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8293009511496906,
+        "file_idx": 16,
+        "y": 1248.0,
+        "x": 217.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07808982741987351,
+        "file_idx": 16,
+        "y": 1500.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8379167396508437,
+        "file_idx": 16,
+        "y": 1535.5,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.11112927616789962,
+        "file_idx": 17,
+        "y": 225.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7516580493218916,
+        "file_idx": 17,
+        "y": 262.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07462962962962963,
+        "file_idx": 17,
+        "y": 582.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7873244818034196,
+        "file_idx": 17,
+        "y": 619.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8051694518194596,
+        "file_idx": 17,
+        "y": 760.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.710833641840272,
+        "file_idx": 17,
+        "y": 1120.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7606889779452746,
+        "file_idx": 17,
+        "y": 1334.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8126347735803849,
+        "file_idx": 17,
+        "y": 1476.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6837393872277593,
+        "file_idx": 18,
+        "y": 297.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8320146074254412,
+        "file_idx": 18,
+        "y": 584.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06677436725901992,
+        "file_idx": 18,
+        "y": 690.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7464346349745331,
+        "file_idx": 18,
+        "y": 727.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.14375,
+        "file_idx": 18,
+        "y": 942.0,
+        "x": 209.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7927196846742407,
+        "file_idx": 18,
+        "y": 978.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6270921985815603,
+        "file_idx": 18,
+        "y": 1191.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8473481195756992,
+        "file_idx": 18,
+        "y": 1515.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7656036000782626,
+        "file_idx": 19,
+        "y": 136.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      }
+    ],
+    "5": [
+      {
+        "option": "C",
+        "score": 0.7405472636815921,
+        "file_idx": 19,
+        "y": 386.0,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.650501493811353,
+        "file_idx": 19,
+        "y": 599.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6514822134387351,
+        "file_idx": 19,
+        "y": 922.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7066972633010369,
+        "file_idx": 19,
+        "y": 1100.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.5010638297872341,
+        "file_idx": 19,
+        "y": 1386.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7695275738753999,
+        "file_idx": 19,
+        "y": 1566.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6533410212057146,
+        "file_idx": 20,
+        "y": 315.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6808674781416081,
+        "file_idx": 20,
+        "y": 602.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7220787818603112,
+        "file_idx": 20,
+        "y": 781.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10491803278688525,
+        "file_idx": 20,
+        "y": 1069.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.676302129944514,
+        "file_idx": 20,
+        "y": 1103.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.5382090951711205,
+        "file_idx": 20,
+        "y": 1316.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.659736105557777,
+        "file_idx": 20,
+        "y": 1569.25,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6586240310077519,
+        "file_idx": 21,
+        "y": 208.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0697468150298339,
+        "file_idx": 21,
+        "y": 425.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.5175171972484403,
+        "file_idx": 21,
+        "y": 460.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.5597237482341861,
+        "file_idx": 21,
+        "y": 564.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.055252274607113315,
+        "file_idx": 21,
+        "y": 816.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6614246068455134,
+        "file_idx": 21,
+        "y": 851.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07174364296834457,
+        "file_idx": 21,
+        "y": 1030.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6088622625215889,
+        "file_idx": 21,
+        "y": 1067.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09685965869243357,
+        "file_idx": 21,
+        "y": 1209.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7606375606375606,
+        "file_idx": 21,
+        "y": 1245.75,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06957928802588996,
+        "file_idx": 21,
+        "y": 1494.75,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.727144535840188,
+        "file_idx": 21,
+        "y": 1534.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0719224121375072,
+        "file_idx": 22,
+        "y": 136.25,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7455935251798561,
+        "file_idx": 22,
+        "y": 171.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7503260869565218,
+        "file_idx": 22,
+        "y": 352.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6595307917888563,
+        "file_idx": 22,
+        "y": 639.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7362113244466186,
+        "file_idx": 22,
+        "y": 817.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7334089619965967,
+        "file_idx": 22,
+        "y": 1066.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06092085235920852,
+        "file_idx": 22,
+        "y": 1281.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7399737111143566,
+        "file_idx": 22,
+        "y": 1317.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07395437262357415,
+        "file_idx": 22,
+        "y": 1423.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8018018018018018,
+        "file_idx": 22,
+        "y": 1460.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.13207925758715827,
+        "file_idx": 23,
+        "y": 173.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7754245108896272,
+        "file_idx": 23,
+        "y": 210.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0897068547498347,
+        "file_idx": 23,
+        "y": 388.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8238656663093962,
+        "file_idx": 23,
+        "y": 424.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8285691971258982,
+        "file_idx": 23,
+        "y": 638.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8089575289575289,
+        "file_idx": 23,
+        "y": 853.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      }
+    ],
+    "6": [
+      {
+        "option": "A",
+        "score": 0.7788288288288289,
+        "file_idx": 23,
+        "y": 1101.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6972085690438653,
+        "file_idx": 23,
+        "y": 1351.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6822857142857143,
+        "file_idx": 24,
+        "y": 136.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08586202977611092,
+        "file_idx": 24,
+        "y": 242.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7320838997863663,
+        "file_idx": 24,
+        "y": 279.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.721773288439955,
+        "file_idx": 24,
+        "y": 529.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7479258328095537,
+        "file_idx": 24,
+        "y": 671.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6248245163499401,
+        "file_idx": 24,
+        "y": 922.75,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6512217850486643,
+        "file_idx": 24,
+        "y": 1175.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05575672480047295,
+        "file_idx": 24,
+        "y": 1389.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.712365162867315,
+        "file_idx": 24,
+        "y": 1423.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6224001719782877,
+        "file_idx": 24,
+        "y": 1602.25,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7146464646464648,
+        "file_idx": 25,
+        "y": 317.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6956239168110918,
+        "file_idx": 25,
+        "y": 639.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.19379310344827588,
+        "file_idx": 25,
+        "y": 745.5,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7104689829148033,
+        "file_idx": 25,
+        "y": 1105.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7994930590350439,
+        "file_idx": 25,
+        "y": 1571.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0026.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8118621220874254,
+        "file_idx": 26,
+        "y": 190.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07263935384451883,
+        "file_idx": 26,
+        "y": 403.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7558694125041594,
+        "file_idx": 26,
+        "y": 441.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8154492330168006,
+        "file_idx": 26,
+        "y": 618.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7828342209004772,
+        "file_idx": 26,
+        "y": 978.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7428884026258206,
+        "file_idx": 26,
+        "y": 1120.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6853826030085023,
+        "file_idx": 26,
+        "y": 1334.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7023608174770966,
+        "file_idx": 26,
+        "y": 1585.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7248853841921878,
+        "file_idx": 27,
+        "y": 242.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09601015085295363,
+        "file_idx": 27,
+        "y": 529.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8188450745827796,
+        "file_idx": 27,
+        "y": 565.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08997062183776726,
+        "file_idx": 27,
+        "y": 707.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7968089196462899,
+        "file_idx": 27,
+        "y": 745.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6184027777777779,
+        "file_idx": 27,
+        "y": 922.25,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7266944114149821,
+        "file_idx": 27,
+        "y": 1175.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0944126984126984,
+        "file_idx": 27,
+        "y": 1351.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7826650179591357,
+        "file_idx": 27,
+        "y": 1388.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0028.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7828601260993535,
+        "file_idx": 28,
+        "y": 209.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08044718492479687,
+        "file_idx": 28,
+        "y": 316.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7305728871242201,
+        "file_idx": 28,
+        "y": 351.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      }
+    ],
+    "7": [
+      {
+        "option": "C",
+        "score": 0.09615113492175384,
+        "file_idx": 28,
+        "y": 688.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7602236719478099,
+        "file_idx": 28,
+        "y": 725.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7999375292831485,
+        "file_idx": 28,
+        "y": 867.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8216896141424443,
+        "file_idx": 28,
+        "y": 1153.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7981665876402719,
+        "file_idx": 28,
+        "y": 1368.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8600559014102401,
+        "file_idx": 28,
+        "y": 1508.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07618343195266272,
+        "file_idx": 29,
+        "y": 189.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8511049723756906,
+        "file_idx": 29,
+        "y": 226.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10148137211476943,
+        "file_idx": 29,
+        "y": 441.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7305915721231767,
+        "file_idx": 29,
+        "y": 478.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7659381816685188,
+        "file_idx": 29,
+        "y": 655.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07058388765705839,
+        "file_idx": 29,
+        "y": 941.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7626199751014016,
+        "file_idx": 29,
+        "y": 979.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8125404007756949,
+        "file_idx": 29,
+        "y": 1120.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7761333333333332,
+        "file_idx": 29,
+        "y": 1371.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07837666455294863,
+        "file_idx": 29,
+        "y": 1586.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8654781199351702,
+        "file_idx": 29,
+        "y": 1621.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0030.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.796754647221937,
+        "file_idx": 30,
+        "y": 189.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7066812809759817,
+        "file_idx": 30,
+        "y": 440.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.823498054267285,
+        "file_idx": 30,
+        "y": 690.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6477673325499412,
+        "file_idx": 30,
+        "y": 1015.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8260869565217391,
+        "file_idx": 30,
+        "y": 1264.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7744117647058824,
+        "file_idx": 30,
+        "y": 1371.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.701895321605577,
+        "file_idx": 30,
+        "y": 1585.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0031.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7086966241895819,
+        "file_idx": 31,
+        "y": 387.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7383417702101549,
+        "file_idx": 31,
+        "y": 493.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1029874213836478,
+        "file_idx": 31,
+        "y": 706.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7314637191315733,
+        "file_idx": 31,
+        "y": 745.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.11541653698516444,
+        "file_idx": 31,
+        "y": 995.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7224358112649549,
+        "file_idx": 31,
+        "y": 1032.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.10077896786757547,
+        "file_idx": 31,
+        "y": 1174.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.764949438649574,
+        "file_idx": 31,
+        "y": 1209.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09851648351648351,
+        "file_idx": 31,
+        "y": 1388.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7286713286713287,
+        "file_idx": 31,
+        "y": 1423.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7671177944862155,
+        "file_idx": 32,
+        "y": 135.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06327474560592045,
+        "file_idx": 32,
+        "y": 172.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8317086834733893,
+        "file_idx": 32,
+        "y": 424.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8233415233415233,
+        "file_idx": 32,
+        "y": 529.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0582293523469994,
+        "file_idx": 32,
+        "y": 818.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7656028368794325,
+        "file_idx": 32,
+        "y": 852.75,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0784570978745736,
+        "file_idx": 32,
+        "y": 995.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8597792057999671,
+        "file_idx": 32,
+        "y": 1030.0,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      }
+    ],
+    "8": [
+      {
+        "option": "C",
+        "score": 0.8299319727891157,
+        "file_idx": 32,
+        "y": 1277.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6434465249127261,
+        "file_idx": 32,
+        "y": 1457.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0033.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8031855335348785,
+        "file_idx": 33,
+        "y": 173.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6681528662420382,
+        "file_idx": 33,
+        "y": 495.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07204068179677936,
+        "file_idx": 33,
+        "y": 746.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.745045045045045,
+        "file_idx": 33,
+        "y": 784.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8121463077984817,
+        "file_idx": 33,
+        "y": 961.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.06490004649000465,
+        "file_idx": 33,
+        "y": 996.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8336481381543442,
+        "file_idx": 33,
+        "y": 1139.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09664238200823566,
+        "file_idx": 33,
+        "y": 1390.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8323967304043206,
+        "file_idx": 33,
+        "y": 1426.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7574945295404814,
+        "file_idx": 34,
+        "y": 137.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6981292517006803,
+        "file_idx": 34,
+        "y": 174.0,
+        "x": 249.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.12082896902588658,
+        "file_idx": 34,
+        "y": 461.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8113342898134863,
+        "file_idx": 34,
+        "y": 497.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7235510940318407,
+        "file_idx": 34,
+        "y": 532.75,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06903149838092434,
+        "file_idx": 34,
+        "y": 745.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7671593366979091,
+        "file_idx": 34,
+        "y": 784.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.672509225092251,
+        "file_idx": 34,
+        "y": 925.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06552706552706553,
+        "file_idx": 34,
+        "y": 1173.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8448391013964784,
+        "file_idx": 34,
+        "y": 1213.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6622222222222223,
+        "file_idx": 34,
+        "y": 1498.25,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0035.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7924154899443732,
+        "file_idx": 35,
+        "y": 335.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0036.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8109588230070157,
+        "file_idx": 35,
+        "y": 549.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7456059609905764,
+        "file_idx": 35,
+        "y": 1127.5,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0036.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8434181002243829,
+        "file_idx": 35,
+        "y": 1267.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7345224056603774,
+        "file_idx": 36,
+        "y": 136.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05504430811179278,
+        "file_idx": 36,
+        "y": 316.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7004255006969409,
+        "file_idx": 36,
+        "y": 350.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.797230521719145,
+        "file_idx": 36,
+        "y": 456.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.1145321541653019,
+        "file_idx": 36,
+        "y": 816.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8040393013100436,
+        "file_idx": 36,
+        "y": 854.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7623935357064862,
+        "file_idx": 36,
+        "y": 890.25,
+        "x": 251.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.10526315789473684,
+        "file_idx": 36,
+        "y": 1141.0,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7765031645569621,
+        "file_idx": 36,
+        "y": 1176.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0713462646437488,
+        "file_idx": 36,
+        "y": 1426.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7521114864864865,
+        "file_idx": 36,
+        "y": 1463.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7638294300344162,
+        "file_idx": 37,
+        "y": 136.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.681673422119282,
+        "file_idx": 37,
+        "y": 315.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7839080459770115,
+        "file_idx": 37,
+        "y": 530.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7179844961240309,
+        "file_idx": 37,
+        "y": 853.25,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7583003795217496,
+        "file_idx": 37,
+        "y": 1067.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7763445813658874,
+        "file_idx": 37,
+        "y": 1391.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0038.jpg"
+      }
+    ],
+    "9": [
+      {
+        "option": "A",
+        "score": 0.7828836797877046,
+        "file_idx": 38,
+        "y": 135.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.18991331757289207,
+        "file_idx": 38,
+        "y": 388.5,
+        "x": 218.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7617109657862977,
+        "file_idx": 38,
+        "y": 710.5,
+        "x": 245.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7017543859649122,
+        "file_idx": 38,
+        "y": 1106.0,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09037335285505124,
+        "file_idx": 38,
+        "y": 1394.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6377648667122352,
+        "file_idx": 38,
+        "y": 1431.0,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8328683035714285,
+        "file_idx": 38,
+        "y": 1572.0,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7383986306580449,
+        "file_idx": 38,
+        "y": 1608.0,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1063599132739099,
+        "file_idx": 39,
+        "y": 388.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7910935441370224,
+        "file_idx": 39,
+        "y": 423.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.06965015660667834,
+        "file_idx": 39,
+        "y": 674.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.15861513687600645,
+        "file_idx": 39,
+        "y": 710.5,
+        "x": 217.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07575180814617435,
+        "file_idx": 39,
+        "y": 1071.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.13004115226337448,
+        "file_idx": 39,
+        "y": 1105.5,
+        "x": 216.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08402203856749312,
+        "file_idx": 39,
+        "y": 1357.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.633297313985798,
+        "file_idx": 39,
+        "y": 1393.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7217289170777542,
+        "file_idx": 39,
+        "y": 1606.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0040.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.5885356731875719,
+        "file_idx": 40,
+        "y": 459.75,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08730886850152905,
+        "file_idx": 40,
+        "y": 675.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6724456163480553,
+        "file_idx": 40,
+        "y": 711.5,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07635902948402948,
+        "file_idx": 40,
+        "y": 926.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7665956569543705,
+        "file_idx": 40,
+        "y": 962.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.18991331757289207,
+        "file_idx": 40,
+        "y": 1212.5,
+        "x": 218.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.738253749617386,
+        "file_idx": 40,
+        "y": 1248.25,
+        "x": 250.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7935545839957604,
+        "file_idx": 40,
+        "y": 1499.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0041.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.746084166823929,
+        "file_idx": 41,
+        "y": 226.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8204942910825264,
+        "file_idx": 41,
+        "y": 548.5,
+        "x": 215.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07722644485874086,
+        "file_idx": 41,
+        "y": 800.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7818730931615766,
+        "file_idx": 41,
+        "y": 837.5,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.784959226819692,
+        "file_idx": 41,
+        "y": 873.5,
+        "x": 253.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7637966006854585,
+        "file_idx": 41,
+        "y": 1125.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7064662507090187,
+        "file_idx": 41,
+        "y": 1228.5,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6100812146892656,
+        "file_idx": 41,
+        "y": 1477.75,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7224504318012743,
+        "file_idx": 42,
+        "y": 189.75,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7385498289372034,
+        "file_idx": 42,
+        "y": 585.75,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.1198563519377525,
+        "file_idx": 42,
+        "y": 873.5,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7133211493552645,
+        "file_idx": 42,
+        "y": 908.25,
+        "x": 211.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7679792887314347,
+        "file_idx": 42,
+        "y": 1086.5,
+        "x": 210.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7829508196721311,
+        "file_idx": 42,
+        "y": 1409.0,
+        "x": 212.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7067233178344289,
+        "file_idx": 43,
+        "y": 371.0,
+        "x": 213.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0044.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7746535796766744,
+        "file_idx": 43,
+        "y": 550.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0044.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7737877680311891,
+        "file_idx": 43,
+        "y": 945.0,
+        "x": 214.0,
+        "file": "THƯƠNG MẠI ĐIỆN TỬ_pages-to-jpg-0044.jpg"
+      }
+    ]
+  }
+}

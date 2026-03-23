@@ -13,10 +13,35 @@ const SIMPLE_OPTION_RE = /^(?:[-*•]\s*)?([A-H])[\s]+(.+)$/i;
 const ANSWER_KEY_RE = /^(?:dap an(?:\s+dung)?|đáp án(?:\s+đúng)?|answer(?:\s+key)?|ans|key)(?:\s*(?:la|là|is))?\s*[:\-]?\s*(.+)$/i;
 const FILL_HINT_RE = /_{2,}|\.{3,}|\(\s*\.\.\.\s*\)/;
 const ORDER_KEYWORDS = ['sap xep', 'sắp xếp', 'thu tu', 'thứ tự', 'keo tha', 'kéo thả', 'arrange', 'order'];
+const HIGHLIGHT_TOKEN_OPEN = '[[HL]]';
+const HIGHLIGHT_TOKEN_CLOSE = '[[/HL]]';
+const LESSON_HEADER_PATTERNS = [
+  /^(?:bai|bài|lesson)\s*(\d{1,2})\s*[:.)\-]?\s*(.*)$/i,
+  /^(\d{1,2})\s*[:.)\-]\s*(?:bai|bài|lesson)\s*(.*)$/i,
+];
 
 const normalizeText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const normalizeLoose = (value) => normalizeText(value).toLowerCase();
 const removeLeadingBullet = (line) => String(line || '').replace(/^(?:[-*•]\s*)+/, '').trim();
+
+const buildHighlightMatcher = (rawHighlighted = []) => {
+  const highlighted = [...new Set((Array.isArray(rawHighlighted) ? rawHighlighted : [])
+    .map((item) => normalizeLoose(item))
+    .filter(Boolean))];
+
+  if (!highlighted.length) return () => false;
+
+  return (value) => {
+    const option = normalizeLoose(value);
+    if (!option) return false;
+    return highlighted.some((token) => (
+      token === option
+      || option.includes(token)
+      || token.includes(option)
+      || (token.length >= 5 && option.length >= 5 && token.replace(/\s+/g, '') === option.replace(/\s+/g, ''))
+    ));
+  };
+};
 
 const decodeHtmlEntities = (html) => {
   return String(html || '')
@@ -29,9 +54,22 @@ const decodeHtmlEntities = (html) => {
 };
 
 const htmlToPlainText = (html) => {
-  return decodeHtmlEntities(String(html || ''))
+  const markHighlightedSpan = String(html || '').replace(/<span\b([^>]*)>([\s\S]*?)<\/span>/gi, (match, attrs, content) => {
+    const styleMatch = String(attrs || '').match(/style\s*=\s*"([^"]+)"|style\s*=\s*'([^']+)'/i);
+    const classMatch = String(attrs || '').match(/class\s*=\s*"([^"]+)"|class\s*=\s*'([^']+)'/i);
+    const styleRaw = String(styleMatch?.[1] || styleMatch?.[2] || '').toLowerCase();
+    const classRaw = String(classMatch?.[1] || classMatch?.[2] || '').toLowerCase();
+    const looksHighlighted = /(background|mso-highlight|highlight|color)\s*:/.test(styleRaw)
+      || /(highlight|mark|yellow|answer-key)/.test(classRaw);
+    if (!looksHighlighted) return match;
+    return `${HIGHLIGHT_TOKEN_OPEN}${content}${HIGHLIGHT_TOKEN_CLOSE}`;
+  });
+
+  return decodeHtmlEntities(markHighlightedSpan)
     .replace(/<a\b[^>]*>/gi, ' [[LINK]] ')
     .replace(/<\/a>/gi, ' [[\/LINK]] ')
+    .replace(/<mark\b[^>]*>/gi, ` ${HIGHLIGHT_TOKEN_OPEN}`)
+    .replace(/<\/mark>/gi, `${HIGHLIGHT_TOKEN_CLOSE} `)
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|div|li|tr|h\d)>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
@@ -46,6 +84,21 @@ const getQuestionHeaderText = (line) => {
   for (const pattern of QUESTION_HEADER_PATTERNS) {
     const matched = normalized.match(pattern);
     if (matched) return normalizeText(matched[1]);
+  }
+  return null;
+};
+
+const extractLessonHeader = (line) => {
+  const normalized = removeLeadingBullet(line);
+  for (const pattern of LESSON_HEADER_PATTERNS) {
+    const matched = normalized.match(pattern);
+    if (!matched) continue;
+    const lessonNumber = Number(matched[1]);
+    if (!Number.isInteger(lessonNumber) || lessonNumber < 1 || lessonNumber > 12) continue;
+    return {
+      lessonNumber,
+      title: normalizeText(matched[2] || ''),
+    };
   }
   return null;
 };
@@ -80,6 +133,7 @@ const extractCorrect = (raw) => {
   const lower = text.toLowerCase();
   const correct =
     /^\s*[*+]\s*/.test(text)
+    || text.includes(HIGHLIGHT_TOKEN_OPEN)
     || /\[\[link\]\]/i.test(text)
     || /\[(x|\u2713)\]/i.test(text)
     || /(\(|\[)\s*(dung|đúng|true|correct)\s*(\)|\])/i.test(lower)
@@ -87,6 +141,8 @@ const extractCorrect = (raw) => {
 
   const cleaned = text
     .replace(/^\s*[*+]\s*/, '')
+    .replace(new RegExp(HIGHLIGHT_TOKEN_OPEN.replace(/[\[\]]/g, '\\$&'), 'g'), '')
+    .replace(new RegExp(HIGHLIGHT_TOKEN_CLOSE.replace(/[\[\]]/g, '\\$&'), 'g'), '')
     .replace(/\[\[\/?link\]\]/ig, '')
     .replace(/\[(x|\u2713)\]/ig, '')
     .replace(/(\(|\[)\s*(dung|đúng|true|correct)\s*(\)|\])/ig, '')
@@ -122,6 +178,39 @@ const splitQuestionBlocks = (rawText) => {
   return blocks;
 };
 
+const splitLessonSections = (rawText) => {
+  const source = String(rawText || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = source.split('\n');
+
+  const sections = [];
+  let current = null;
+
+  lines.forEach((line) => {
+    const lessonHeader = extractLessonHeader(line);
+    if (lessonHeader) {
+      if (current) {
+        current.text = current.lines.join('\n').trim();
+        sections.push(current);
+      }
+      current = {
+        lessonNumber: lessonHeader.lessonNumber,
+        title: lessonHeader.title,
+        lines: [],
+      };
+      return;
+    }
+
+    if (current) current.lines.push(line);
+  });
+
+  if (current) {
+    current.text = current.lines.join('\n').trim();
+    sections.push(current);
+  }
+
+  return sections.filter((section) => section.text);
+};
+
 const inferType = (questionText, parsedOptions, answerTexts) => {
   const lowerQuestion = normalizeLoose(questionText);
   const hasOrderKeyword = ORDER_KEYWORDS.some((kw) => lowerQuestion.includes(kw));
@@ -143,7 +232,21 @@ const inferType = (questionText, parsedOptions, answerTexts) => {
   return correctCount > 1 ? 'multiple' : 'single';
 };
 
-const parseBlock = (block) => {
+const createParseIssue = (reason, block, details) => {
+  const head = normalizeText(block?.head || '');
+  const sample = normalizeText((block?.lines || []).slice(0, 2).join(' '));
+  return {
+    reason,
+    message: details,
+    questionHead: head,
+    sample,
+  };
+};
+
+const parseBlockDetailed = (block, context = {}) => {
+  const isHighlightedAnswer = typeof context?.isHighlightedAnswer === 'function'
+    ? context.isHighlightedAnswer
+    : () => false;
   const optionRows = [];
   const questionRows = [];
   let answerLabels = [];
@@ -183,12 +286,20 @@ const parseBlock = (block) => {
   });
 
   const text = normalizeText([block.head, ...questionRows].filter(Boolean).join(' '));
-  if (!text) return null;
+  if (!text) {
+    return { question: null, issue: createParseIssue('empty_question', block, 'Thiếu nội dung câu hỏi') };
+  }
 
   const parsedOptions = optionRows
     .map((item) => {
       const { cleaned, correct } = extractCorrect(item.raw);
-      return { label: item.label, text: normalizeText(cleaned), imageUrl: '', correct };
+      const normalized = normalizeText(cleaned);
+      return {
+        label: item.label,
+        text: normalized,
+        imageUrl: '',
+        correct: Boolean(correct || isHighlightedAnswer(normalized)),
+      };
     })
     .filter((item) => item.text);
 
@@ -206,11 +317,15 @@ const parseBlock = (block) => {
       .filter(Boolean)
       .map((item) => ({ text: item, imageUrl: '', correct: true }));
 
-    if (!fillAnswers.length) return null;
-    return { text, type: 'fill', imageUrl: '', answers: fillAnswers };
+    if (!fillAnswers.length) {
+      return { question: null, issue: createParseIssue('fill_without_answers', block, 'Câu điền khuyết không có đáp án hợp lệ') };
+    }
+    return { question: { text, type: 'fill', imageUrl: '', answers: fillAnswers }, issue: null };
   }
 
-  if (parsedOptions.length < 2) return null;
+  if (parsedOptions.length < 2) {
+    return { question: null, issue: createParseIssue('insufficient_options', block, 'Không đủ đáp án lựa chọn (ít hơn 2)') };
+  }
 
   const hasCorrect = parsedOptions.some((item) => item.correct);
   if (!hasCorrect) parsedOptions[0].correct = true;
@@ -229,17 +344,22 @@ const parseBlock = (block) => {
       correctItemId: `item-${idx + 1}`,
     }));
 
-    return { text, type: 'drag', imageUrl: '', answers, dragItems, dropTargets };
+    return { question: { text, type: 'drag', imageUrl: '', answers, dragItems, dropTargets }, issue: null };
   }
 
   const finalType = type === 'truefalse' ? 'truefalse' : inferType(text, parsedOptions, answerTexts);
   return {
-    text,
-    type: finalType,
-    imageUrl: '',
-    answers: parsedOptions.map(({ label, ...rest }) => rest),
+    question: {
+      text,
+      type: finalType,
+      imageUrl: '',
+      answers: parsedOptions.map(({ label, ...rest }) => rest),
+    },
+    issue: null,
   };
 };
+
+const parseBlock = (block) => parseBlockDetailed(block).question;
 
 const dedupeQuestions = (items) => {
   // Keep original order and only remove immediate exact duplicates produced by mixed parse paths.
@@ -255,8 +375,17 @@ const dedupeQuestions = (items) => {
   return out;
 };
 
+const parseWithDetails = (text, options = {}) => {
+  const isHighlightedAnswer = buildHighlightMatcher(options?.highlightedAnswers);
+  const blocks = splitQuestionBlocks(text);
+  const detailed = blocks.map((block) => parseBlockDetailed(block, { isHighlightedAnswer }));
+  const questions = dedupeQuestions(detailed.map((item) => item.question).filter(Boolean));
+  const invalidDetails = detailed.filter((item) => !item.question && item.issue).map((item) => item.issue);
+  return { questions, invalidDetails };
+};
+
 const parseFromText = (text) => {
-  let parsed = dedupeQuestions(splitQuestionBlocks(text).map(parseBlock).filter(Boolean));
+  let parsed = parseWithDetails(text).questions;
   if (!parsed.length) {
     parsed = parseByRegexFallback(text);
   }
@@ -292,7 +421,84 @@ const countQuestionMarkers = (text) => {
   return [...source.matchAll(QUESTION_MARKER_RE)].length;
 };
 
-export const parseDocxQuestionsWithReport = async (file) => {
+export const parseQuestionsFromTextWithReport = (text, options = {}) => {
+  const sourceText = String(text || '');
+  const details = parseWithDetails(sourceText, options);
+  const questions = details.questions.length ? details.questions : parseByRegexFallback(sourceText);
+  const candidateCount = Math.max(countQuestionMarkers(sourceText), questions.length);
+  const invalidCount = Math.max(0, candidateCount - questions.length);
+
+  return {
+    questions,
+    candidateCount,
+    validCount: questions.length,
+    invalidCount,
+    invalidDetails: details.invalidDetails,
+    source: 'text',
+    sourceText,
+  };
+};
+
+export const parseQuestionsFromText = (text, options = {}) => {
+  const report = parseQuestionsFromTextWithReport(text, options);
+  if (options.strict && report.invalidCount > 0) {
+    throw new Error(`Tài liệu có ${report.invalidCount}/${report.candidateCount} câu sai định dạng. Vui lòng chuẩn hóa trước khi import.`);
+  }
+  return report.questions;
+};
+
+export const parseLessonsFromTextWithReport = (text, options = {}) => {
+  const sourceText = String(text || '');
+  const sections = splitLessonSections(sourceText);
+
+  if (!sections.length) {
+    const fallback = parseQuestionsFromTextWithReport(sourceText, options);
+    return {
+      lessons: fallback.questions.length
+        ? [{ lessonNumber: null, title: '', questions: fallback.questions }]
+        : [],
+      candidateCount: fallback.candidateCount,
+      validCount: fallback.validCount,
+      invalidCount: fallback.invalidCount,
+      invalidDetails: fallback.invalidDetails || [],
+      sourceText,
+    };
+  }
+
+  const invalidDetails = [];
+  const lessons = sections
+    .map((section) => {
+      const parsedDetails = parseWithDetails(section.text, options);
+      parsedDetails.invalidDetails.forEach((item) => {
+        invalidDetails.push({
+          ...item,
+          lessonNumber: section.lessonNumber,
+          lessonTitle: section.title,
+        });
+      });
+      return {
+        lessonNumber: section.lessonNumber,
+        title: section.title,
+        questions: parsedDetails.questions,
+      };
+    })
+    .filter((section) => section.questions.length > 0);
+
+  const candidateCount = sections.reduce((sum, section) => sum + countQuestionMarkers(section.text), 0);
+  const validCount = lessons.reduce((sum, section) => sum + section.questions.length, 0);
+  const invalidCount = Math.max(0, candidateCount - validCount);
+
+  return {
+    lessons,
+    candidateCount,
+    validCount,
+    invalidCount,
+    invalidDetails,
+    sourceText,
+  };
+};
+
+export const parseDocxQuestionsWithReport = async (file, options = {}) => {
   const arrayBuffer = await file.arrayBuffer();
 
   const rawResult = await mammoth.extractRawText({ arrayBuffer });
@@ -301,12 +507,15 @@ export const parseDocxQuestionsWithReport = async (file) => {
   const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
   const htmlPlain = htmlToPlainText(htmlResult.value);
 
-  const rawParsed = parseFromText(rawText);
-  const htmlParsed = parseFromText(htmlPlain);
+  const rawDetails = parseWithDetails(rawText, options);
+  const htmlDetails = parseWithDetails(htmlPlain, options);
+  const rawParsed = rawDetails.questions;
+  const htmlParsed = htmlDetails.questions;
 
   const useHtml = htmlParsed.length > rawParsed.length;
   const parsed = useHtml ? htmlParsed : rawParsed;
   const sourceText = useHtml ? htmlPlain : rawText;
+  const invalidDetails = useHtml ? htmlDetails.invalidDetails : rawDetails.invalidDetails;
 
   const candidateCount = Math.max(countQuestionMarkers(sourceText), parsed.length);
   const invalidCount = Math.max(0, candidateCount - parsed.length);
@@ -316,12 +525,14 @@ export const parseDocxQuestionsWithReport = async (file) => {
     candidateCount,
     validCount: parsed.length,
     invalidCount,
+    invalidDetails,
     source: useHtml ? 'html' : 'raw',
+    sourceText,
   };
 };
 
 export const parseDocxQuestions = async (file, options = {}) => {
-  const report = await parseDocxQuestionsWithReport(file);
+  const report = await parseDocxQuestionsWithReport(file, options);
   if (options.strict && report.invalidCount > 0) {
     throw new Error(`File Word có ${report.invalidCount}/${report.candidateCount} câu sai định dạng (nguồn parse: ${report.source}). Vui lòng chuẩn hóa trước khi import.`);
   }

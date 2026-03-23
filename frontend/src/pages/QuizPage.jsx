@@ -409,16 +409,25 @@ function DragDrop({ q, answer, onAnswer, submitted }) {
       if (pool.includes(val)) {
         const next = [...dropped, val];
         setDropped(next);
-        setPool((p) => p.filter((x) => x !== val));
+        setPool((p) => {
+          const idx = p.indexOf(val);
+          if (idx < 0) return p;
+          const cloned = [...p];
+          cloned.splice(idx, 1);
+          return cloned;
+        });
         onAnswer(next);
       }
     };
 
-    const remove = (val) => {
+    const remove = (index) => {
       if (submitted) return;
-      const next = dropped.filter((x) => x !== val);
+      const restored = dropped[index];
+      const next = dropped.filter((_, idx) => idx !== index);
       setDropped(next);
-      setPool((p) => [...p, val]);
+      if (restored != null) {
+        setPool((p) => [...p, restored]);
+      }
       onAnswer(next);
     };
 
@@ -426,14 +435,14 @@ function DragDrop({ q, answer, onAnswer, submitted }) {
       <div>
         <div className="drag-pool">
           {pool.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết</span>}
-          {pool.map((item) => <div key={item} className="drag-chip" draggable onDragStart={(e) => e.dataTransfer.setData('text', item)}>{item}</div>)}
+          {pool.map((item, idx) => <div key={`${item}-${idx}`} className="drag-chip" draggable onDragStart={(e) => e.dataTransfer.setData('text', item)}>{item}</div>)}
         </div>
         <div className={`drop-zone${over ? ' over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={handleDrop}>
           {dropped.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo thẻ vào đây theo thứ tự đúng...</span>}
           {dropped.map((d, i) => (
             <div key={`${d}-${i}`} className="drag-chip" style={{ cursor: 'default' }}>
               <span style={{ marginRight: 5, color: 'var(--muted)', fontSize: '.7rem' }}>{i + 1}.</span>{d}
-              {!submitted && <button onClick={() => remove(d)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+              {!submitted && <button onClick={() => remove(i)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
             </div>
           ))}
         </div>

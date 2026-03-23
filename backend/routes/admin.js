@@ -6,9 +6,11 @@ const Semester = require("../models/Semester");
 const Subject = require("../models/Subject");
 const Lesson = require("../models/Lesson");
 const Question = require("../models/Question");
+const pdfParse = require("pdf-parse");
 const { verifyToken, isAdmin } = require("../middleware/auth");
 const { broadcast } = require("../realtime");
 const { inferSubjectIcon } = require("../utils/subjectIcon");
+const { normalizeAccessLocks } = require("../utils/accessControl");
 
 const router = express.Router();
 const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
@@ -20,6 +22,120 @@ const badRequest = (message) => {
 };
 const notifyCatalogUpdated = () => {
   broadcast("catalog-updated", { source: "admin" });
+};
+
+const normalizeLooseText = (value) => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+
+const collectHighlightedTextsFromPdf = async (buffer) => {
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const { getDocument, Util } = pdfjs;
+  const loadingTask = getDocument({ data: new Uint8Array(buffer) });
+  const pdfDoc = await loadingTask.promise;
+  const highlightedRaw = [];
+
+  const pointInRect = (x, y, rect, tol = 1.5) => (
+    x >= (rect.xMin - tol)
+    && x <= (rect.xMax + tol)
+    && y >= (rect.yMin - tol)
+    && y <= (rect.yMax + tol)
+  );
+
+  const toViewportRect = (viewport, quadPoints) => {
+    const xs = [];
+    const ys = [];
+
+    for (let i = 0; i < quadPoints.length; i += 2) {
+      const x = Number(quadPoints[i]);
+      const y = Number(quadPoints[i + 1]);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      const [vx, vy] = viewport.convertToViewportPoint(x, y);
+      xs.push(vx);
+      ys.push(vy);
+    }
+
+    if (!xs.length || !ys.length) return null;
+    return {
+      xMin: Math.min(...xs),
+      xMax: Math.max(...xs),
+      yMin: Math.min(...ys),
+      yMax: Math.max(...ys),
+    };
+  };
+
+  for (let pageNumber = 1; pageNumber <= pdfDoc.numPages; pageNumber += 1) {
+    const page = await pdfDoc.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 1.0 });
+    const textContent = await page.getTextContent();
+    const annotations = await page.getAnnotations({ intent: "display" });
+
+    const textItems = (textContent.items || [])
+      .map((item) => {
+        const str = String(item?.str || "").trim();
+        if (!str) return null;
+
+        const transformed = Util.transform(viewport.transform, item.transform);
+        const x = Number(transformed[4] || 0);
+        const y = Number(transformed[5] || 0);
+        const width = Number(item.width || 0);
+        const height = Math.max(Number(item.height || 0), Math.hypot(transformed[2] || 0, transformed[3] || 0) || 0);
+        return {
+          str,
+          centerX: x + width / 2,
+          centerY: y - height / 2,
+        };
+      })
+      .filter(Boolean);
+
+    const highlightRects = [];
+    (annotations || []).forEach((annotation) => {
+      if (annotation?.subtype !== "Highlight") return;
+      const quadPoints = Array.isArray(annotation?.quadPoints) ? annotation.quadPoints : [];
+      if (quadPoints.length >= 8) {
+        for (let i = 0; i <= quadPoints.length - 8; i += 8) {
+          const rect = toViewportRect(viewport, quadPoints.slice(i, i + 8));
+          if (rect) highlightRects.push(rect);
+        }
+        return;
+      }
+
+      if (Array.isArray(annotation?.rect) && annotation.rect.length === 4) {
+        const rect = toViewportRect(viewport, [
+          annotation.rect[0], annotation.rect[1],
+          annotation.rect[2], annotation.rect[1],
+          annotation.rect[2], annotation.rect[3],
+          annotation.rect[0], annotation.rect[3],
+        ]);
+        if (rect) highlightRects.push(rect);
+      }
+    });
+
+    if (!highlightRects.length) continue;
+
+    const captured = textItems
+      .filter((item) => highlightRects.some((rect) => pointInRect(item.centerX, item.centerY, rect)))
+      .map((item) => item.str)
+      .filter(Boolean);
+
+    if (captured.length) {
+      highlightedRaw.push(captured.join(" "));
+      captured.forEach((part) => highlightedRaw.push(part));
+    }
+  }
+
+  const seen = new Set();
+  return highlightedRaw
+    .map((item) => String(item || "").replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .filter((item) => {
+      const key = normalizeLooseText(item);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+};
+
+const buildAccessLocksPayload = (rawLocks = {}) => {
+  return normalizeAccessLocks(rawLocks);
 };
 
 const TYPE_MAP = {
@@ -105,6 +221,27 @@ const sanitizeDropTargets = (dropTargets, dragItems) => {
     .filter((target) => target.id && target.label);
 };
 
+const deriveDragDropFromLegacyAnswers = (answers) => {
+  const ordered = (Array.isArray(answers) ? answers : []).filter((item) => item.text || item.imageUrl);
+  if (ordered.length < 2) {
+    return { dragItems: [], dropTargets: [] };
+  }
+
+  const dragItems = ordered.map((item, idx) => ({
+    id: `item-${idx + 1}`,
+    label: String(item.text || item.imageUrl || `Muc ${idx + 1}`).trim(),
+  }));
+
+  const dropTargets = dragItems.map((item, idx) => ({
+    id: `slot-${idx + 1}`,
+    label: `Vi tri ${idx + 1}`,
+    correctItemId: item.id,
+    correctItemIds: [item.id],
+  }));
+
+  return { dragItems, dropTargets };
+};
+
 const buildQuestionPayload = (body) => {
   const lessonId = body.lessonId || body.lesson;
   const question = String(body.question || body.text || "").trim();
@@ -121,12 +258,22 @@ const buildQuestionPayload = (body) => {
   }
 
   const answers = sanitizeAnswers(body.answers, type);
-  const dragItems = sanitizeDragItems(body.dragItems);
-  const dropTargets = sanitizeDropTargets(body.dropTargets, dragItems);
+  let dragItems = sanitizeDragItems(body.dragItems);
+  let dropTargets = sanitizeDropTargets(body.dropTargets, dragItems);
   const points = Number(body.points || 1);
   const imageUrl = String(body.imageUrl || "").trim();
 
   if (type === "drag_drop") {
+    if (dragItems.length < 2 || dropTargets.length < 1) {
+      const fallback = deriveDragDropFromLegacyAnswers(answers);
+      if (dragItems.length < 2) {
+        dragItems = fallback.dragItems;
+      }
+      if (dropTargets.length < 1) {
+        dropTargets = fallback.dropTargets;
+      }
+    }
+
     if (dragItems.length < 2) {
       throw badRequest("Câu kéo thả cần ít nhất 2 mục kéo");
     }
@@ -220,6 +367,7 @@ router.post(
       password,
       role,
       isBlocked: false,
+      accessLocks: buildAccessLocksPayload({}),
       attempts: [],
       refreshTokens: [],
     });
@@ -303,6 +451,10 @@ router.patch(
       user.password = nextPassword;
     }
 
+    if (Object.prototype.hasOwnProperty.call(req.body || {}, "accessLocks")) {
+      user.accessLocks = buildAccessLocksPayload(req.body.accessLocks);
+    }
+
     await user.save();
     return res.json({
       id: user._id,
@@ -313,6 +465,45 @@ router.patch(
       role: user.role,
       isBlocked: user.isBlocked,
       createdAt: user.createdAt,
+    });
+  })
+);
+
+router.get(
+  "/users/:id/access-locks",
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id, { username: 1, role: 1, accessLocks: 1 });
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    return res.json({
+      userId: String(user._id),
+      username: user.username,
+      role: user.role,
+      accessLocks: buildAccessLocksPayload(user.accessLocks || {}),
+    });
+  })
+);
+
+router.patch(
+  "/users/:id/access-locks",
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    if (user.username === ADMIN_USERNAME || user.role === "admin") {
+      return res.status(400).json({ message: "Không thể khóa truy cập cho tài khoản admin" });
+    }
+
+    user.accessLocks = buildAccessLocksPayload(req.body?.accessLocks || {});
+    await user.save();
+
+    return res.json({
+      message: "Đã cập nhật danh sách khóa truy cập theo tài khoản",
+      accessLocks: buildAccessLocksPayload(user.accessLocks || {}),
     });
   })
 );
@@ -659,6 +850,66 @@ router.delete(
     await Question.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
     res.json({ message: "Đã xoá câu hỏi" });
+  })
+);
+
+router.post(
+  "/import/extract-text",
+  asyncHandler(async (req, res) => {
+    const fileName = String(req.body?.fileName || "").trim();
+    const fileContentBase64 = String(req.body?.fileContentBase64 || "").trim();
+
+    if (!fileName) {
+      throw badRequest("Thiếu tên file");
+    }
+    if (!fileContentBase64) {
+      throw badRequest("Thiếu nội dung file");
+    }
+
+    const lowerName = fileName.toLowerCase();
+    if (!lowerName.endsWith(".pdf")) {
+      throw badRequest("Hiện tại chỉ hỗ trợ trích nội dung tự động từ file PDF");
+    }
+
+    let buffer;
+    try {
+      buffer = Buffer.from(fileContentBase64, "base64");
+    } catch {
+      throw badRequest("Nội dung file không hợp lệ");
+    }
+
+    if (!buffer || !buffer.length) {
+      throw badRequest("File rỗng hoặc không đọc được");
+    }
+
+    const maxBytes = Number(process.env.IMPORT_MAX_FILE_BYTES || 20 * 1024 * 1024);
+    if (buffer.length > maxBytes) {
+      const error = new Error("File quá lớn. Vui lòng giảm dung lượng trước khi import");
+      error.statusCode = 413;
+      throw error;
+    }
+
+    const parsed = await pdfParse(buffer);
+    const text = String(parsed?.text || "").trim();
+    let highlightedTexts = [];
+
+    try {
+      highlightedTexts = await collectHighlightedTextsFromPdf(buffer);
+    } catch (error) {
+      highlightedTexts = [];
+      console.warn("PDF highlight extraction skipped:", error.message);
+    }
+
+    if (!text) {
+      throw badRequest("Không đọc được nội dung văn bản từ file PDF");
+    }
+
+    res.json({
+      fileName,
+      pages: Number(parsed?.numpages || 0),
+      text,
+      highlightedTexts,
+    });
   })
 );
 

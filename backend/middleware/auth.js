@@ -17,6 +17,9 @@ exports.protect = async (req, res, next) => {
     if (user.isBlocked) {
       return res.status(403).json({ message: "Tài khoản đã bị khóa" });
     }
+    if (Number(decoded?.sv || 0) !== Number(user.sessionVersion || 0)) {
+      return res.status(401).json({ message: "Tài khoản đã đăng nhập ở thiết bị khác" });
+    }
     req.user = user;
     next();
   } catch (error) {

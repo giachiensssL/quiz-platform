@@ -1,0 +1,3140 @@
+{
+  "source": "C:\\d\\Lap_Trinh_Web\\quiz-platform\\monhoc\\_qth_zip",
+  "subject": "QTH",
+  "eventsByLesson": {
+    "1": [
+      {
+        "option": "A",
+        "score": 0.7309527381845462,
+        "file_idx": 0,
+        "y": 280.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7810682680151706,
+        "file_idx": 0,
+        "y": 531.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7993301435406698,
+        "file_idx": 0,
+        "y": 710.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6825802645164463,
+        "file_idx": 0,
+        "y": 996.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7908878504672897,
+        "file_idx": 0,
+        "y": 1176.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7078087940156906,
+        "file_idx": 0,
+        "y": 1212.0,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7545020213156928,
+        "file_idx": 0,
+        "y": 1462.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0001.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7967676523107654,
+        "file_idx": 1,
+        "y": 242.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7255717255717256,
+        "file_idx": 1,
+        "y": 278.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.08243887895050686,
+        "file_idx": 1,
+        "y": 531.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8412922364517763,
+        "file_idx": 1,
+        "y": 566.0,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0959544325982182,
+        "file_idx": 1,
+        "y": 780.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7362594570538495,
+        "file_idx": 1,
+        "y": 817.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0794416600309148,
+        "file_idx": 1,
+        "y": 995.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7807007125890736,
+        "file_idx": 1,
+        "y": 1031.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.5994891443167305,
+        "file_idx": 1,
+        "y": 1067.5,
+        "x": 247.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07384230287859825,
+        "file_idx": 1,
+        "y": 1320.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7290476190476189,
+        "file_idx": 1,
+        "y": 1355.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7299523656029512,
+        "file_idx": 1,
+        "y": 1533.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0002.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8372812212133175,
+        "file_idx": 2,
+        "y": 226.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8209659090909092,
+        "file_idx": 2,
+        "y": 585.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7944304253785148,
+        "file_idx": 2,
+        "y": 873.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7758179959100204,
+        "file_idx": 2,
+        "y": 1160.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.852176308539945,
+        "file_idx": 2,
+        "y": 1300.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6613518815766006,
+        "file_idx": 2,
+        "y": 1552.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0003.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8196426380995215,
+        "file_idx": 3,
+        "y": 278.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7307653490328007,
+        "file_idx": 3,
+        "y": 494.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7560275545350172,
+        "file_idx": 3,
+        "y": 781.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7309281842818428,
+        "file_idx": 3,
+        "y": 1067.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7229323308270676,
+        "file_idx": 3,
+        "y": 1209.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7820245398773007,
+        "file_idx": 3,
+        "y": 1387.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7947267400747551,
+        "file_idx": 3,
+        "y": 1602.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0004.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8258868648130393,
+        "file_idx": 4,
+        "y": 350.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7594003440648808,
+        "file_idx": 4,
+        "y": 674.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08636363636363636,
+        "file_idx": 4,
+        "y": 814.75,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6282218172350951,
+        "file_idx": 4,
+        "y": 852.0,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7720567962503446,
+        "file_idx": 4,
+        "y": 1139.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      }
+    ],
+    "2": [
+      {
+        "option": "A",
+        "score": 0.7544619422572179,
+        "file_idx": 4,
+        "y": 1320.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7932203389830509,
+        "file_idx": 4,
+        "y": 1534.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0005.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.74008971124194,
+        "file_idx": 5,
+        "y": 351.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8293873566023919,
+        "file_idx": 5,
+        "y": 638.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7934623813002192,
+        "file_idx": 5,
+        "y": 853.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07102649006622516,
+        "file_idx": 5,
+        "y": 1103.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7595406040875384,
+        "file_idx": 5,
+        "y": 1140.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05656108597285068,
+        "file_idx": 5,
+        "y": 1391.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7276515151515152,
+        "file_idx": 5,
+        "y": 1428.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0006.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09638508515722793,
+        "file_idx": 6,
+        "y": 137.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7361393626453867,
+        "file_idx": 6,
+        "y": 173.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.1612994236427391,
+        "file_idx": 6,
+        "y": 462.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7761602957681389,
+        "file_idx": 6,
+        "y": 498.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8231032125768969,
+        "file_idx": 6,
+        "y": 746.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07248328843659584,
+        "file_idx": 6,
+        "y": 961.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8167641325536062,
+        "file_idx": 6,
+        "y": 997.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.17187044061861687,
+        "file_idx": 6,
+        "y": 1105.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7439447731755424,
+        "file_idx": 6,
+        "y": 1140.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6817820206841687,
+        "file_idx": 6,
+        "y": 1354.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0007.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09304719670573329,
+        "file_idx": 7,
+        "y": 225.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7697006472491909,
+        "file_idx": 7,
+        "y": 262.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7664970583558595,
+        "file_idx": 7,
+        "y": 477.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7456140350877193,
+        "file_idx": 7,
+        "y": 762.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09552845528455284,
+        "file_idx": 7,
+        "y": 1014.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7328905262591766,
+        "file_idx": 7,
+        "y": 1051.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7934484649122807,
+        "file_idx": 7,
+        "y": 1301.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8115189472015222,
+        "file_idx": 7,
+        "y": 1553.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0008.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7166523427081173,
+        "file_idx": 8,
+        "y": 135.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07617169155630694,
+        "file_idx": 8,
+        "y": 424.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7133977718665226,
+        "file_idx": 8,
+        "y": 461.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09025297619047619,
+        "file_idx": 8,
+        "y": 747.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7474580690014774,
+        "file_idx": 8,
+        "y": 784.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.11170528817587641,
+        "file_idx": 8,
+        "y": 997.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7938725111899985,
+        "file_idx": 8,
+        "y": 1034.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8042682419502454,
+        "file_idx": 8,
+        "y": 1213.0,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07405,
+        "file_idx": 8,
+        "y": 1463.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6858486341244961,
+        "file_idx": 8,
+        "y": 1499.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0009.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7135563196832343,
+        "file_idx": 9,
+        "y": 209.25,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.735129819040126,
+        "file_idx": 9,
+        "y": 386.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07009716438627801,
+        "file_idx": 9,
+        "y": 637.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7696056712450156,
+        "file_idx": 9,
+        "y": 674.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8210108604845446,
+        "file_idx": 9,
+        "y": 997.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.058823529411764705,
+        "file_idx": 9,
+        "y": 1141.0,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7311310782241015,
+        "file_idx": 9,
+        "y": 1176.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      }
+    ],
+    "3": [
+      {
+        "option": "B",
+        "score": 0.7352910476323022,
+        "file_idx": 9,
+        "y": 1466.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0010.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.13004115226337448,
+        "file_idx": 10,
+        "y": 208.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8416959064327486,
+        "file_idx": 10,
+        "y": 388.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8483350676378772,
+        "file_idx": 10,
+        "y": 783.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7232246316834962,
+        "file_idx": 10,
+        "y": 890.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6161971830985915,
+        "file_idx": 10,
+        "y": 926.0,
+        "x": 248.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0708562271062271,
+        "file_idx": 10,
+        "y": 1175.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7188356164383561,
+        "file_idx": 10,
+        "y": 1213.75,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.747275641025641,
+        "file_idx": 10,
+        "y": 1461.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0011.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08826291079812207,
+        "file_idx": 11,
+        "y": 225.25,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7514885496183207,
+        "file_idx": 11,
+        "y": 263.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8599456180715331,
+        "file_idx": 11,
+        "y": 656.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.05555555555555555,
+        "file_idx": 11,
+        "y": 945.0,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8473431780891078,
+        "file_idx": 11,
+        "y": 980.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.746514240401771,
+        "file_idx": 11,
+        "y": 1054.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.720473500134517,
+        "file_idx": 11,
+        "y": 1268.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0012.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6859234649932324,
+        "file_idx": 12,
+        "y": 135.75,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7195121951219512,
+        "file_idx": 12,
+        "y": 315.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7575572751877406,
+        "file_idx": 12,
+        "y": 639.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07702944525784935,
+        "file_idx": 12,
+        "y": 891.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7425390624999999,
+        "file_idx": 12,
+        "y": 926.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.08034221271631344,
+        "file_idx": 12,
+        "y": 1068.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7708776191922259,
+        "file_idx": 12,
+        "y": 1104.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07617169155630694,
+        "file_idx": 12,
+        "y": 1390.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7013416815742397,
+        "file_idx": 12,
+        "y": 1426.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7553501945525292,
+        "file_idx": 12,
+        "y": 1568.75,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0013.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7991276579172834,
+        "file_idx": 13,
+        "y": 315.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8096614714261773,
+        "file_idx": 13,
+        "y": 530.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.764890742481203,
+        "file_idx": 13,
+        "y": 781.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07660004037956794,
+        "file_idx": 13,
+        "y": 1069.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7938606847697757,
+        "file_idx": 13,
+        "y": 1104.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8019713811951115,
+        "file_idx": 13,
+        "y": 1499.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0014.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7145638418690173,
+        "file_idx": 14,
+        "y": 135.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05834572095986409,
+        "file_idx": 14,
+        "y": 498.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8097096341054045,
+        "file_idx": 14,
+        "y": 532.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7919578114700067,
+        "file_idx": 14,
+        "y": 708.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7233632862644416,
+        "file_idx": 14,
+        "y": 886.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7233803392601675,
+        "file_idx": 14,
+        "y": 1174.75,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.08469241773962805,
+        "file_idx": 14,
+        "y": 1210.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7932297249017506,
+        "file_idx": 14,
+        "y": 1426.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0015.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8179917585747182,
+        "file_idx": 15,
+        "y": 172.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      }
+    ],
+    "4": [
+      {
+        "option": "A",
+        "score": 0.09832167832167832,
+        "file_idx": 15,
+        "y": 389.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.18867924528301888,
+        "file_idx": 15,
+        "y": 423.25,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7052772808586761,
+        "file_idx": 15,
+        "y": 463.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7578976796197932,
+        "file_idx": 15,
+        "y": 748.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06683193884929244,
+        "file_idx": 15,
+        "y": 999.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7403669724770642,
+        "file_idx": 15,
+        "y": 1037.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06941624365482232,
+        "file_idx": 15,
+        "y": 1213.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7090909090909091,
+        "file_idx": 15,
+        "y": 1250.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6962459255928966,
+        "file_idx": 15,
+        "y": 1392.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0016.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07518762373958286,
+        "file_idx": 16,
+        "y": 210.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7613886765301076,
+        "file_idx": 16,
+        "y": 245.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6473411297440423,
+        "file_idx": 16,
+        "y": 461.0,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7649535423925667,
+        "file_idx": 16,
+        "y": 600.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07659672055956886,
+        "file_idx": 16,
+        "y": 998.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7316922785050275,
+        "file_idx": 16,
+        "y": 1034.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07128829536527886,
+        "file_idx": 16,
+        "y": 1285.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.729757085020243,
+        "file_idx": 16,
+        "y": 1320.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6651841224294596,
+        "file_idx": 16,
+        "y": 1427.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0017.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07213196493123364,
+        "file_idx": 17,
+        "y": 263.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6669283097854526,
+        "file_idx": 17,
+        "y": 299.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6908695652173913,
+        "file_idx": 17,
+        "y": 549.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7049461694492121,
+        "file_idx": 17,
+        "y": 728.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10465116279069768,
+        "file_idx": 17,
+        "y": 1123.0,
+        "x": 218.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06582427270055834,
+        "file_idx": 17,
+        "y": 1300.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6424329501915709,
+        "file_idx": 17,
+        "y": 1337.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7569334039922275,
+        "file_idx": 17,
+        "y": 1517.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0018.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.08980659122672557,
+        "file_idx": 18,
+        "y": 315.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7157707157707157,
+        "file_idx": 18,
+        "y": 352.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7239014182748198,
+        "file_idx": 18,
+        "y": 494.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07330246913580248,
+        "file_idx": 18,
+        "y": 746.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6968768074031232,
+        "file_idx": 18,
+        "y": 781.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7392381416504223,
+        "file_idx": 18,
+        "y": 1067.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09333333333333334,
+        "file_idx": 18,
+        "y": 1209.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7748559202125824,
+        "file_idx": 18,
+        "y": 1244.75,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09985493230174082,
+        "file_idx": 18,
+        "y": 1425.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8397129186602871,
+        "file_idx": 18,
+        "y": 1460.0,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7353140734921259,
+        "file_idx": 18,
+        "y": 1601.75,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0019.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7695830485304169,
+        "file_idx": 19,
+        "y": 461.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.12102009273570326,
+        "file_idx": 19,
+        "y": 640.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7873593530239099,
+        "file_idx": 19,
+        "y": 675.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09611776591138693,
+        "file_idx": 19,
+        "y": 853.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.802501078050884,
+        "file_idx": 19,
+        "y": 890.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10192762320421894,
+        "file_idx": 19,
+        "y": 1140.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7061761108846311,
+        "file_idx": 19,
+        "y": 1176.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.15815602836879433,
+        "file_idx": 19,
+        "y": 1318.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7243410852713178,
+        "file_idx": 19,
+        "y": 1354.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0020.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8047671033478894,
+        "file_idx": 20,
+        "y": 173.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7490976318337882,
+        "file_idx": 20,
+        "y": 353.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6861938827240466,
+        "file_idx": 20,
+        "y": 603.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.11687242798353908,
+        "file_idx": 20,
+        "y": 782.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09579589216944802,
+        "file_idx": 20,
+        "y": 1069.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8356287810529025,
+        "file_idx": 20,
+        "y": 1106.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.73463404232635,
+        "file_idx": 20,
+        "y": 1212.25,
+        "x": 247.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1533161068044789,
+        "file_idx": 20,
+        "y": 1498.5,
+        "x": 218.0,
+        "file": "QUẢN TRỊ HỌC_page-0021.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.757913992496822,
+        "file_idx": 21,
+        "y": 188.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.08846302748741773,
+        "file_idx": 21,
+        "y": 440.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6108884841125278,
+        "file_idx": 21,
+        "y": 477.25,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06882923191648024,
+        "file_idx": 21,
+        "y": 689.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6109799807675497,
+        "file_idx": 21,
+        "y": 727.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7317267888823182,
+        "file_idx": 21,
+        "y": 1051.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.0933799342105263,
+        "file_idx": 21,
+        "y": 1157.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0022.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8017114464482885,
+        "file_idx": 22,
+        "y": 209.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.5837585034013605,
+        "file_idx": 22,
+        "y": 282.0,
+        "x": 247.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.0744231639270095,
+        "file_idx": 22,
+        "y": 461.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6783512418530914,
+        "file_idx": 22,
+        "y": 497.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.19066937119675456,
+        "file_idx": 22,
+        "y": 674.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.5837837837837838,
+        "file_idx": 22,
+        "y": 709.5,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07288098984849888,
+        "file_idx": 22,
+        "y": 961.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10521885521885521,
+        "file_idx": 22,
+        "y": 997.5,
+        "x": 217.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6858823529411765,
+        "file_idx": 22,
+        "y": 1035.0,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09502911638112922,
+        "file_idx": 22,
+        "y": 1248.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7454188481675392,
+        "file_idx": 22,
+        "y": 1284.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09148426812585499,
+        "file_idx": 22,
+        "y": 1534.25,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7736128625472888,
+        "file_idx": 22,
+        "y": 1571.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0023.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07605682605682607,
+        "file_idx": 23,
+        "y": 262.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6830252448613602,
+        "file_idx": 23,
+        "y": 298.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.736826967326277,
+        "file_idx": 23,
+        "y": 477.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7883771929824562,
+        "file_idx": 23,
+        "y": 764.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7821824381926684,
+        "file_idx": 23,
+        "y": 1016.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.06723505288150228,
+        "file_idx": 23,
+        "y": 1227.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6766155276615528,
+        "file_idx": 23,
+        "y": 1262.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7415117589995018,
+        "file_idx": 23,
+        "y": 1370.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7474903474903475,
+        "file_idx": 23,
+        "y": 1408.5,
+        "x": 252.0,
+        "file": "QUẢN TRỊ HỌC_page-0024.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8004052684903749,
+        "file_idx": 24,
+        "y": 244.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7118191885633746,
+        "file_idx": 24,
+        "y": 387.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7814574314574314,
+        "file_idx": 24,
+        "y": 565.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09880952380952382,
+        "file_idx": 24,
+        "y": 781.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7693398902969548,
+        "file_idx": 24,
+        "y": 818.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.0780590717299578,
+        "file_idx": 24,
+        "y": 1068.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7470124013528748,
+        "file_idx": 24,
+        "y": 1105.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7106227106227107,
+        "file_idx": 24,
+        "y": 1139.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6991449267469092,
+        "file_idx": 24,
+        "y": 1355.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8226055793689833,
+        "file_idx": 24,
+        "y": 1604.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0025.jpg"
+      }
+    ],
+    "6": [
+      {
+        "option": "A",
+        "score": 0.7156492248062016,
+        "file_idx": 25,
+        "y": 281.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7370732398356707,
+        "file_idx": 25,
+        "y": 567.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.759837019790454,
+        "file_idx": 25,
+        "y": 748.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.16202945990180034,
+        "file_idx": 25,
+        "y": 1106.0,
+        "x": 218.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07626866559581177,
+        "file_idx": 25,
+        "y": 1392.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7983658076681331,
+        "file_idx": 25,
+        "y": 1429.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0026.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7431204915842906,
+        "file_idx": 26,
+        "y": 173.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.689925529683239,
+        "file_idx": 26,
+        "y": 388.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06406398479569211,
+        "file_idx": 26,
+        "y": 601.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7570558937465413,
+        "file_idx": 26,
+        "y": 638.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06973900416523367,
+        "file_idx": 26,
+        "y": 853.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7397033932457484,
+        "file_idx": 26,
+        "y": 889.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6539502164502164,
+        "file_idx": 26,
+        "y": 1140.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.13781223083548666,
+        "file_idx": 26,
+        "y": 1462.5,
+        "x": 218.0,
+        "file": "QUẢN TRỊ HỌC_page-0027.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7128296179391069,
+        "file_idx": 27,
+        "y": 298.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6789665312981374,
+        "file_idx": 27,
+        "y": 586.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8313148788927336,
+        "file_idx": 27,
+        "y": 836.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7257773402247929,
+        "file_idx": 27,
+        "y": 1125.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.10281055703590915,
+        "file_idx": 27,
+        "y": 1484.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7172057564290252,
+        "file_idx": 27,
+        "y": 1519.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0028.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1085782153940462,
+        "file_idx": 28,
+        "y": 225.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8251246261216351,
+        "file_idx": 28,
+        "y": 262.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8006645787182033,
+        "file_idx": 28,
+        "y": 549.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7191192266380236,
+        "file_idx": 28,
+        "y": 728.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8402005963675793,
+        "file_idx": 28,
+        "y": 1086.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8485060690943044,
+        "file_idx": 28,
+        "y": 1336.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7633516483516484,
+        "file_idx": 28,
+        "y": 1480.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0029.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06754918850303744,
+        "file_idx": 29,
+        "y": 278.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6800943567410633,
+        "file_idx": 29,
+        "y": 316.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07410458452722063,
+        "file_idx": 29,
+        "y": 565.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.800786128866358,
+        "file_idx": 29,
+        "y": 601.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8081771170006464,
+        "file_idx": 29,
+        "y": 780.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07515276112158072,
+        "file_idx": 29,
+        "y": 1103.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8033005057226511,
+        "file_idx": 29,
+        "y": 1140.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.12355769230769231,
+        "file_idx": 29,
+        "y": 1356.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7659793814432989,
+        "file_idx": 29,
+        "y": 1392.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8312641083521445,
+        "file_idx": 29,
+        "y": 1532.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7156776263031275,
+        "file_idx": 29,
+        "y": 1568.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0030.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.1400410905658282,
+        "file_idx": 30,
+        "y": 461.0,
+        "x": 225.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7735753176043557,
+        "file_idx": 30,
+        "y": 497.0,
+        "x": 227.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.701272824600012,
+        "file_idx": 30,
+        "y": 710.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      }
+    ],
+    "7": [
+      {
+        "option": "A",
+        "score": 0.09254985502100717,
+        "file_idx": 30,
+        "y": 999.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7380711769043783,
+        "file_idx": 30,
+        "y": 1037.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.750519978106185,
+        "file_idx": 30,
+        "y": 1323.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.05794991263832266,
+        "file_idx": 30,
+        "y": 1539.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.820502150090165,
+        "file_idx": 30,
+        "y": 1574.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0031.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10176509043364568,
+        "file_idx": 31,
+        "y": 263.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7672972972972972,
+        "file_idx": 31,
+        "y": 299.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10107095046854082,
+        "file_idx": 31,
+        "y": 477.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.777633209417596,
+        "file_idx": 31,
+        "y": 512.75,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7284132324081861,
+        "file_idx": 31,
+        "y": 655.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7205258693808312,
+        "file_idx": 31,
+        "y": 905.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7958535458535458,
+        "file_idx": 31,
+        "y": 1119.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09429017508642801,
+        "file_idx": 31,
+        "y": 1407.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7436574505540022,
+        "file_idx": 31,
+        "y": 1444.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0032.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7320080599079727,
+        "file_idx": 32,
+        "y": 209.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8146080689940339,
+        "file_idx": 32,
+        "y": 532.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8122962272938985,
+        "file_idx": 32,
+        "y": 568.25,
+        "x": 252.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.09886363636363636,
+        "file_idx": 32,
+        "y": 711.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.748549837688255,
+        "file_idx": 32,
+        "y": 746.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7218714121699197,
+        "file_idx": 32,
+        "y": 784.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7501227696840728,
+        "file_idx": 32,
+        "y": 1106.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.07264186162269787,
+        "file_idx": 32,
+        "y": 1392.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0033.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6482479254335942,
+        "file_idx": 33,
+        "y": 262.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.09896616541353383,
+        "file_idx": 33,
+        "y": 550.25,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7769615559520061,
+        "file_idx": 33,
+        "y": 585.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.08083083083083083,
+        "file_idx": 33,
+        "y": 764.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7727899790310121,
+        "file_idx": 33,
+        "y": 799.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.8287435456110155,
+        "file_idx": 33,
+        "y": 1085.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.716671336508826,
+        "file_idx": 33,
+        "y": 1410.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0034.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8620700245700246,
+        "file_idx": 34,
+        "y": 281.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7352148406532424,
+        "file_idx": 34,
+        "y": 568.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7804878048780488,
+        "file_idx": 34,
+        "y": 891.75,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7610539067231981,
+        "file_idx": 34,
+        "y": 928.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.05714285714285714,
+        "file_idx": 34,
+        "y": 1107.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7916644891559969,
+        "file_idx": 34,
+        "y": 1142.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7204779756326147,
+        "file_idx": 34,
+        "y": 1393.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7544258373205742,
+        "file_idx": 34,
+        "y": 1429.0,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0035.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7398193114300442,
+        "file_idx": 35,
+        "y": 443.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.763628762541806,
+        "file_idx": 35,
+        "y": 840.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7200378583017848,
+        "file_idx": 35,
+        "y": 1198.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7275774387424873,
+        "file_idx": 35,
+        "y": 1233.0,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7675414364640883,
+        "file_idx": 35,
+        "y": 1450.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7745762711864407,
+        "file_idx": 35,
+        "y": 1485.5,
+        "x": 252.0,
+        "file": "QUẢN TRỊ HỌC_page-0036.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7438441749356853,
+        "file_idx": 36,
+        "y": 173.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.12037037037037036,
+        "file_idx": 36,
+        "y": 424.5,
+        "x": 217.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7526335216786394,
+        "file_idx": 36,
+        "y": 713.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8301462694578636,
+        "file_idx": 36,
+        "y": 1110.0,
+        "x": 252.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.055698028530213176,
+        "file_idx": 36,
+        "y": 1470.0,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7140257558790594,
+        "file_idx": 36,
+        "y": 1506.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7099749843652283,
+        "file_idx": 36,
+        "y": 1541.25,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0037.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10181964142360182,
+        "file_idx": 37,
+        "y": 227.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7749366998323882,
+        "file_idx": 37,
+        "y": 262.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.17177522349936142,
+        "file_idx": 37,
+        "y": 478.0,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7676213501952761,
+        "file_idx": 37,
+        "y": 513.75,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.10106729142262137,
+        "file_idx": 37,
+        "y": 800.5,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7732654185022027,
+        "file_idx": 37,
+        "y": 838.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.6963102507470443,
+        "file_idx": 37,
+        "y": 873.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7845024809103605,
+        "file_idx": 37,
+        "y": 1014.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7169284204167925,
+        "file_idx": 37,
+        "y": 1447.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0038.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7736137218045113,
+        "file_idx": 38,
+        "y": 370.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6750845546786922,
+        "file_idx": 38,
+        "y": 548.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.13455578512396693,
+        "file_idx": 38,
+        "y": 945.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8294797687861272,
+        "file_idx": 38,
+        "y": 981.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7783220720720722,
+        "file_idx": 38,
+        "y": 1017.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07460835509138382,
+        "file_idx": 38,
+        "y": 1232.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.794457735247209,
+        "file_idx": 38,
+        "y": 1268.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.744943820224719,
+        "file_idx": 38,
+        "y": 1484.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7382882882882883,
+        "file_idx": 38,
+        "y": 1519.25,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0039.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.14268585131894485,
+        "file_idx": 39,
+        "y": 317.0,
+        "x": 247.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8412189689825629,
+        "file_idx": 39,
+        "y": 352.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7904945054945055,
+        "file_idx": 39,
+        "y": 747.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.6636771300448431,
+        "file_idx": 39,
+        "y": 1143.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07480595084087968,
+        "file_idx": 39,
+        "y": 1357.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7159718588290016,
+        "file_idx": 39,
+        "y": 1394.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.6744191931973478,
+        "file_idx": 39,
+        "y": 1608.25,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0040.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7833547833547834,
+        "file_idx": 40,
+        "y": 386.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0041.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7925143071974602,
+        "file_idx": 40,
+        "y": 710.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0041.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.09339947636764502,
+        "file_idx": 40,
+        "y": 925.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.750049921551847,
+        "file_idx": 40,
+        "y": 961.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0041.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6472092673386489,
+        "file_idx": 40,
+        "y": 1463.0,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0041.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.07591324200913242,
+        "file_idx": 41,
+        "y": 298.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7922589320015367,
+        "file_idx": 41,
+        "y": 335.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7780467395852011,
+        "file_idx": 41,
+        "y": 549.75,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7958972233733942,
+        "file_idx": 41,
+        "y": 728.0,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7400793650793651,
+        "file_idx": 41,
+        "y": 1125.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7661644695543001,
+        "file_idx": 41,
+        "y": 1160.0,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.10178485287023636,
+        "file_idx": 41,
+        "y": 1374.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7167153004981283,
+        "file_idx": 41,
+        "y": 1409.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0042.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8149127204776446,
+        "file_idx": 42,
+        "y": 172.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.10428504890544947,
+        "file_idx": 42,
+        "y": 389.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7192569067376976,
+        "file_idx": 42,
+        "y": 423.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      }
+    ],
+    "9": [
+      {
+        "option": "D",
+        "score": 0.6073587510114713,
+        "file_idx": 42,
+        "y": 712.5,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7410968660968661,
+        "file_idx": 42,
+        "y": 747.5,
+        "x": 249.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7130826989258525,
+        "file_idx": 42,
+        "y": 891.75,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7264673311184939,
+        "file_idx": 42,
+        "y": 927.0,
+        "x": 248.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7735115766262404,
+        "file_idx": 42,
+        "y": 1466.0,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7233268767047476,
+        "file_idx": 42,
+        "y": 1505.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0043.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.6582167832167832,
+        "file_idx": 43,
+        "y": 172.75,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0044.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7190144217976692,
+        "file_idx": 43,
+        "y": 389.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0044.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7063404599221218,
+        "file_idx": 43,
+        "y": 1107.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0044.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7306906906906907,
+        "file_idx": 43,
+        "y": 1430.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0044.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7014402383842844,
+        "file_idx": 44,
+        "y": 137.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7486046511627907,
+        "file_idx": 44,
+        "y": 172.0,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.06481418574631428,
+        "file_idx": 44,
+        "y": 423.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7183047131896236,
+        "file_idx": 44,
+        "y": 462.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7789823897206448,
+        "file_idx": 44,
+        "y": 892.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7068231878253904,
+        "file_idx": 44,
+        "y": 1143.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7053021894864292,
+        "file_idx": 44,
+        "y": 1539.0,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0045.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7239255368878379,
+        "file_idx": 45,
+        "y": 351.5,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.143317230273752,
+        "file_idx": 45,
+        "y": 855.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.8038662264351901,
+        "file_idx": 45,
+        "y": 1360.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7672734390291642,
+        "file_idx": 45,
+        "y": 1396.5,
+        "x": 250.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7742276422764228,
+        "file_idx": 45,
+        "y": 1502.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8098591549295774,
+        "file_idx": 45,
+        "y": 1539.0,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0046.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.09953083109919571,
+        "file_idx": 46,
+        "y": 352.0,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.8523051591657519,
+        "file_idx": 46,
+        "y": 388.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.07238505158160825,
+        "file_idx": 46,
+        "y": 709.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.822768035994946,
+        "file_idx": 46,
+        "y": 747.5,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7917018581081081,
+        "file_idx": 46,
+        "y": 1070.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8003615860758717,
+        "file_idx": 46,
+        "y": 1357.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8057539682539683,
+        "file_idx": 46,
+        "y": 1393.5,
+        "x": 252.0,
+        "file": "QUẢN TRỊ HỌC_page-0047.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7876447876447876,
+        "file_idx": 47,
+        "y": 137.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "D",
+        "score": 0.7461920529801324,
+        "file_idx": 47,
+        "y": 174.0,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.11167299759968306,
+        "file_idx": 47,
+        "y": 568.5,
+        "x": 209.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7808856237783919,
+        "file_idx": 47,
+        "y": 605.5,
+        "x": 215.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7568206468837778,
+        "file_idx": 47,
+        "y": 856.25,
+        "x": 211.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.7121295006962404,
+        "file_idx": 47,
+        "y": 1179.0,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0048.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8163761394530625,
+        "file_idx": 48,
+        "y": 137.5,
+        "x": 216.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.7368921613744439,
+        "file_idx": 48,
+        "y": 387.5,
+        "x": 214.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "B",
+        "score": 0.11685844849419148,
+        "file_idx": 48,
+        "y": 675.5,
+        "x": 210.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7574604616826145,
+        "file_idx": 48,
+        "y": 711.5,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.7631465284526509,
+        "file_idx": 48,
+        "y": 1034.0,
+        "x": 213.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "C",
+        "score": 0.8128410914927768,
+        "file_idx": 48,
+        "y": 1069.5,
+        "x": 251.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      },
+      {
+        "option": "A",
+        "score": 0.736330564152685,
+        "file_idx": 48,
+        "y": 1285.0,
+        "x": 212.0,
+        "file": "QUẢN TRỊ HỌC_page-0049.jpg"
+      }
+    ]
+  }
+}

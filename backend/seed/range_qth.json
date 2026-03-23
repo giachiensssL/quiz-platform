@@ -1,0 +1,416 @@
+[
+  {
+    "file": "QUẢN TRỊ HỌC_page-0001.jpg",
+    "lesson": 1,
+    "lessonsDetected": [
+      1
+    ],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0002.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 12,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0003.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 13,
+    "qMax": 18,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0004.jpg",
+    "lesson": 1,
+    "lessonsDetected": [],
+    "qMin": 20,
+    "qMax": 26,
+    "qCount": 7
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0005.jpg",
+    "lesson": 2,
+    "lessonsDetected": [
+      2
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0006.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 3,
+    "qMax": 7,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0007.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 9,
+    "qMax": 13,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0008.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 15,
+    "qMax": 20,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0009.jpg",
+    "lesson": 2,
+    "lessonsDetected": [],
+    "qMin": 22,
+    "qMax": 26,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0010.jpg",
+    "lesson": 3,
+    "lessonsDetected": [
+      3
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0011.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 3,
+    "qMax": 7,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0012.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 8,
+    "qMax": 12,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0013.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 13,
+    "qMax": 18,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0014.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 19,
+    "qMax": 24,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0015.jpg",
+    "lesson": 3,
+    "lessonsDetected": [],
+    "qMin": 25,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0016.jpg",
+    "lesson": 4,
+    "lessonsDetected": [
+      4
+    ],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0017.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 11,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0018.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 12,
+    "qMax": 17,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0019.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 18,
+    "qMax": 24,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0020.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 25,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0021.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 7
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0022.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 12,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0023.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 13,
+    "qMax": 17,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0024.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 18,
+    "qMax": 24,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0025.jpg",
+    "lesson": 4,
+    "lessonsDetected": [],
+    "qMin": 25,
+    "qMax": 30,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0026.jpg",
+    "lesson": 6,
+    "lessonsDetected": [
+      6
+    ],
+    "qMin": 1,
+    "qMax": 6,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0027.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 7,
+    "qMax": 11,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0028.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 12,
+    "qMax": 16,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0029.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 17,
+    "qMax": 22,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0030.jpg",
+    "lesson": 6,
+    "lessonsDetected": [],
+    "qMin": 23,
+    "qMax": 26,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0031.jpg",
+    "lesson": 7,
+    "lessonsDetected": [
+      7
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0032.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 4,
+    "qMax": 10,
+    "qCount": 7
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0033.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 11,
+    "qMax": 14,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0034.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 15,
+    "qMax": 20,
+    "qCount": 6
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0035.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 21,
+    "qMax": 24,
+    "qCount": 3
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0036.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 25,
+    "qMax": 29,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0037.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 3
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0038.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 4,
+    "qMax": 8,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0039.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 10,
+    "qMax": 13,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0040.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 14,
+    "qMax": 18,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0041.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 19,
+    "qMax": 22,
+    "qCount": 3
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0042.jpg",
+    "lesson": 7,
+    "lessonsDetected": [],
+    "qMin": 24,
+    "qMax": 29,
+    "qCount": 3
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0043.jpg",
+    "lesson": 9,
+    "lessonsDetected": [
+      9
+    ],
+    "qMin": 1,
+    "qMax": 30,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0044.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 5,
+    "qMax": 9,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0045.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 10,
+    "qMax": 12,
+    "qCount": 2
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0046.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 14,
+    "qMax": 17,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0047.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 18,
+    "qMax": 22,
+    "qCount": 5
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0048.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 23,
+    "qMax": 26,
+    "qCount": 3
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0049.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": 27,
+    "qMax": 30,
+    "qCount": 4
+  },
+  {
+    "file": "QUẢN TRỊ HỌC_page-0050.jpg",
+    "lesson": 9,
+    "lessonsDetected": [],
+    "qMin": null,
+    "qMax": null,
+    "qCount": 0
+  }
+]

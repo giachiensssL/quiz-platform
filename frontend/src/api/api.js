@@ -10,6 +10,7 @@ const normalizeApiBase = (base) => {
 };
 
 export const API_BASE_URL = normalizeApiBase(envApiBase);
+export const AUTH_NOTICE_KEY = 'qm_auth_notice';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -27,15 +28,27 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     const status = err?.response?.status;
+    const serverMessage = String(err?.response?.data?.message || '');
     const requestUrl = String(err?.config?.url || '').toLowerCase();
     const isLoginRequest = requestUrl.includes('/auth/login');
     const skipAuthRedirect = Boolean(err?.config?.skipAuthRedirect);
+    const hasSessionToken = Boolean(localStorage.getItem('qm_token'));
+    const isOnLoginPage = String(window?.location?.pathname || '').startsWith('/login');
 
-    if (status === 401 && !isLoginRequest && !skipAuthRedirect) {
+    if (status === 401 && !isLoginRequest && !skipAuthRedirect && hasSessionToken) {
+      const kickedByOtherSession = serverMessage.toLowerCase().includes('đăng nhập ở thiết bị khác');
+      if (kickedByOtherSession) {
+        sessionStorage.setItem(
+          AUTH_NOTICE_KEY,
+          'Tài khoản này vừa được đăng nhập ở thiết bị khác. Bạn đã bị đăng xuất, vui lòng đăng nhập lại.'
+        );
+      }
       localStorage.removeItem('qm_token');
       localStorage.removeItem('qm_user');
       localStorage.removeItem('qm_refresh_token');
-      window.location.href = '/login';
+      if (!isOnLoginPage) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(err);
   }
@@ -128,6 +141,8 @@ export const adminDataAPI = {
   setUserBlocked: (id, blocked) =>
     api.patch(`/admin/users/${id}/block`, { blocked }),
   removeUser: (id) => api.delete(`/admin/users/${id}`),
+  getUserAccessLocks: (id) => api.get(`/admin/users/${id}/access-locks`),
+  setUserAccessLocks: (id, accessLocks) => api.patch(`/admin/users/${id}/access-locks`, { accessLocks }),
 
   listFaculties: () => api.get('/admin/faculties'),
   createFaculty: (d) => api.post('/admin/faculties', d),
@@ -158,6 +173,7 @@ export const adminDataAPI = {
   createQuestion: (d) => api.post('/admin/questions', d),
   updateQuestion: (id, d) => api.put(`/admin/questions/${id}`, d),
   removeQuestion: (id) => api.delete(`/admin/questions/${id}`),
+  extractDocumentText: (d) => api.post('/admin/import/extract-text', d),
 
   getAnalyticsSummary: () => api.get('/analytics/summary'),
 };

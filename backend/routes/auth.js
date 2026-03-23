@@ -9,25 +9,30 @@ const ACCESS_EXPIRES = process.env.JWT_EXPIRES_IN || "15m";
 const REFRESH_EXPIRES = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
 
 const signAccessToken = (user) => {
-  return jwt.sign({ id: user._id, username: user.username, role: user.role }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, username: user.username, role: user.role, sv: Number(user.sessionVersion || 0) }, process.env.JWT_SECRET, {
     expiresIn: ACCESS_EXPIRES,
   });
 };
 
 const signRefreshToken = (user) => {
   return jwt.sign(
-    { id: user._id, username: user.username, type: "refresh" },
+    { id: user._id, username: user.username, type: "refresh", sv: Number(user.sessionVersion || 0) },
     process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
     { expiresIn: REFRESH_EXPIRES }
   );
 };
 
-const issueTokens = async (user, previousRefreshToken) => {
+const issueTokens = async (user, options = {}) => {
+  const { previousRefreshToken = null, rotateSession = false } = options;
+  if (rotateSession) {
+    user.sessionVersion = Number(user.sessionVersion || 0) + 1;
+  }
+
   const token = signAccessToken(user);
   const refreshToken = signRefreshToken(user);
 
   const retained = (user.refreshTokens || []).filter((item) => item !== previousRefreshToken);
-  user.refreshTokens = [...retained.slice(-4), refreshToken];
+  user.refreshTokens = [refreshToken, ...retained].slice(0, 1);
   await user.save();
 
   return {
@@ -64,7 +69,7 @@ router.post("/login", async (req, res) => {
       return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa" });
     }
 
-    const payload = await issueTokens(user);
+    const payload = await issueTokens(user, { rotateSession: true });
     return res.json(payload);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -90,7 +95,11 @@ router.post("/refresh", async (req, res) => {
       return res.status(401).json({ message: "Phiên đăng nhập không hợp lệ" });
     }
 
-    const payload = await issueTokens(user, refreshToken);
+    if (Number(decoded.sv || 0) !== Number(user.sessionVersion || 0)) {
+      return res.status(401).json({ message: "Phiên đăng nhập đã hết hiệu lực" });
+    }
+
+    const payload = await issueTokens(user, { previousRefreshToken: refreshToken, rotateSession: false });
     return res.json(payload);
   } catch (error) {
     return res.status(401).json({ message: "Không thể làm mới phiên đăng nhập" });
@@ -99,11 +108,9 @@ router.post("/refresh", async (req, res) => {
 
 router.post("/logout", verifyToken, async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-    if (refreshToken) {
-      req.user.refreshTokens = (req.user.refreshTokens || []).filter((item) => item !== refreshToken);
-      await req.user.save();
-    }
+    req.user.refreshTokens = [];
+    req.user.sessionVersion = Number(req.user.sessionVersion || 0) + 1;
+    await req.user.save();
 
     return res.json({ message: "Đăng xuất thành công" });
   } catch (error) {
