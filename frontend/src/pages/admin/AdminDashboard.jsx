@@ -511,6 +511,7 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
   const [confirm, setConfirm] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [toast, setToast] = useState('');
 
   const openAdd = () => {
@@ -523,6 +524,60 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
 
   const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal(true); };
   const visibleFields = Array.isArray(tableFields) && tableFields.length ? tableFields : fields.slice(0, 3);
+  const selectedSet = new Set(selectedIds.map((id) => String(id)));
+
+  useEffect(() => {
+    const validIdSet = new Set((items || []).map((item) => String(item.id)));
+    setSelectedIds((prev) => prev.map((id) => String(id)).filter((id) => validIdSet.has(id)));
+  }, [items]);
+
+  const isAllSelected = items.length > 0 && selectedIds.length === items.length;
+  const toggleSelectAll = (checked) => {
+    setSelectedIds(checked ? items.map((item) => String(item.id)) : []);
+  };
+
+  const toggleItemSelection = (id, checked) => {
+    const key = String(id);
+    setSelectedIds((prev) => {
+      if (checked) {
+        return prev.includes(key) ? prev : [...prev, key];
+      }
+      return prev.filter((item) => item !== key);
+    });
+  };
+
+  const runBulkDelete = async () => {
+    const ids = selectedIds.map((id) => String(id));
+    if (!ids.length) return;
+
+    const results = await Promise.allSettled(ids.map((id) => onRemove(id)));
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+
+    if (failCount > 0) {
+      setToast(`Đã xoá ${successCount} mục, lỗi ${failCount} mục.`);
+    } else {
+      setToast(`Đã xoá ${successCount} mục đã chọn.`);
+    }
+    setSelectedIds([]);
+  };
+
+  const runBulkLockToggle = async (nextLocked) => {
+    if (!onToggleLock) return;
+    const ids = selectedIds.map((id) => String(id));
+    if (!ids.length) return;
+
+    const results = await Promise.allSettled(ids.map((id) => onToggleLock(id, nextLocked)));
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+
+    const actionLabel = nextLocked ? 'khóa' : 'mở khóa';
+    if (failCount > 0) {
+      setToast(`Đã ${actionLabel} ${successCount} mục, lỗi ${failCount} mục.`);
+    } else {
+      setToast(`Đã ${actionLabel} ${successCount} mục đã chọn.`);
+    }
+  };
 
   useEffect(() => {
     if (!modal) return;
@@ -559,11 +614,15 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
     <>
       <Toast message={toast} type="success" onDone={() => setToast('')} />
       <Confirm open={!!confirm} title={`Xoá ${title.toLowerCase()}`}
-        message={`Xác nhận xoá "${confirm?.name}"?`} danger
+        message={confirm?.bulk ? `Xác nhận xoá ${selectedIds.length} mục đã chọn?` : `Xác nhận xoá "${confirm?.name}"?`}
         onConfirm={async () => {
           try {
-            await onRemove(confirm.id);
-            setToast('Đã xoá!');
+            if (confirm?.bulk) {
+              await runBulkDelete();
+            } else {
+              await onRemove(confirm.id);
+              setToast('Đã xoá!');
+            }
           } catch (error) {
             setToast(error?.message || 'Không thể xoá dữ liệu trên server.');
           } finally {
@@ -610,15 +669,47 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
       </Modal>
       <div className="table-wrap">
         <div className="table-header">
-          <div className="table-title">{icon} {title}</div>
-          <Button variant="primary" size="sm" icon="+" onClick={openAdd}>Thêm mới</Button>
+          <div>
+            <div className="table-title">{icon} {title}</div>
+            <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--muted)' }}>
+              Đã chọn: {selectedIds.length}/{items.length}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            {onToggleLock && (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => runBulkLockToggle(true)} disabled={!selectedIds.length}>Khóa đã chọn</Button>
+                <Button variant="ghost" size="sm" onClick={() => runBulkLockToggle(false)} disabled={!selectedIds.length}>Mở khóa đã chọn</Button>
+              </>
+            )}
+            <Button variant="danger" size="sm" onClick={() => setConfirm({ bulk: true })} disabled={!selectedIds.length}>Xóa đã chọn</Button>
+            <Button variant="primary" size="sm" icon="+" onClick={openAdd}>Thêm mới</Button>
+          </div>
         </div>
         {items.length === 0 ? <EmptyState icon={icon} text={`Chưa có ${title.toLowerCase()} nào`} /> : (
           <table className="data-table">
-            <thead><tr><th>#</th>{visibleFields.map(f => <th key={f.key}>{f.label}</th>)}{showLockColumn && <th>Trạng thái</th>}<th>Thao tác</th></tr></thead>
+            <thead><tr>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  onChange={(e) => toggleSelectAll(e.target.checked)}
+                  aria-label={`Chọn tất cả ${title.toLowerCase()}`}
+                />
+              </th>
+              <th>#</th>{visibleFields.map(f => <th key={f.key}>{f.label}</th>)}{showLockColumn && <th>Trạng thái</th>}<th>Thao tác</th>
+            </tr></thead>
             <tbody>
               {items.map((item, i) => (
                 <tr key={item.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedSet.has(String(item.id))}
+                      onChange={(e) => toggleItemSelection(item.id, e.target.checked)}
+                      aria-label={`Chọn ${title.toLowerCase()} ${i + 1}`}
+                    />
+                  </td>
                   <td style={{ color: 'var(--muted)' }}>{i + 1}</td>
                   {visibleFields.map((f) => {
                     const rendered = typeof f.render === 'function' ? f.render(item) : item[f.key];
@@ -1129,6 +1220,8 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const [editing, setEditing] = useState(null);
   const [toast, setToast] = useState('');
   const [confirm, setConfirm] = useState(null);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
+  const [bulkLessonId, setBulkLessonId] = useState('');
   const [importLessonId, setImportLessonId] = useState('');
   const [importMode, setImportMode] = useState('single');
   const [importSubjectId, setImportSubjectId] = useState('');
@@ -1172,12 +1265,96 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     }
     return true;
   });
+  const questionSelectedSet = new Set(selectedQuestionIds.map((id) => String(id)));
+  const allVisibleQuestionIds = questionList.map((q) => String(q.id));
+  const allVisibleSelected = allVisibleQuestionIds.length > 0 && allVisibleQuestionIds.every((id) => questionSelectedSet.has(id));
+
+  useEffect(() => {
+    const validIdSet = new Set((data.questions || []).map((item) => String(item.id)));
+    setSelectedQuestionIds((prev) => prev.map((id) => String(id)).filter((id) => validIdSet.has(id)));
+  }, [data.questions]);
+
+  useEffect(() => {
+    if (!bulkLessonId && filterLessonId) {
+      setBulkLessonId(String(filterLessonId));
+    }
+  }, [bulkLessonId, filterLessonId]);
 
   useEffect(() => {
     if (!filterLessonId) return;
     const exists = lessonOptions.some((lesson) => String(lesson.id) === String(filterLessonId));
     if (!exists) setFilterLessonId('');
   }, [filterLessonId, lessonOptions]);
+
+  const toggleSelectAllVisibleQuestions = (checked) => {
+    if (!checked) {
+      setSelectedQuestionIds((prev) => prev.filter((id) => !allVisibleQuestionIds.includes(String(id))));
+      return;
+    }
+    setSelectedQuestionIds((prev) => {
+      const next = new Set(prev.map((id) => String(id)));
+      allVisibleQuestionIds.forEach((id) => next.add(id));
+      return Array.from(next);
+    });
+  };
+
+  const toggleQuestionSelection = (questionId, checked) => {
+    const key = String(questionId);
+    setSelectedQuestionIds((prev) => {
+      if (checked) {
+        return prev.includes(key) ? prev : [...prev, key];
+      }
+      return prev.filter((id) => id !== key);
+    });
+  };
+
+  const runBulkDeleteQuestions = async () => {
+    const ids = selectedQuestionIds.map((id) => String(id));
+    if (!ids.length) return;
+    const results = await Promise.allSettled(ids.map((id) => questionsCrud.remove(id)));
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+    if (failCount > 0) {
+      setToast(`Đã xoá ${successCount} câu, lỗi ${failCount} câu.`);
+    } else {
+      setToast(`Đã xoá ${successCount} câu hỏi đã chọn.`);
+    }
+    setSelectedQuestionIds([]);
+  };
+
+  const runBulkUpdateLesson = async () => {
+    const ids = selectedQuestionIds.map((id) => String(id));
+    const nextLessonId = String(bulkLessonId || '');
+    if (!ids.length || !nextLessonId) {
+      setToast('Chọn câu hỏi và bài học đích trước khi cập nhật.');
+      return;
+    }
+
+    const selectedQuestionMap = new Map((data.questions || []).map((q) => [String(q.id), q]));
+    const results = await Promise.allSettled(ids.map((id) => {
+      const source = selectedQuestionMap.get(String(id));
+      if (!source) {
+        return Promise.reject(new Error('Question not found'));
+      }
+      return questionsCrud.update(id, {
+        lessonId: nextLessonId,
+        type: source.type,
+        text: source.text || source.question || '',
+        imageUrl: source.imageUrl || '',
+        answers: source.answers,
+        dragItems: source.dragItems || [],
+        dropTargets: source.dropTargets || [],
+      });
+    }));
+
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+    if (failCount > 0) {
+      setToast(`Đã cập nhật ${successCount} câu, lỗi ${failCount} câu.`);
+    } else {
+      setToast(`Đã cập nhật bài học cho ${successCount} câu hỏi.`);
+    }
+  };
 
   const openAdd = () => {
     setEditing(null);
@@ -1905,11 +2082,15 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   return (
     <>
       <Toast message={toast} type="success" onDone={() => setToast('')} />
-      <Confirm open={!!confirm} title="Xoá câu hỏi" message="Xác nhận xoá câu hỏi này?" danger
+      <Confirm open={!!confirm} title="Xoá câu hỏi" message={confirm?.bulk ? `Xác nhận xoá ${selectedQuestionIds.length} câu hỏi đã chọn?` : 'Xác nhận xoá câu hỏi này?'} danger
         onConfirm={async () => {
-          await questionsCrud.remove(confirm?.id);
+          if (confirm?.bulk) {
+            await runBulkDeleteQuestions();
+          } else {
+            await questionsCrud.remove(confirm?.id);
+            setToast('Đã xoá!');
+          }
           setConfirm(null);
-          setToast('Đã xoá!');
         }} onCancel={() => setConfirm(null)} />
 
       <Modal
@@ -2231,6 +2412,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         <div className="table-header">
           <div>
             <div className="table-title">❓ Câu hỏi</div>
+            <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--muted)' }}>
+              Đã chọn: {selectedQuestionIds.length} câu
+            </div>
             <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 8, maxWidth: 460 }}>
               <Select
                 label="Lọc theo môn"
@@ -2254,6 +2438,19 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
               />
               Chỉ hiện môn đang chọn (mặc định)
             </label>
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap', maxWidth: 620 }}>
+              <Select
+                label="Cập nhật bài cho mục đã chọn"
+                value={bulkLessonId}
+                onChange={(e) => setBulkLessonId(e.target.value)}
+                options={[{ value: '', label: 'Chọn bài học đích' }, ...lessonOptions.map((l) => ({ value: l.id, label: l.name }))]}
+              />
+              <div style={{ display: 'flex', gap: 8, alignItems: 'end' }}>
+                <Button variant="ghost" size="sm" onClick={runBulkUpdateLesson} disabled={!selectedQuestionIds.length || !bulkLessonId}>Cập nhật bài đã chọn</Button>
+                <Button variant="danger" size="sm" onClick={() => setConfirm({ bulk: true })} disabled={!selectedQuestionIds.length}>Xoá đã chọn</Button>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedQuestionIds([])} disabled={!selectedQuestionIds.length}>Bỏ chọn</Button>
+              </div>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <Button variant="ghost" size="sm" icon="⬆" onClick={openImportModal}>Import tài liệu</Button>
@@ -2262,10 +2459,28 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         </div>
         {questionList.length === 0 ? <EmptyState icon="❓" text="Chưa có câu hỏi" /> : (
           <table className="data-table">
-            <thead><tr><th>#</th><th>Nội dung</th><th>Loại</th><th>Ảnh</th><th>Bài học</th><th>Thao tác</th></tr></thead>
+            <thead><tr>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={allVisibleSelected}
+                  onChange={(e) => toggleSelectAllVisibleQuestions(e.target.checked)}
+                  aria-label="Chọn tất cả câu hỏi đang hiển thị"
+                />
+              </th>
+              <th>#</th><th>Nội dung</th><th>Loại</th><th>Ảnh</th><th>Bài học</th><th>Thao tác</th>
+            </tr></thead>
             <tbody>
               {questionList.map((q, i) => (
                 <tr key={q.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={questionSelectedSet.has(String(q.id))}
+                      onChange={(e) => toggleQuestionSelection(q.id, e.target.checked)}
+                      aria-label={`Chọn câu hỏi ${i + 1}`}
+                    />
+                  </td>
                   <td style={{ color: 'var(--muted)' }}>{i + 1}</td>
                   <td style={{ maxWidth: 260 }}><div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{q.text || q.question}</div></td>
                   <td><Badge color={q.type === 'single' ? 'blue' : q.type === 'multiple' ? 'orange' : 'gray'}>{q.type}</Badge></td>
