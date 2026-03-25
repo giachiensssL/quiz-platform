@@ -12,6 +12,13 @@ const normalizeApiBase = (base) => {
 export const API_BASE_URL = normalizeApiBase(envApiBase);
 export const AUTH_NOTICE_KEY = 'qm_auth_notice';
 
+const isLikelyJwt = (token) => {
+  const value = String(token || '').trim();
+  if (!value) return false;
+  // JWT normally has 3 dot-separated base64url parts.
+  return value.split('.').length === 3;
+};
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -20,7 +27,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('qm_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (isLikelyJwt(token)) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 

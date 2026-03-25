@@ -13,6 +13,7 @@
     "migrate:subject-icons": "node seed/migrateSubjectIcons.js",
     "import:monhoc:dry": "node seed/importMonhocSubjects.js --dry-run",
     "import:monhoc": "node seed/importMonhocSubjects.js",
+    "align:monhoc:business": "node seed/alignBusinessSubjects.js",
     "import:monhoc:questions:dry": "node seed/importMonhocQuestionsFromPdf.js --dry-run",
     "import:monhoc:questions": "node seed/importMonhocQuestionsFromPdf.js",
     "extract:tmdt:answers": "python seed/extractTmdtAnswersFromImages.py",

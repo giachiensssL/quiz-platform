@@ -86,6 +86,7 @@ function UsersPanel() {
   const [editForm, setEditForm] = useState({ fullName: '', email: '', username: '', password: '', role: 'user' });
   const [showPasswords, setShowPasswords] = useState(false);
   const [toast, setToast] = useState('');
+  const [isRemoving, setIsRemoving] = useState(false);
   const [mode, setMode] = useState('server');
   const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
   const ef = (k) => (e) => setEditForm(p => ({ ...p, [k]: e.target.value }));
@@ -191,15 +192,14 @@ function UsersPanel() {
   };
 
   const remove = async (id) => {
-    if (mode === 'local') {
-      setMockUsers((prev) => prev.filter((item) => String(item.id) !== String(id)));
-      setUsers((prev) => prev.filter((item) => String(item._id || item.id) !== String(id)));
-      setToast('Đã xoá tài khoản (cục bộ).');
-      setConfirm(null);
-      return;
-    }
-
     try {
+      if (mode === 'local') {
+        setMockUsers((prev) => prev.filter((item) => String(item.id) !== String(id)));
+        setUsers((prev) => prev.filter((item) => String(item._id || item.id) !== String(id)));
+        setToast('Đã xoá tài khoản (cục bộ).');
+        return;
+      }
+
       await adminDataAPI.removeUser(id);
       setToast('Đã xoá tài khoản.');
       await loadUsers();
@@ -207,6 +207,7 @@ function UsersPanel() {
       setToast(error?.response?.data?.message || 'Không thể xoá tài khoản.');
     } finally {
       setConfirm(null);
+      setIsRemoving(false);
     }
   };
 
@@ -359,7 +360,13 @@ function UsersPanel() {
     <>
       <Toast message={toast} type="success" onDone={() => setToast('')} />
       <Confirm open={!!confirm} title="Xác nhận xoá" message={`Xoá tài khoản "${confirm?.username}"? Thao tác không thể hoàn tác.`}
-        danger onConfirm={() => remove(confirm?.id)} onCancel={() => setConfirm(null)} />
+        danger loading={isRemoving}
+        onConfirm={async () => {
+          if (!confirm?.id || isRemoving) return;
+          setIsRemoving(true);
+          await remove(confirm.id);
+        }}
+        onCancel={() => { if (!isRemoving) setConfirm(null); }} />
       <Modal open={modal} title="Tạo tài khoản mới" onClose={() => setModal(false)}
         footer={<><Button variant="ghost" onClick={() => setModal(false)}>Huỷ</Button><Button variant="primary" onClick={save}>Tạo tài khoản</Button></>}>
         <div className="form-grid-2">
@@ -513,6 +520,8 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
   const [confirm, setConfirm] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
   const [toast, setToast] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const openAdd = () => {
     setEditing(null);
@@ -600,13 +609,20 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
   }, [fields, form, modal]);
   const save = async () => {
     const missing = fields.filter(f => f.required && !form[f.key]);
-    if (missing.length) return;
+    if (missing.length) {
+      const labels = missing.map((item) => item.label).join(', ');
+      setToast(`Vui lòng nhập/chọn: ${labels}.`);
+      return;
+    }
     try {
+      setIsSaving(true);
       if (editing) { await onUpdate(editing.id, form); setToast('Đã cập nhật!'); }
       else { await onAdd(form); setToast('Đã thêm mới!'); }
       setModal(false);
     } catch (error) {
       setToast(error?.message || 'Không thể lưu dữ liệu lên server.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -615,8 +631,11 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
       <Toast message={toast} type="success" onDone={() => setToast('')} />
       <Confirm open={!!confirm} title={`Xoá ${title.toLowerCase()}`}
         message={confirm?.bulk ? `Xác nhận xoá ${selectedIds.length} mục đã chọn?` : `Xác nhận xoá "${confirm?.name}"?`}
+        loading={isConfirming}
         onConfirm={async () => {
+          if (isConfirming) return;
           try {
+            setIsConfirming(true);
             if (confirm?.bulk) {
               await runBulkDelete();
             } else {
@@ -627,11 +646,12 @@ function CrudTable({ title, icon, items, fields, tableFields, onAdd, onUpdate, o
             setToast(error?.message || 'Không thể xoá dữ liệu trên server.');
           } finally {
             setConfirm(null);
+            setIsConfirming(false);
           }
         }}
-        onCancel={() => setConfirm(null)} />
+        onCancel={() => { if (!isConfirming) setConfirm(null); }} />
       <Modal open={modal} title={editing ? `Sửa ${title}` : `Thêm ${title}`} onClose={() => setModal(false)}
-        footer={<><Button variant="ghost" onClick={() => setModal(false)}>Huỷ</Button><Button variant="primary" onClick={save}>Lưu</Button></>}>
+        footer={<><Button variant="ghost" onClick={() => setModal(false)} disabled={isSaving}>Huỷ</Button><Button variant="primary" onClick={save} loading={isSaving} disabled={isSaving}>Lưu</Button></>}>
         {fields.map(f => (
           f.type === 'select' ? (
             <Select key={f.key} label={f.label + (f.required ? ' *' : '')}
@@ -995,6 +1015,8 @@ function SemestersPanel({ data, semestersCrud }) {
         onAdd={handleAddSemester}
         onUpdate={handleUpdateSemester}
         onRemove={semestersCrud.remove}
+        onToggleLock={(id, locked) => semestersCrud.update(id, { locked })}
+        showLockColumn
       />
     </>
   );
@@ -1205,6 +1227,8 @@ function SubjectStatsBoard({ data }) {
 
 // ── QUESTIONS PANEL ────────────────────────────────────────────
 function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
+  const IMPORT_MAX_FILE_BYTES = 100 * 1024 * 1024;
+
   const makeDefaultByType = (type) => {
     if (type === 'truefalse') {
       return [
@@ -1229,9 +1253,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const [importFileName, setImportFileName] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importSkipLogs, setImportSkipLogs] = useState([]);
+  const [requireFullImport, setRequireFullImport] = useState(true);
   const [questionImageFileName, setQuestionImageFileName] = useState('');
   const [answerImageFileNames, setAnswerImageFileNames] = useState({});
   const [imagePreview, setImagePreview] = useState({ url: '', title: 'Xem hình ảnh câu hỏi' });
+  const [opProgress, setOpProgress] = useState({ active: false, label: '', current: 0, total: 0 });
   // filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject → lifted to AdminDashboard
   const [form, setForm] = useState({
     lessonId: '',
@@ -1311,7 +1337,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const runBulkDeleteQuestions = async () => {
     const ids = selectedQuestionIds.map((id) => String(id));
     if (!ids.length) return;
+    startOpProgress('Đang xoá câu hỏi...', ids.length);
     const results = await Promise.allSettled(ids.map((id) => questionsCrud.remove(id)));
+    doneOpProgress('Đã hoàn tất xoá câu hỏi');
     const successCount = results.filter((result) => result.status === 'fulfilled').length;
     const failCount = results.length - successCount;
     if (failCount > 0) {
@@ -1331,6 +1359,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     }
 
     const selectedQuestionMap = new Map((data.questions || []).map((q) => [String(q.id), q]));
+    startOpProgress('Đang cập nhật bài học cho câu hỏi...', ids.length);
     const results = await Promise.allSettled(ids.map((id) => {
       const source = selectedQuestionMap.get(String(id));
       if (!source) {
@@ -1346,6 +1375,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         dropTargets: source.dropTargets || [],
       });
     }));
+    doneOpProgress('Đã hoàn tất cập nhật bài học');
 
     const successCount = results.filter((result) => result.status === 'fulfilled').length;
     const failCount = results.length - successCount;
@@ -1388,6 +1418,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     setImportMode('single');
     setImportLessonId(filterLessonId || (lessonOptions.length === 1 ? String(lessonOptions[0].id) : ''));
     setImportSubjectId(filterSubjectId || '');
+    setRequireFullImport(true);
     setImportFileName('');
     setImportPreview(null);
     setImportSkipLogs([]);
@@ -1414,7 +1445,46 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     };
   };
 
-  const buildQuestionKey = (question) => `${String(question?.type || '').toLowerCase()}|${String(question?.text || '').trim().toLowerCase()}`;
+  const normalizeKeyText = (value) => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+
+  const buildQuestionKey = (question) => {
+    const type = String(question?.type || '').trim().toLowerCase();
+    const text = normalizeKeyText(question?.text || question?.question || '');
+    const answers = (Array.isArray(question?.answers) ? question.answers : [])
+      .map((item) => `${normalizeKeyText(item?.text || '')}:${Boolean(item?.correct ?? item?.isCorrect) ? '1' : '0'}`)
+      .join('|');
+    const dragItems = (Array.isArray(question?.dragItems) ? question.dragItems : [])
+      .map((item) => normalizeKeyText(item?.label || item?.text || ''))
+      .join('|');
+    const dropTargets = (Array.isArray(question?.dropTargets) ? question.dropTargets : [])
+      .map((item) => normalizeKeyText(item?.label || ''))
+      .join('|');
+
+    return `${type}|${text}|${answers}|${dragItems}|${dropTargets}`;
+  };
+
+  const startOpProgress = (label, total = 1) => {
+    setOpProgress({ active: true, label, current: 0, total: Math.max(1, Number(total) || 1) });
+  };
+
+  const stepOpProgress = (increment = 1) => {
+    setOpProgress((prev) => ({
+      ...prev,
+      current: Math.min(Number(prev.current || 0) + Math.max(1, Number(increment) || 1), Number(prev.total || 1)),
+    }));
+  };
+
+  const doneOpProgress = (label) => {
+    setOpProgress((prev) => ({
+      active: true,
+      label: label || prev.label,
+      current: Number(prev.total || 1),
+      total: Number(prev.total || 1),
+    }));
+    window.setTimeout(() => {
+      setOpProgress({ active: false, label: '', current: 0, total: 0 });
+    }, 900);
+  };
 
   const toSkipLog = ({ reason, lessonLabel, questionText, detail }) => ({
     reason,
@@ -1560,6 +1630,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
 
   const prepareImportPreview = async (file) => {
     if (!file) return;
+    if (Number(file.size || 0) > IMPORT_MAX_FILE_BYTES) {
+      const maxMb = Math.floor(IMPORT_MAX_FILE_BYTES / (1024 * 1024));
+      setToast(`File quá lớn. Vui lòng chọn file tối đa ${maxMb}MB.`);
+      return;
+    }
     setImportFileName(file.name || '');
     setImportPreview(null);
     setImportSkipLogs([]);
@@ -1575,7 +1650,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
 
     try {
       setIsImporting(true);
+      startOpProgress('Đang phân tích tài liệu...', 1);
       const extracted = await extractTextFromFile(file);
+      doneOpProgress('Đã phân tích xong tài liệu');
       const allSkipLogs = [...normalizeInvalidLogs(extracted.invalidDetails)];
       const lessonPlans = [];
 
@@ -1640,6 +1717,12 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         willCreateLessons: acc.willCreateLessons + (item.willCreate ? 1 : 0),
       }), { totalParsed: 0, toImport: 0, willCreateLessons: 0 });
 
+      if (summary.totalParsed === 0) {
+        setToast('Không đọc được câu hỏi từ file. Vui lòng kiểm tra định dạng Câu/Đáp án và tô màu đáp án đúng.');
+      }
+
+      const invalidFormatCount = allSkipLogs.filter((item) => item.reason === 'Sai định dạng').length;
+
       setImportSkipLogs(allSkipLogs);
       setImportPreview({
         mode: importMode,
@@ -1648,9 +1731,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         summary: {
           ...summary,
           skipped: allSkipLogs.length,
+          invalidFormatCount,
         },
       });
     } catch (error) {
+      doneOpProgress('Phân tích tài liệu thất bại');
       setToast(`Không thể phân tích file: ${error?.response?.data?.message || error.message || 'Lỗi không xác định'}`);
     } finally {
       setIsImporting(false);
@@ -1663,8 +1748,15 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       return;
     }
 
+    if (requireFullImport && Number(importPreview?.summary?.invalidFormatCount || 0) > 0) {
+      setToast(`Tài liệu còn ${importPreview.summary.invalidFormatCount} câu sai định dạng. Hãy chuẩn hoá file hoặc tắt chế độ import nghiêm ngặt.`);
+      return;
+    }
+
     try {
       setIsImporting(true);
+      const totalToImport = (importPreview.lessonPlans || []).reduce((sum, plan) => sum + Number(plan.questionsToImport?.length || 0), 0);
+      startOpProgress('Đang import câu hỏi...', Math.max(1, totalToImport));
       let importedQuestions = 0;
       let createdLessons = 0;
       const runtimeSkipLogs = [];
@@ -1699,8 +1791,10 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
             const currentQuestion = chunk[idx];
             if (result.status === 'fulfilled') {
               importedQuestions += 1;
+              stepOpProgress(1);
               return;
             }
+            stepOpProgress(1);
             runtimeSkipLogs.push(toSkipLog({
               reason: 'Lỗi khi lưu',
               lessonLabel: plan.lessonLabel,
@@ -1714,10 +1808,12 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       const totalSkipped = importSkipLogs.length + runtimeSkipLogs.length;
       setImportSkipLogs((prev) => [...prev, ...runtimeSkipLogs]);
       setToast(`Đã import ${importedQuestions} câu. Tạo mới ${createdLessons} bài. Bỏ qua ${totalSkipped} mục.`);
+      doneOpProgress('Đã hoàn tất import câu hỏi');
       setImportModal(false);
       setImportPreview(null);
       setImportFileName('');
     } catch (error) {
+      doneOpProgress('Import câu hỏi thất bại');
       setToast(`Import thất bại: ${error?.response?.data?.message || error.message || 'Không thể import dữ liệu'}`);
     } finally {
       setIsImporting(false);
@@ -2009,6 +2105,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       };
 
       try {
+        startOpProgress(editing ? 'Đang cập nhật câu hỏi...' : 'Đang tạo câu hỏi...', 1);
         if (editing) {
           await questionsCrud.update(editing.id, payload);
           setToast('Đã cập nhật câu hỏi!');
@@ -2016,8 +2113,10 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
           await questionsCrud.add(payload);
           setToast('Đã lưu câu hỏi!');
         }
+        doneOpProgress(editing ? 'Đã cập nhật câu hỏi' : 'Đã tạo câu hỏi');
         setModal(false);
       } catch (error) {
+        doneOpProgress('Lưu câu hỏi thất bại');
         const status = Number(error?.response?.status || 0);
         if (status === 413) {
           setToast('Dữ liệu câu hỏi quá lớn (413). Hãy giảm kích thước ảnh hoặc chia nhỏ nội dung.');
@@ -2061,6 +2160,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     };
 
     try {
+      startOpProgress(editing ? 'Đang cập nhật câu hỏi...' : 'Đang tạo câu hỏi...', 1);
       if (editing) {
         await questionsCrud.update(editing.id, payload);
         setToast('Đã cập nhật câu hỏi!');
@@ -2068,8 +2168,10 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         await questionsCrud.add(payload);
         setToast('Đã lưu câu hỏi!');
       }
+      doneOpProgress(editing ? 'Đã cập nhật câu hỏi' : 'Đã tạo câu hỏi');
       setModal(false);
     } catch (error) {
+      doneOpProgress('Lưu câu hỏi thất bại');
       const status = Number(error?.response?.status || 0);
       if (status === 413) {
         setToast('Dữ liệu câu hỏi quá lớn (413). Hãy giảm kích thước ảnh hoặc chia nhỏ nội dung.');
@@ -2087,7 +2189,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
           if (confirm?.bulk) {
             await runBulkDeleteQuestions();
           } else {
+            startOpProgress('Đang xoá câu hỏi...', 1);
             await questionsCrud.remove(confirm?.id);
+            doneOpProgress('Đã xoá câu hỏi');
             setToast('Đã xoá!');
           }
           setConfirm(null);
@@ -2156,6 +2260,15 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
             Hỗ trợ định dạng như: "Câu 1:", "Question 1", "1)", "1." cùng đáp án kiểu "A.", "a)", "B)".
             Đáp án đúng có thể đánh dấu bằng * hoặc [x] hoặc (đúng). Ở chế độ tự tách, nên có tiêu đề "Bài 1", "Bài 2"...
           </div>
+          <label style={{ marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '.84rem', color: 'var(--text-2)' }}>
+            <input
+              type="checkbox"
+              checked={requireFullImport}
+              onChange={(e) => setRequireFullImport(e.target.checked)}
+              style={{ width: 16, height: 16, accentColor: 'var(--blue)' }}
+            />
+            Import nghiêm ngặt: chặn import nếu còn câu sai định dạng (tránh thiếu câu)
+          </label>
         </div>
 
         {importPreview && (
@@ -2166,6 +2279,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
               <Badge color="orange">Bài xử lý: {importPreview.lessonPlans.length}</Badge>
               <Badge color="success">Sẽ import: {importPreview.summary.toImport} câu</Badge>
               <Badge color="gray">Bỏ qua: {importPreview.summary.skipped}</Badge>
+              <Badge color={importPreview.summary.invalidFormatCount > 0 ? 'red' : 'green'}>
+                Sai định dạng: {importPreview.summary.invalidFormatCount || 0}
+              </Badge>
               <Badge color="blue">Sẽ tạo bài mới: {importPreview.summary.willCreateLessons}</Badge>
             </div>
 
@@ -2457,6 +2573,16 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
             <Button variant="primary" size="sm" icon="+" onClick={openAdd}>Thêm câu hỏi</Button>
           </div>
         </div>
+        {opProgress.active && (
+          <div style={{ padding: '8px 12px', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+            <div className="progress-label" style={{ marginBottom: 6 }}>
+              {opProgress.label} ({Math.min(opProgress.current, opProgress.total)}/{opProgress.total})
+            </div>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${Math.round((Math.min(opProgress.current, opProgress.total) / Math.max(1, opProgress.total)) * 100)}%` }} />
+            </div>
+          </div>
+        )}
         {questionList.length === 0 ? <EmptyState icon="❓" text="Chưa có câu hỏi" /> : (
           <table className="data-table">
             <thead><tr>

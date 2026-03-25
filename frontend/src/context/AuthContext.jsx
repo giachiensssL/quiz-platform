@@ -78,6 +78,10 @@ export function AuthProvider({ children }) {
         return { success: false, error: serverMessage };
       }
 
+      if (error?.code === 'ERR_NETWORK') {
+        return { success: false, error: 'Không kết nối được backend (http://localhost:5001). Hãy bật backend rồi đăng nhập lại.' };
+      }
+
       // Only allow local fallback when explicitly enabled and server is unreachable.
     }
 

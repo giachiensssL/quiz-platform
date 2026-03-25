@@ -82,10 +82,10 @@ export function EmptyState({ icon = '📭', text = 'Chưa có dữ liệu' }) {
   return <div className="empty-state"><div className="es-icon">{icon}</div><p>{text}</p></div>;
 }
 
-export function Confirm({ open, title, message, onConfirm, onCancel, danger }) {
+export function Confirm({ open, title, message, onConfirm, onCancel, danger, loading = false }) {
   return (
     <Modal open={open} title={title} onClose={onCancel}
-      footer={<><Button variant="ghost" onClick={onCancel}>Huỷ</Button><Button variant={danger ? 'danger' : 'primary'} onClick={onConfirm}>Xác nhận</Button></>}>
+      footer={<><Button variant="ghost" onClick={onCancel} disabled={loading}>Huỷ</Button><Button variant={danger ? 'danger' : 'primary'} onClick={onConfirm} loading={loading} disabled={loading}>Xác nhận</Button></>}>
       <p style={{color:'var(--text-2)',fontSize:'.9rem'}}>{message}</p>
     </Modal>
   );

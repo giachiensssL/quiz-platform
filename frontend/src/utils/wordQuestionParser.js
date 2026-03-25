@@ -24,6 +24,98 @@ const normalizeText = (value) => String(value || '').replace(/\s+/g, ' ').trim()
 const normalizeLoose = (value) => normalizeText(value).toLowerCase();
 const removeLeadingBullet = (line) => String(line || '').replace(/^(?:[-*•]\s*)+/, '').trim();
 
+const decodeXmlEntities = (value) => String(value || '')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&apos;/g, "'")
+  .replace(/&amp;/g, '&');
+
+const dedupeStrings = (items) => {
+  const seen = new Set();
+  const output = [];
+  (Array.isArray(items) ? items : []).forEach((item) => {
+    const normalized = normalizeLoose(item);
+    if (!normalized || seen.has(normalized)) return;
+    seen.add(normalized);
+    output.push(normalizeText(item));
+  });
+  return output;
+};
+
+const extractHighlightedAnswersFromDocx = async (arrayBuffer) => {
+  try {
+    const { default: JSZip } = await import('jszip');
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const documentXmlFile = zip.file('word/document.xml');
+    if (!documentXmlFile) return [];
+    const stylesXmlFile = zip.file('word/styles.xml');
+    const highlightedStyleIds = new Set();
+
+    if (stylesXmlFile) {
+      const stylesXml = await stylesXmlFile.async('string');
+      const styleBlocks = stylesXml.match(/<w:style\b[\s\S]*?<\/w:style>/g) || [];
+      styleBlocks.forEach((block) => {
+        const idMatch = block.match(/w:styleId="([^"]+)"/i);
+        const styleId = String(idMatch?.[1] || '').trim();
+        if (!styleId) return;
+        const hasHighlight = /<w:highlight\b/i.test(block)
+          || /<w:shd\b[\s\S]*?w:(?:fill|val)="(?!auto|none|000000|FFFFFF)[^"]+"/i.test(block)
+          || /<w:color\b[\s\S]*?w:val="(?!auto|000000)[^"]+"/i.test(block);
+        if (hasHighlight) highlightedStyleIds.add(styleId);
+      });
+    }
+
+    const documentXml = await documentXmlFile.async('string');
+    const paragraphs = documentXml.match(/<w:p\b[\s\S]*?<\/w:p>/g) || [];
+    const highlighted = [];
+
+    paragraphs.forEach((paragraphXml) => {
+      const runs = paragraphXml.match(/<w:r\b[\s\S]*?<\/w:r>/g) || [];
+      let activeSegment = '';
+
+      runs.forEach((runXml) => {
+        const styleRef = String((runXml.match(/<w:rStyle\b[\s\S]*?w:val="([^"]+)"\s*\/?\s*>/i) || [])[1] || '').trim();
+        const isHighlighted = /<w:highlight\b/i.test(runXml)
+          || /<w:shd\b[\s\S]*?w:(?:fill|val)="(?!auto|none|000000|FFFFFF)[^"]+"/i.test(runXml)
+          || /<w:color\b[\s\S]*?w:val="(?!auto|000000)[^"]+"/i.test(runXml)
+          || (styleRef && highlightedStyleIds.has(styleRef));
+
+        const runText = (runXml.match(/<w:t\b[^>]*>([\s\S]*?)<\/w:t>/g) || [])
+          .map((textTag) => {
+            const matched = textTag.match(/<w:t\b[^>]*>([\s\S]*?)<\/w:t>/i);
+            return decodeXmlEntities(matched?.[1] || '');
+          })
+          .join('');
+
+        const normalizedRunText = normalizeText(runText);
+        if (!normalizedRunText) {
+          if (!isHighlighted && activeSegment) {
+            highlighted.push(activeSegment);
+            activeSegment = '';
+          }
+          return;
+        }
+
+        if (isHighlighted) {
+          activeSegment = normalizeText(`${activeSegment} ${normalizedRunText}`);
+        } else if (activeSegment) {
+          highlighted.push(activeSegment);
+          activeSegment = '';
+        }
+      });
+
+      if (activeSegment) {
+        highlighted.push(activeSegment);
+      }
+    });
+
+    return dedupeStrings(highlighted);
+  } catch {
+    return [];
+  }
+};
+
 const buildHighlightMatcher = (rawHighlighted = []) => {
   const highlighted = [...new Set((Array.isArray(rawHighlighted) ? rawHighlighted : [])
     .map((item) => normalizeLoose(item))
@@ -328,7 +420,9 @@ const parseBlockDetailed = (block, context = {}) => {
   }
 
   const hasCorrect = parsedOptions.some((item) => item.correct);
-  if (!hasCorrect) parsedOptions[0].correct = true;
+  if (!hasCorrect) {
+    return { question: null, issue: createParseIssue('missing_correct_answer', block, 'Không xác định được đáp án đúng (không thấy highlight/đáp án)') };
+  }
 
   if (type === 'drag') {
     const answers = parsedOptions.map((item, idx) => ({
@@ -500,6 +594,14 @@ export const parseLessonsFromTextWithReport = (text, options = {}) => {
 
 export const parseDocxQuestionsWithReport = async (file, options = {}) => {
   const arrayBuffer = await file.arrayBuffer();
+  const extractedHighlightedAnswers = await extractHighlightedAnswersFromDocx(arrayBuffer);
+  const mergedOptions = {
+    ...options,
+    highlightedAnswers: dedupeStrings([
+      ...(Array.isArray(options?.highlightedAnswers) ? options.highlightedAnswers : []),
+      ...extractedHighlightedAnswers,
+    ]),
+  };
 
   const rawResult = await mammoth.extractRawText({ arrayBuffer });
   const rawText = String(rawResult?.value || '');
@@ -507,8 +609,8 @@ export const parseDocxQuestionsWithReport = async (file, options = {}) => {
   const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
   const htmlPlain = htmlToPlainText(htmlResult.value);
 
-  const rawDetails = parseWithDetails(rawText, options);
-  const htmlDetails = parseWithDetails(htmlPlain, options);
+  const rawDetails = parseWithDetails(rawText, mergedOptions);
+  const htmlDetails = parseWithDetails(htmlPlain, mergedOptions);
   const rawParsed = rawDetails.questions;
   const htmlParsed = htmlDetails.questions;
 
@@ -528,6 +630,7 @@ export const parseDocxQuestionsWithReport = async (file, options = {}) => {
     invalidDetails,
     source: useHtml ? 'html' : 'raw',
     sourceText,
+    highlightedAnswers: mergedOptions.highlightedAnswers,
   };
 };
 

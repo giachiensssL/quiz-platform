@@ -24,7 +24,8 @@ const analyticsRoutes = require("./routes/analytics");
 
 const app = express();
 const server = http.createServer(app);
-const requestBodyLimit = process.env.REQUEST_BODY_LIMIT || "8mb";
+// Base64 payload can be ~33% larger than source file. 140mb fits ~100mb input with overhead.
+const requestBodyLimit = process.env.REQUEST_BODY_LIMIT || "140mb";
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
   .map((origin) => origin.trim())

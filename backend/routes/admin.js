@@ -1,4 +1,5 @@
 const express = require("express");
+const { isValidObjectId } = require("mongoose");
 const User = require("../models/User");
 const Faculty = require("../models/Faculty");
 const Year = require("../models/Year");
@@ -22,6 +23,13 @@ const badRequest = (message) => {
 };
 const notifyCatalogUpdated = () => {
   broadcast("catalog-updated", { source: "admin" });
+};
+
+const sanitizeRefId = (value) => {
+  if (value === undefined || value === null) return undefined;
+  const normalized = String(value).trim();
+  if (!normalized) return undefined;
+  return isValidObjectId(normalized) ? normalized : undefined;
 };
 
 const normalizeLooseText = (value) => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -697,10 +705,21 @@ router.post(
   "/subjects",
   asyncHandler(async (req, res) => {
     const name = String(req.body?.name || "").trim();
+    const facultyId = sanitizeRefId(req.body?.faculty);
+    const yearId = sanitizeRefId(req.body?.year);
+    const semesterId = sanitizeRefId(req.body?.semester);
+
+    if (!facultyId || !yearId || !semesterId) {
+      return res.status(400).json({ message: "Thiếu hoặc sai định dạng ngành/năm học/học kỳ" });
+    }
+
     const created = await Subject.create({
       ...req.body,
       name,
       icon: inferSubjectIcon(name),
+      faculty: facultyId,
+      year: yearId,
+      semester: semesterId,
     });
     notifyCatalogUpdated();
     res.status(201).json(created);
@@ -715,9 +734,24 @@ router.put(
 
     const incomingName = String(req.body?.name ?? current.name ?? "").trim();
     const safeName = incomingName || String(current.name || "").trim() || "Môn học";
+    const facultyId = sanitizeRefId(req.body?.faculty) || String(current.faculty || "");
+    const yearId = sanitizeRefId(req.body?.year) || String(current.year || "");
+    const semesterId = sanitizeRefId(req.body?.semester) || String(current.semester || "");
+
+    if (!isValidObjectId(facultyId) || !isValidObjectId(yearId) || !isValidObjectId(semesterId)) {
+      return res.status(400).json({ message: "Ngành/Năm học/Học kỳ không hợp lệ" });
+    }
+
     const updated = await Subject.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, name: safeName, icon: inferSubjectIcon(safeName) },
+      {
+        ...req.body,
+        name: safeName,
+        icon: inferSubjectIcon(safeName),
+        faculty: facultyId,
+        year: yearId,
+        semester: semesterId,
+      },
       { new: true, runValidators: false }
     );
     notifyCatalogUpdated();
@@ -728,6 +762,9 @@ router.put(
 router.delete(
   "/subjects/:id",
   asyncHandler(async (req, res) => {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "ID môn học không hợp lệ" });
+    }
     await Lesson.deleteMany({ subject: req.params.id });
     await Subject.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
@@ -882,7 +919,7 @@ router.post(
       throw badRequest("File rỗng hoặc không đọc được");
     }
 
-    const maxBytes = Number(process.env.IMPORT_MAX_FILE_BYTES || 20 * 1024 * 1024);
+    const maxBytes = Number(process.env.IMPORT_MAX_FILE_BYTES || 100 * 1024 * 1024);
     if (buffer.length > maxBytes) {
       const error = new Error("File quá lớn. Vui lòng giảm dung lượng trước khi import");
       error.statusCode = 413;

@@ -7,6 +7,11 @@ import { API_BASE_URL, adminDataAPI, facultiesAPI, lessonsAPI, questionsAPI, sem
 const DataContext = createContext(null);
 const DATA_STORAGE_KEY = 'qm_data_store';
 const ENABLE_LOCAL_DATA_FALLBACK = String(process.env.REACT_APP_ENABLE_LOCAL_DATA_FALLBACK || '').toLowerCase() === 'true';
+const isServerToken = (token) => {
+  const value = String(token || '');
+  if (!value) return false;
+  return value !== 'admin-token' && !value.startsWith('token-');
+};
 
 const normalizeType = (type) => {
   if (type === 'true_false') return 'truefalse';
@@ -187,7 +192,7 @@ const INIT = {
 export function DataProvider({ children }) {
   const [realtimeStatus, setRealtimeStatus] = useState('disconnected');
   const [data, setData] = useState(() => {
-    const hasServerSession = Boolean(localStorage.getItem('qm_token'));
+    const hasServerSession = isServerToken(localStorage.getItem('qm_token'));
     try {
       const raw = JSON.parse(localStorage.getItem(DATA_STORAGE_KEY) || 'null');
       if (raw && typeof raw === 'object') {
@@ -307,6 +312,9 @@ export function DataProvider({ children }) {
   }, [syncFromServer]);
 
   useEffect(() => {
+    const token = localStorage.getItem('qm_token');
+    if (!isServerToken(token)) return undefined;
+
     syncFromServer().catch(() => {});
     const timer = window.setInterval(debouncedSync, 30000); // reduced from 10s to 30s
 
@@ -326,6 +334,12 @@ export function DataProvider({ children }) {
   }, [syncFromServer, debouncedSync]);
 
   useEffect(() => {
+    const token = localStorage.getItem('qm_token');
+    if (!isServerToken(token)) {
+      setRealtimeStatus('disconnected');
+      return undefined;
+    }
+
     const wsBase = API_BASE_URL.replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
     const wsUrl = `${wsBase}/ws`;
 
@@ -382,7 +396,7 @@ export function DataProvider({ children }) {
     add: async (item) => {
       let nextItem = { ...item, id: item?.id || Date.now(), locked: Boolean(item?.locked) };
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token);
+      const shouldUseServer = isServerToken(token);
       let serverSynced = false;
 
       try {
@@ -463,7 +477,8 @@ export function DataProvider({ children }) {
       }
 
       if (serverSynced) {
-        await syncFromServer();
+        setData((d) => ({ ...d, [key]: [...d[key], nextItem] }));
+        debouncedSync();
         return nextItem;
       }
 
@@ -472,7 +487,7 @@ export function DataProvider({ children }) {
     },
     update: async (id, changes) => {
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token);
+      const shouldUseServer = isServerToken(token);
       let serverSynced = false;
       try {
         const currentItem = data[key]?.find((x) => String(x.id) === String(id));
@@ -557,14 +572,27 @@ export function DataProvider({ children }) {
       }
 
       if (serverSynced) {
-        await syncFromServer();
+        setData((d) => ({
+          ...d,
+          [key]: d[key].map((x) => {
+            if (String(x.id) !== String(id)) return x;
+            if (key === 'lessons') {
+              return { ...x, ...changes, name: normalizeLessonTitle(changes.name, changes.order) };
+            }
+            if (key === 'subjects') {
+              return { ...x, ...changes, icon: inferSubjectIcon(changes.name || x.name) };
+            }
+            return { ...x, ...changes };
+          }),
+        }));
+        debouncedSync();
         return;
       }
 
       setData((d) => ({
         ...d,
         [key]: d[key].map((x) => {
-          if (x.id !== id) return x;
+          if (String(x.id) !== String(id)) return x;
           if (key === 'lessons') {
             return { ...x, ...changes, name: normalizeLessonTitle(changes.name, changes.order) };
           }
@@ -577,7 +605,7 @@ export function DataProvider({ children }) {
     },
     remove: async (id) => {
       const token = localStorage.getItem('qm_token');
-      const shouldUseServer = Boolean(token);
+      const shouldUseServer = isServerToken(token);
       let serverSynced = false;
       try {
         if (key === 'faculties') { await adminDataAPI.removeFaculty(id); serverSynced = true; }
@@ -592,11 +620,12 @@ export function DataProvider({ children }) {
       }
 
       if (serverSynced) {
-        await syncFromServer();
+        setData((d) => ({ ...d, [key]: d[key].filter((x) => String(x.id) !== String(id)) }));
+        debouncedSync();
         return;
       }
 
-      setData((d) => ({ ...d, [key]: d[key].filter((x) => x.id !== id) }));
+      setData((d) => ({ ...d, [key]: d[key].filter((x) => String(x.id) !== String(id)) }));
     },
   });
 

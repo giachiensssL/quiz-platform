@@ -48,12 +48,17 @@ export default function SemesterPage() {
           {semesters.length === 0 ? <EmptyState icon="📋" text="Chưa có học kỳ nào" /> : (
             <div className="cards-grid">
               {semesters.map(s => (
-                <div key={s.id} className="item-card" onClick={() => navigate(`/subject/${s.id}`)}>
+                <div
+                  key={s.id}
+                  className="item-card"
+                  onClick={s.locked ? undefined : () => navigate(`/subject/${s.id}`)}
+                  style={s.locked ? { opacity: 0.6, cursor: 'not-allowed', pointerEvents: 'auto' } : undefined}
+                >
                   <div className="card-icon-wrap orange">📋</div>
                   <h4>{s.name}</h4>
                   <div className="card-footer">
-                    <span className="badge badge-orange">Xem môn →</span>
-                    <span className="card-arrow">→</span>
+                    <span className={`badge ${s.locked ? 'badge-red' : 'badge-orange'}`}>{s.locked ? 'Đã khoá' : 'Xem môn →'}</span>
+                    <span className="card-arrow">{s.locked ? '🔒' : '→'}</span>
                   </div>
                 </div>
               ))}
