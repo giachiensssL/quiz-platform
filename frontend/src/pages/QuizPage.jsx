@@ -10,15 +10,16 @@ const TYPE_LABELS = {
   multiple:'Nhiều đáp án',
   truefalse:'Đúng / Sai',
   fill:'Điền vào chỗ trống',
-  arrange:'Sắp xếp từ',
-  match:'Nối từ',
-  drag:'Sắp xếp từ',
+  arrange:'Nối/Sắp xếp từ',
+  match:'Nối/Sắp xếp từ',
+  drag:'Kéo thả',
 };
 const TIME_PER_QUESTION_SECONDS = 90;
 const COMPARE_TEXT_LIMIT = 120;
 const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
-const isArrangeQuestionType = (type) => type === 'arrange' || type === 'drag';
-const isMatchQuestionType = (type) => type === 'match';
+const isDragQuestionType = (type) => type === 'drag';
+const isArrangeQuestionType = () => false;
+const isMatchQuestionType = (type) => type === 'match' || type === 'arrange';
 const optionLabel = (index) => String.fromCharCode(65 + index);
 const sameId = (left, right) => String(left ?? '') === String(right ?? '');
 const normalizeSentence = (value) => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
@@ -83,6 +84,22 @@ const evaluateQuestion = (question, userAnswer) => {
       return sum + (picks[idx] === expected ? 1 : 0);
     }, 0);
     return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
+  }
+
+  if (isDragQuestionType(question.type)) {
+    const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
+    const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
+    const totalUnits = targets.length || 1;
+    const earnedUnits = targets.reduce((sum, target) => {
+      const expected = Array.isArray(target.correctItemIds)
+        ? target.correctItemIds.map((id) => String(id || '').trim()).filter(Boolean)
+        : [String(target.correctItemId || '').trim()].filter(Boolean);
+      const actualRaw = answerMap[target.id];
+      const actual = (Array.isArray(actualRaw) ? actualRaw : [actualRaw]).map((id) => String(id || '').trim()).filter(Boolean);
+      if (expected.length !== actual.length) return sum;
+      return sum + (expected.every((id) => actual.includes(id)) ? 1 : 0);
+    }, 0);
+    return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits && targets.length > 0 };
   }
 
   if (isArrangeQuestionType(question.type)) {
@@ -202,6 +219,37 @@ const buildComparison = (question, userAnswer) => {
       chosenItems: [{ label: 'Trả lời', text: String(userAnswer || '').trim() || 'Chưa nhập', imageUrl: '' }],
       correctItems: [{ label: 'Đáp án', text: question.answers.map((a) => a.text).join(' | ') || 'Không xác định', imageUrl: '' }],
     };
+  }
+
+  if (isDragQuestionType(question.type)) {
+    const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
+    const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id), item.label || String(item.id)]));
+    const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
+    const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
+
+    const chosenItems = targets.map((target) => {
+      const actualRaw = answerMap[target.id];
+      const actualIds = (Array.isArray(actualRaw) ? actualRaw : [actualRaw]).map((id) => String(id || '')).filter(Boolean);
+      const actualText = actualIds.length ? actualIds.map((id) => labelById[id] || id).join(' | ') : 'Chưa kéo';
+      return {
+        label: target.label || target.id,
+        text: actualText,
+        imageUrl: '',
+      };
+    });
+
+    const correctItems = targets.map((target) => {
+      const expectedIds = Array.isArray(target.correctItemIds)
+        ? target.correctItemIds.map((id) => String(id || '')).filter(Boolean)
+        : [String(target.correctItemId || '')].filter(Boolean);
+      return {
+        label: target.label || target.id,
+        text: expectedIds.length ? expectedIds.map((id) => labelById[id] || id).join(' | ') : 'Không xác định',
+        imageUrl: '',
+      };
+    });
+
+    return { chosenItems, correctItems };
   }
 
   if (isArrangeQuestionType(question.type)) {
@@ -549,6 +597,105 @@ function MatchWords({ q, answer, onAnswer, submitted }) {
   );
 }
 
+function DragDropQuestion({ q, answer, onAnswer, submitted }) {
+  const items = (Array.isArray(q.dragItems) ? q.dragItems : [])
+    .map((item, idx) => ({ id: String(item.id || `item-${idx + 1}`), label: item.label || '' }))
+    .filter((item) => item.label);
+  const targets = Array.isArray(q.dropTargets) ? q.dropTargets : [];
+  const [slotMap, setSlotMap] = useState(() => {
+    if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
+      return Object.fromEntries(targets.map((target) => [target.id, (Array.isArray(answer[target.id]) ? answer[target.id] : [answer[target.id]]).map((id) => String(id || '')).filter(Boolean)]));
+    }
+    return Object.fromEntries(targets.map((target) => [target.id, []]));
+  });
+  const [overSlot, setOverSlot] = useState('');
+
+  useEffect(() => {
+    if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
+      setSlotMap(Object.fromEntries(targets.map((target) => [target.id, (Array.isArray(answer[target.id]) ? answer[target.id] : [answer[target.id]]).map((id) => String(id || '')).filter(Boolean)])));
+      return;
+    }
+    setSlotMap(Object.fromEntries(targets.map((target) => [target.id, []])));
+  }, [answer, q.id]);
+
+  const usedIds = Object.values(slotMap).flat();
+  const availableItems = items.filter((item) => !usedIds.includes(item.id));
+
+  const pushAnswer = (nextMap) => {
+    setSlotMap(nextMap);
+    onAnswer(nextMap);
+  };
+
+  const handleDropToSlot = (event, slotId) => {
+    event.preventDefault();
+    setOverSlot('');
+    if (submitted) return;
+
+    const itemId = String(event.dataTransfer.getData('text/item-id') || '');
+    if (!itemId) return;
+
+    const nextMap = Object.fromEntries(Object.entries(slotMap).map(([id, values]) => [id, [...values].filter(Boolean)]));
+    const currentSlotId = Object.keys(nextMap).find((id) => nextMap[id].includes(itemId));
+    if (currentSlotId) {
+      nextMap[currentSlotId] = nextMap[currentSlotId].filter((id) => id !== itemId);
+    }
+    nextMap[slotId] = [...(nextMap[slotId] || []), itemId];
+    pushAnswer(nextMap);
+  };
+
+  const removeFromSlot = (slotId, itemId) => {
+    if (submitted) return;
+    const nextMap = {
+      ...slotMap,
+      [slotId]: (slotMap[slotId] || []).filter((id) => id !== itemId),
+    };
+    pushAnswer(nextMap);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginBottom: 8 }}>
+        Kéo các mục ở khung trên vào ô đích tương ứng.
+      </div>
+      <div className="drag-pool">
+        {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết mục kéo</span>}
+        {availableItems.map((item) => (
+          <div key={item.id} className="drag-chip" draggable={!submitted} onDragStart={(e) => e.dataTransfer.setData('text/item-id', item.id)}>
+            {item.label}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
+        {targets.map((target) => (
+          <div
+            key={target.id}
+            className={`drop-zone${overSlot === target.id ? ' over' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setOverSlot(target.id); }}
+            onDragLeave={() => setOverSlot('')}
+            onDrop={(e) => handleDropToSlot(e, target.id)}
+            style={{ minHeight: 52, alignItems: 'flex-start' }}
+          >
+            <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>{target.label || target.id}</div>
+            {(slotMap[target.id] || []).length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo mục vào ô này...</span>}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {(slotMap[target.id] || []).map((itemId, idx) => {
+                const item = items.find((x) => String(x.id) === String(itemId));
+                return (
+                  <div key={`${target.id}-${itemId}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
+                    {item?.label || itemId}
+                    {!submitted && <button onClick={() => removeFromSlot(target.id, itemId)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function QuizPage() {
   const { lessonId } = useParams();
   const navigate = useNavigate();
@@ -642,6 +789,12 @@ export default function QuizPage() {
       }
       if (question.type === 'truefalse') {
         return answerValue || {};
+      }
+      if (isDragQuestionType(question.type)) {
+        if (answerValue && typeof answerValue === 'object' && !Array.isArray(answerValue)) {
+          return answerValue;
+        }
+        return {};
       }
       if (isArrangeQuestionType(question.type)) {
         return Array.isArray(answerValue) ? answerValue : [];
@@ -875,6 +1028,12 @@ export default function QuizPage() {
     if (q.type === 'single') {
       return current !== undefined;
     }
+    if (isDragQuestionType(q.type)) {
+      if (!current || typeof current !== 'object' || Array.isArray(current)) return false;
+      const targets = Array.isArray(q.dropTargets) ? q.dropTargets : [];
+      if (!targets.length) return false;
+      return targets.every((target) => Array.isArray(current[target.id]) && current[target.id].length > 0);
+    }
     if (isArrangeQuestionType(q.type) || isMatchQuestionType(q.type)) {
       return Array.isArray(current) && current.length > 0;
     }
@@ -952,6 +1111,7 @@ export default function QuizPage() {
             {q.type==='multiple'&&<MultiChoice q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='truefalse'&&<TrueFalse q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='fill'&&<FillBlank q={q} answer={answers[qIdx]||''} onAnswer={handleAnswer} submitted={submitted}/>}
+            {isDragQuestionType(q.type)&&<DragDropQuestion key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
             {isArrangeQuestionType(q.type)&&<ArrangeWords key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
             {isMatchQuestionType(q.type)&&<MatchWords key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
             {submitted&&isCorrect!==null&&(
@@ -966,7 +1126,7 @@ export default function QuizPage() {
             <div className="quiz-nav">
               <Button variant="ghost" onClick={()=>{if(submitted)setSubmitted(false);if(qIdx>0)setQIdx(i=>i-1);}} disabled={qIdx===0}>← Câu trước</Button>
               <div style={{display:'flex',gap:8}}>
-                {!submitted&&q.type!=='drag'&&<Button variant="ghost" onClick={()=>setSubmitted(true)} disabled={!canCheckCurrent}>Kiểm tra</Button>}
+                {!submitted&&<Button variant="ghost" onClick={()=>setSubmitted(true)} disabled={!canCheckCurrent}>Kiểm tra</Button>}
                 {qIdx<questions.length-1?<Button variant="primary" onClick={()=>{if(submitted)setSubmitted(false);setQIdx(i=>i+1);}}>Câu tiếp →</Button>:<Button variant="secondary" onClick={()=>setShowResult(true)}>Nộp bài ✓</Button>}
               </div>
             </div>

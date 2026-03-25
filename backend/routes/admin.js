@@ -327,7 +327,7 @@ const buildQuestionPayload = (body) => {
       }
     }
 
-    if (!answerSentence) {
+    if ((type === "arrange_words" || type === "match_words") && !answerSentence) {
       throw badRequest("Vui lòng nhập câu đáp án chuẩn cho dạng Sắp xếp từ/Nối từ");
     }
   }

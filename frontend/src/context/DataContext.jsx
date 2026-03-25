@@ -14,9 +14,10 @@ const isServerToken = (token) => {
 };
 
 const normalizeType = (type) => {
+  if (type === 'arrange') return 'match';
   if (type === 'true_false') return 'truefalse';
-  if (type === 'drag_drop') return 'arrange';
-  if (type === 'arrange_words') return 'arrange';
+  if (type === 'drag_drop') return 'drag';
+  if (type === 'arrange_words') return 'match';
   if (type === 'match_words') return 'match';
   return type;
 };
