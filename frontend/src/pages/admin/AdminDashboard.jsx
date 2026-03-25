@@ -1273,6 +1273,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const [form, setForm] = useState({
     lessonId: '',
     type: 'single',
+    dragLayout: 'position',
     text: '',
     answerSentence: '',
     imageUrl: '',
@@ -1407,6 +1408,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     setForm({
       lessonId: defaultLessonId,
       type: 'single',
+      dragLayout: 'position',
       text: '',
       answerSentence: '',
       imageUrl: '',
@@ -1897,6 +1899,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     setForm({
       lessonId: q.lessonId,
       type: normalizeQuestionType(q.type || 'single'),
+      dragLayout: (Array.isArray(q.dropTargets) && q.dropTargets.some((target) => String(target?.prompt || '').trim())) ? 'table' : 'position',
       text: q.text || q.question || '',
       answerSentence: q.answerSentence || '',
       imageUrl: q.imageUrl || '',
@@ -1932,6 +1935,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     setForm((prev) => ({
       ...prev,
       type: nextType,
+      dragLayout: nextType === 'drag' ? (prev.dragLayout || 'position') : 'position',
       answers: makeDefaultByType(nextType),
       answerSentence: (nextType === 'match') ? prev.answerSentence : '',
       dragItems: (nextType === 'match' || nextType === 'drag')
@@ -2163,6 +2167,14 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       }
 
       if (isDragType(form.type)) {
+        const useTableLayout = form.dragLayout === 'table';
+        if (!useTableLayout) {
+          dropTargets = dropTargets.map((target) => ({
+            ...target,
+            prompt: '',
+          }));
+        }
+
         if (dropTargets.length < 1) {
           setToast('Dạng kéo thả cần ít nhất 1 ô đích.');
           return;
@@ -2581,21 +2593,32 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
 
             {isDragType(form.type) && (
             <div>
+              <Select
+                label="Kiểu kéo thả"
+                value={form.dragLayout || 'position'}
+                onChange={(e) => setForm((prev) => ({ ...prev, dragLayout: e.target.value }))}
+                options={[
+                  { value: 'position', label: 'Theo vị trí' },
+                  { value: 'table', label: 'Theo bảng (2 cột)' },
+                ]}
+              />
               <label className="form-label">Bảng kéo thả (cột trái phát biểu, cột phải đáp án kéo vào)</label>
               {form.dropTargets.map((target, idx) => (
                 <div key={target.id} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginBottom: 8 }}>
-                  <Textarea
-                    label={`Phát biểu dòng ${idx + 1}`}
-                    rows={3}
-                    placeholder="Nhập phát biểu ở cột trái..."
-                    value={target.prompt || ''}
-                    onChange={(e) => setDropTarget(target.id, 'prompt', e.target.value)}
-                    onKeyDown={keepTextareaNewLine}
-                    style={{ gridColumn: '1 / -1' }}
-                  />
+                  {(form.dragLayout || 'position') === 'table' && (
+                    <Textarea
+                      label={`Phát biểu dòng ${idx + 1}`}
+                      rows={3}
+                      placeholder="Nhập phát biểu ở cột trái..."
+                      value={target.prompt || ''}
+                      onChange={(e) => setDropTarget(target.id, 'prompt', e.target.value)}
+                      onKeyDown={keepTextareaNewLine}
+                      style={{ gridColumn: '1 / -1' }}
+                    />
+                  )}
                   <input
                     className="form-input"
-                    placeholder={`Tên ô đích cột phải ${idx + 1}`}
+                    placeholder={(form.dragLayout || 'position') === 'table' ? `Tên ô đích cột phải ${idx + 1}` : `Tên vị trí ${idx + 1}`}
                     value={target.label}
                     onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
                   />
@@ -2630,6 +2653,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                 </div>
               ))}
               <Button variant="ghost" size="sm" onClick={addDropTarget}>+ Thêm ô đích</Button>
+              <div style={{ marginTop: 6, fontSize: '.78rem', color: 'var(--muted)' }}>
+                {(form.dragLayout || 'position') === 'table'
+                  ? 'Theo bảng: nhập phát biểu cột trái và kéo đáp án vào cột phải.'
+                  : 'Theo vị trí: chỉ cần tên vị trí và kéo đáp án vào từng ô.'}
+              </div>
             </div>
             )}
 
