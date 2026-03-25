@@ -157,11 +157,18 @@ const TYPE_MAP = {
   fill: "fill",
   fill_blank: "fill",
   drag: "drag_drop",
+  arrange: "arrange_words",
+  arrange_words: "arrange_words",
+  sort_words: "arrange_words",
+  match: "match_words",
+  match_words: "match_words",
+  connect_words: "match_words",
   "drag-drop": "drag_drop",
   drag_drop: "drag_drop",
 };
 
 const normalizeType = (rawType) => TYPE_MAP[String(rawType || "").trim().toLowerCase()] || null;
+const normalizeSentence = (value) => String(value || "").replace(/\s+/g, " ").trim();
 
 const sanitizeAnswers = (answers, type) => {
   const normalized = (Array.isArray(answers) ? answers : [])
@@ -270,14 +277,15 @@ const buildQuestionPayload = (body) => {
   let dropTargets = sanitizeDropTargets(body.dropTargets, dragItems);
   const points = Number(body.points || 1);
   const imageUrl = String(body.imageUrl || "").trim();
+  let answerSentence = normalizeSentence(body.answerSentence || body.expectedSentence || "");
 
-  if (type === "drag_drop") {
+  if (type === "drag_drop" || type === "arrange_words" || type === "match_words") {
     if (dragItems.length < 2 || dropTargets.length < 1) {
       const fallback = deriveDragDropFromLegacyAnswers(answers);
       if (dragItems.length < 2) {
         dragItems = fallback.dragItems;
       }
-      if (dropTargets.length < 1) {
+      if (type !== "match_words" && dropTargets.length < 1) {
         dropTargets = fallback.dropTargets;
       }
     }
@@ -285,11 +293,42 @@ const buildQuestionPayload = (body) => {
     if (dragItems.length < 2) {
       throw badRequest("Câu kéo thả cần ít nhất 2 mục kéo");
     }
-    if (dropTargets.length < 1) {
+    if (type !== "match_words" && dropTargets.length < 1) {
       throw badRequest("Câu kéo thả cần ít nhất 1 ô đích");
     }
-    if (dropTargets.some((target) => target.correctItemIds.length < 1)) {
+    if (type !== "match_words" && dropTargets.some((target) => target.correctItemIds.length < 1)) {
       throw badRequest("Mỗi ô đích phải có ít nhất 1 đáp án đúng");
+    }
+
+    if (type === "arrange_words") {
+      const hasStrictOrder = dropTargets.length >= 2
+        && dropTargets.every((target, idx) => target.correctItemIds.length === 1
+          && target.correctItemIds[0] === `item-${idx + 1}`);
+      if (!hasStrictOrder) {
+        const arrangedTargets = dragItems.map((item, idx) => ({
+          id: `slot-${idx + 1}`,
+          label: `Vị trí ${idx + 1}`,
+          correctItemId: item.id,
+          correctItemIds: [item.id],
+        }));
+        dropTargets = arrangedTargets;
+      }
+      if (!answerSentence) {
+        answerSentence = normalizeSentence(dragItems.map((item) => item.label).join(" "));
+      }
+    }
+
+    if (type === "match_words") {
+      // Match words now stores only the canonical word sequence in dragItems.
+      // Drop targets are not required for this mode.
+      dropTargets = [];
+      if (!answerSentence) {
+        answerSentence = normalizeSentence(dragItems.map((item) => item.label).join(" "));
+      }
+    }
+
+    if (!answerSentence) {
+      throw badRequest("Vui lòng nhập câu đáp án chuẩn cho dạng Sắp xếp từ/Nối từ");
     }
   }
 
@@ -301,6 +340,7 @@ const buildQuestionPayload = (body) => {
     answers,
     points: Number.isNaN(points) ? 1 : points,
     hint: String(body.hint || ""),
+    answerSentence,
     order: Number(body.order || 0) || 0,
     dragItems,
     dropTargets,

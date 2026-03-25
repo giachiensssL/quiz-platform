@@ -5,12 +5,23 @@ import { resultsAPI } from '../api/api';
 import Navbar from '../components/Navbar';
 import { Button, EmptyState } from '../components/UI';
 
-const TYPE_LABELS = { single:'Một đáp án', multiple:'Nhiều đáp án', truefalse:'Đúng / Sai', fill:'Điền vào chỗ trống', drag:'Kéo & Thả' };
+const TYPE_LABELS = {
+  single:'Một đáp án',
+  multiple:'Nhiều đáp án',
+  truefalse:'Đúng / Sai',
+  fill:'Điền vào chỗ trống',
+  arrange:'Sắp xếp từ',
+  match:'Nối từ',
+  drag:'Sắp xếp từ',
+};
 const TIME_PER_QUESTION_SECONDS = 90;
 const COMPARE_TEXT_LIMIT = 120;
 const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
+const isArrangeQuestionType = (type) => type === 'arrange' || type === 'drag';
+const isMatchQuestionType = (type) => type === 'match';
 const optionLabel = (index) => String.fromCharCode(65 + index);
 const sameId = (left, right) => String(left ?? '') === String(right ?? '');
+const normalizeSentence = (value) => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
 const formatTime = (seconds) => {
   const safe = Math.max(0, Number(seconds) || 0);
@@ -33,6 +44,15 @@ const shuffleWithNoImmediateRepeat = (items, storageKey) => {
 
   localStorage.setItem(storageKey, shuffled.map((q) => q.id).join(','));
   return shuffled;
+};
+
+const shuffleArray = (items) => {
+  const cloned = [...items];
+  for (let i = cloned.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+  }
+  return cloned;
 };
 
 const evaluateQuestion = (question, userAnswer) => {
@@ -65,30 +85,53 @@ const evaluateQuestion = (question, userAnswer) => {
     return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
   }
 
-  if (question.type === 'drag') {
-    const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
-    if (targets.length > 0) {
-      const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
-      const totalUnits = targets.length;
-      const earnedUnits = targets.reduce((sum, target) => {
-        const expected = Array.isArray(target.correctItemIds)
-          ? target.correctItemIds.map((id) => String(id))
-          : (target.correctItemId ? [String(target.correctItemId)] : []);
-        const actual = (Array.isArray(answerMap[target.id]) ? answerMap[target.id] : []).map((id) => String(id));
-        const ok = expected.length === actual.length && expected.every((id) => actual.includes(id));
-        return sum + (ok ? 1 : 0);
-      }, 0);
-      return { earnedUnits, totalUnits, fullyCorrect: earnedUnits === totalUnits };
+  if (isArrangeQuestionType(question.type)) {
+    const labelById = Object.fromEntries((Array.isArray(question.dragItems) ? question.dragItems : []).map((item) => [String(item.id || ''), item.label || String(item.id || '')]));
+    const expectedSentence = normalizeSentence(question.answerSentence || '');
+
+    if (expectedSentence) {
+      const actualSentence = normalizeSentence(
+        (Array.isArray(userAnswer) ? userAnswer : [])
+          .map((id) => labelById[String(id)] || '')
+          .filter(Boolean)
+          .join(' ')
+      );
+      const ok = actualSentence === expectedSentence;
+      return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
     }
 
-    const expectedOrder = [...(question.answers || [])]
-      .sort((a, b) => (a.order || 0) - (b.order || 0))
-      .map((a) => String(a.text || '').trim())
-      .filter(Boolean);
+    const expectedOrder = (Array.isArray(question.dragItems) && question.dragItems.length
+      ? question.dragItems.map((item) => String(item.id || '').trim())
+      : [...(question.answers || [])]
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map((a) => String(a.id || a.text || '').trim())
+    ).filter(Boolean);
+
     const actualOrder = (Array.isArray(userAnswer) ? userAnswer : [])
       .map((item) => String(item || '').trim())
       .filter(Boolean);
     const ok = expectedOrder.length === actualOrder.length && expectedOrder.every((value, idx) => value === actualOrder[idx]);
+    return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+  }
+
+  if (isMatchQuestionType(question.type)) {
+    const labelById = Object.fromEntries((Array.isArray(question.dragItems) ? question.dragItems : []).map((item) => [String(item.id || ''), item.label || String(item.id || '')]));
+    const expectedSentence = normalizeSentence(question.answerSentence || '');
+    const actualSentence = normalizeSentence(
+      (Array.isArray(userAnswer) ? userAnswer : [])
+        .map((id) => labelById[String(id)] || '')
+        .filter(Boolean)
+        .join(' ')
+    );
+
+    if (expectedSentence) {
+      const ok = actualSentence === expectedSentence;
+      return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
+    }
+
+    const expectedOrder = (Array.isArray(question.dragItems) ? question.dragItems : []).map((item) => String(item.id || '').trim()).filter(Boolean);
+    const actualOrder = (Array.isArray(userAnswer) ? userAnswer : []).map((item) => String(item || '').trim()).filter(Boolean);
+    const ok = expectedOrder.length > 0 && expectedOrder.length === actualOrder.length && expectedOrder.every((value, idx) => value === actualOrder[idx]);
     return { earnedUnits: ok ? 1 : 0, totalUnits: 1, fullyCorrect: ok };
   }
 
@@ -161,46 +204,51 @@ const buildComparison = (question, userAnswer) => {
     };
   }
 
-  if (question.type === 'drag') {
+  if (isArrangeQuestionType(question.type)) {
+    const labelById = {
+      ...Object.fromEntries((Array.isArray(question.dragItems) ? question.dragItems : []).map((item) => [String(item.id), item.label || String(item.id)])),
+      ...Object.fromEntries((Array.isArray(question.answers) ? question.answers : []).map((item) => [String(item.id), item.text || String(item.id)])),
+    };
     const targets = Array.isArray(question.dropTargets) ? question.dropTargets : [];
-    if (targets.length > 0) {
-      const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
-      const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id), item.label || String(item.id)]));
-      const answerMap = (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) ? userAnswer : {};
-
-      const chosenItems = targets.map((target) => ({
-        label: target.label || target.id,
-        text: (Array.isArray(answerMap[target.id]) ? answerMap[target.id] : [])
-          .map((id) => labelById[String(id)] || String(id))
-          .join(', ') || 'Chưa kéo',
-        imageUrl: '',
-      }));
-
-      const correctItems = targets.map((target) => {
-        const expected = Array.isArray(target.correctItemIds)
-          ? target.correctItemIds
-          : (target.correctItemId ? [target.correctItemId] : []);
-        return {
-          label: target.label || target.id,
-          text: expected.map((id) => labelById[String(id)] || String(id)).join(', ') || 'Không xác định',
-          imageUrl: '',
-        };
-      });
-
-      return { chosenItems, correctItems };
-    }
-
-    return {
-      chosenItems: [{ label: 'Thứ tự', text: Array.isArray(userAnswer) && userAnswer.length ? userAnswer.join(' → ') : 'Chưa sắp xếp', imageUrl: '' }],
-      correctItems: [{
-        label: 'Đúng',
-        text: [...(question.answers || [])]
+    const answerOrder = (Array.isArray(userAnswer) ? userAnswer : []).map((id) => labelById[String(id)] || String(id));
+    const expectedOrder = (Array.isArray(question.dragItems) && question.dragItems.length
+      ? question.dragItems.map((item) => item.label || String(item.id || ''))
+      : [...(question.answers || [])]
           .sort((a, b) => (a.order || 0) - (b.order || 0))
           .map((a) => a.text)
-          .join(' → ') || 'Không xác định',
+    );
+    const expectedSentence = String(question.answerSentence || '').trim();
+
+    return {
+      chosenItems: [{ label: 'Thứ tự', text: answerOrder.length ? answerOrder.join(' → ') : 'Chưa sắp xếp', imageUrl: '' }],
+      correctItems: [{
+        label: 'Đúng',
+        text: expectedSentence || expectedOrder.join(' → ') || 'Không xác định',
         imageUrl: '',
       }],
     };
+  }
+
+  if (isMatchQuestionType(question.type)) {
+    const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
+    const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id), item.label || String(item.id)]));
+    const chosenOrder = (Array.isArray(userAnswer) ? userAnswer : []).map((id) => labelById[String(id)] || String(id));
+    const correctOrder = dragItems.map((item) => item.label || String(item.id || ''));
+    const expectedSentence = String(question.answerSentence || '').trim();
+
+    const chosenItems = [{
+      label: 'Câu ghép',
+      text: chosenOrder.length ? chosenOrder.join(' ') : 'Chưa ghép',
+      imageUrl: '',
+    }];
+
+    const correctItems = [{
+      label: 'Đáp án đúng',
+      text: expectedSentence || (correctOrder.length ? correctOrder.join(' ') : 'Không xác định'),
+      imageUrl: '',
+    }];
+
+    return { chosenItems, correctItems };
   }
 
   return { chosenItems: [], correctItems: [] };
@@ -379,150 +427,123 @@ function FillBlank({ q, answer='', onAnswer, submitted }) {
   );
 }
 
-function DragDrop({ q, answer, onAnswer, submitted }) {
-  const targets = Array.isArray(q.dropTargets) ? q.dropTargets : [];
-  const hasMappingMode = targets.length > 0;
-  const items = Array.isArray(q.dragItems) ? q.dragItems : [];
+function ArrangeWords({ q, answer, onAnswer, submitted }) {
+  const items = (Array.isArray(q.dragItems) && q.dragItems.length)
+    ? q.dragItems.map((item, idx) => ({ id: String(item.id || `item-${idx + 1}`), label: item.label || '' })).filter((item) => item.label)
+    : [...(q.answers || [])]
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((item, idx) => ({ id: String(item.id || `item-${idx + 1}`), label: item.text || '' }))
+        .filter((item) => item.label);
 
-  const [pool, setPool] = useState(() => {
-    if (Array.isArray(answer)) {
-      const source = q.answers.map((a) => a.text);
-      return source.filter((text) => !answer.includes(text));
-    }
-    return q.answers.map((a) => a.text);
-  });
-  const [dropped, setDropped] = useState(() => (Array.isArray(answer) ? answer : []));
-  const [over, setOver] = useState(false);
-  const [slotMap, setSlotMap] = useState(() => {
-    if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
-      return Object.fromEntries(targets.map((target) => [target.id, Array.isArray(answer[target.id]) ? answer[target.id] : []]));
-    }
-    return Object.fromEntries(targets.map((target) => [target.id, []]));
-  });
-  const [overSlot, setOverSlot] = useState('');
+  const [selectedIds, setSelectedIds] = useState(() => (Array.isArray(answer) ? answer.map((id) => String(id)) : []));
 
-  if (!hasMappingMode) {
-    const handleDrop = (e) => {
-      e.preventDefault();
-      setOver(false);
-      const val = e.dataTransfer.getData('text');
-      if (pool.includes(val)) {
-        const next = [...dropped, val];
-        setDropped(next);
-        setPool((p) => {
-          const idx = p.indexOf(val);
-          if (idx < 0) return p;
-          const cloned = [...p];
-          cloned.splice(idx, 1);
-          return cloned;
-        });
-        onAnswer(next);
-      }
-    };
+  useEffect(() => {
+    setSelectedIds(Array.isArray(answer) ? answer.map((id) => String(id)) : []);
+  }, [answer]);
 
-    const remove = (index) => {
-      if (submitted) return;
-      const restored = dropped[index];
-      const next = dropped.filter((_, idx) => idx !== index);
-      setDropped(next);
-      if (restored != null) {
-        setPool((p) => [...p, restored]);
-      }
-      onAnswer(next);
-    };
+  const remaining = items.filter((item) => !selectedIds.includes(item.id));
+  const selected = selectedIds.map((id) => items.find((item) => item.id === id)).filter(Boolean);
 
-    return (
-      <div>
-        <div className="drag-pool">
-          {pool.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết</span>}
-          {pool.map((item, idx) => <div key={`${item}-${idx}`} className="drag-chip" draggable onDragStart={(e) => e.dataTransfer.setData('text', item)}>{item}</div>)}
-        </div>
-        <div className={`drop-zone${over ? ' over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={handleDrop}>
-          {dropped.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo thẻ vào đây theo thứ tự đúng...</span>}
-          {dropped.map((d, i) => (
-            <div key={`${d}-${i}`} className="drag-chip" style={{ cursor: 'default' }}>
-              <span style={{ marginRight: 5, color: 'var(--muted)', fontSize: '.7rem' }}>{i + 1}.</span>{d}
-              {!submitted && <button onClick={() => remove(i)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
-            </div>
-          ))}
-        </div>
-        {submitted && <div style={{ marginTop: 8, fontSize: '.8rem', color: 'var(--muted)' }}>Thứ tự tham khảo: {[...(q.answers || [])].sort((a, b) => (a.order || 0) - (b.order || 0)).map((a) => a.text).join(' → ')}</div>}
-      </div>
-    );
-  }
-
-  const usedIds = Object.values(slotMap).flat();
-  const availableItems = items.filter((item) => !usedIds.includes(item.id));
-
-  const pushAnswer = (nextMap) => {
-    setSlotMap(nextMap);
-    onAnswer(nextMap);
+  const pick = (itemId) => {
+    if (submitted) return;
+    if (selectedIds.includes(itemId)) return;
+    const next = [...selectedIds, itemId];
+    setSelectedIds(next);
+    onAnswer(next);
   };
 
-  const handleDropToSlot = (event, slotId) => {
-    event.preventDefault();
-    setOverSlot('');
+  const remove = (itemId) => {
     if (submitted) return;
-
-    const itemId = event.dataTransfer.getData('text/item-id');
-    if (!itemId) return;
-
-    const nextMap = Object.fromEntries(Object.entries(slotMap).map(([id, values]) => [id, [...values]]));
-    const currentSlotId = Object.keys(nextMap).find((id) => nextMap[id].includes(itemId));
-    if (currentSlotId) {
-      nextMap[currentSlotId] = nextMap[currentSlotId].filter((id) => id !== itemId);
-    }
-    if (!nextMap[slotId].includes(itemId)) {
-      nextMap[slotId].push(itemId);
-    }
-    pushAnswer(nextMap);
-  };
-
-  const removeFromSlot = (slotId, itemId) => {
-    if (submitted) return;
-    const nextMap = {
-      ...slotMap,
-      [slotId]: (slotMap[slotId] || []).filter((id) => id !== itemId),
-    };
-    pushAnswer(nextMap);
+    const next = selectedIds.filter((id) => id !== itemId);
+    setSelectedIds(next);
+    onAnswer(next);
   };
 
   return (
     <div>
+      <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginBottom: 8 }}>
+        Bấm vào các mục theo đúng thứ tự để ghép thành câu hoàn chỉnh.
+      </div>
       <div className="drag-pool">
-        {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết mục kéo</span>}
-        {availableItems.map((item) => (
-          <div key={item.id} className="drag-chip" draggable={!submitted} onDragStart={(e) => e.dataTransfer.setData('text/item-id', item.id)}>
+        {remaining.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã chọn hết</span>}
+        {remaining.map((item) => (
+          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer' }} onClick={() => pick(item.id)} disabled={submitted}>
             {item.label}
+          </button>
+        ))}
+      </div>
+      <div className="drop-zone" style={{ minHeight: 54 }}>
+        {selected.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Chưa ghép từ nào...</span>}
+        {selected.map((item, idx) => (
+          <div key={`${item.id}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
+            <span style={{ marginRight: 5, color: 'var(--muted)', fontSize: '.7rem' }}>{idx + 1}.</span>
+            {item.label}
+            {!submitted && <button onClick={() => remove(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
           </div>
         ))}
       </div>
+    </div>
+  );
+}
 
-      <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
-        {targets.map((target) => (
-          <div
-            key={target.id}
-            className={`drop-zone${overSlot === target.id ? ' over' : ''}`}
-            onDragOver={(e) => { e.preventDefault(); setOverSlot(target.id); }}
-            onDragLeave={() => setOverSlot('')}
-            onDrop={(e) => handleDropToSlot(e, target.id)}
-            style={{ minHeight: 52, alignItems: 'flex-start' }}
-          >
-            <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>{target.label || target.id}</div>
-            {(slotMap[target.id] || []).length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo 1 hoặc nhiều mục vào ô này...</span>}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {(slotMap[target.id] || []).map((itemId, idx) => {
-                const item = items.find((x) => String(x.id) === String(itemId));
-                return (
-                  <div key={`${target.id}-${itemId}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
-                    {item?.label || itemId}
-                    {!submitted && <button onClick={() => removeFromSlot(target.id, itemId)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+function MatchWords({ q, answer, onAnswer, submitted }) {
+  const items = (Array.isArray(q.dragItems) ? q.dragItems : [])
+    .map((item, idx) => ({ id: String(item.id || `item-${idx + 1}`), label: item.label || '' }))
+    .filter((item) => item.label);
+  const [selectedIds, setSelectedIds] = useState(() => (Array.isArray(answer) ? answer.map((id) => String(id)) : []));
+  const [wordPool, setWordPool] = useState(() => shuffleArray(items));
+
+  useEffect(() => {
+    setSelectedIds(Array.isArray(answer) ? answer.map((id) => String(id)) : []);
+  }, [answer]);
+
+  useEffect(() => {
+    setWordPool(shuffleArray(items));
+  }, [q.id]);
+
+  const availableItems = wordPool.filter((item) => !selectedIds.includes(item.id));
+  const selectedWords = selectedIds.map((id) => wordPool.find((item) => item.id === id) || items.find((item) => item.id === id)).filter(Boolean);
+
+  const pickWord = (itemId) => {
+    if (submitted) return;
+    if (selectedIds.includes(itemId)) return;
+    const next = [...selectedIds, itemId];
+    setSelectedIds(next);
+    onAnswer(next);
+  };
+
+  const removeWord = (itemId) => {
+    if (submitted) return;
+    const next = selectedIds.filter((id) => id !== itemId);
+    setSelectedIds(next);
+    onAnswer(next);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginBottom: 8 }}>
+        Dạng nối từ: bấm vào các từ để ghép xuống phần đáp án.
+      </div>
+      <div className="drag-pool">
+        {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã chọn hết từ</span>}
+        {availableItems.map((item) => (
+          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer' }} onClick={() => pickWord(item.id)} disabled={submitted}>
+            {item.label}
+          </button>
         ))}
+      </div>
+
+      <div className="drop-zone" style={{ minHeight: 56, marginTop: 10, alignItems: 'flex-start' }}>
+        <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>Answer:</div>
+        {selectedWords.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Chưa ghép từ nào...</span>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {selectedWords.map((item, idx) => (
+            <div key={`${item.id}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
+              {item.label}
+              {!submitted && <button onClick={() => removeWord(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -622,10 +643,10 @@ export default function QuizPage() {
       if (question.type === 'truefalse') {
         return answerValue || {};
       }
-      if (question.type === 'drag') {
-        if (answerValue && typeof answerValue === 'object' && !Array.isArray(answerValue)) {
-          return answerValue;
-        }
+      if (isArrangeQuestionType(question.type)) {
+        return Array.isArray(answerValue) ? answerValue : [];
+      }
+      if (isMatchQuestionType(question.type)) {
         return Array.isArray(answerValue) ? answerValue : [];
       }
       return answerValue;
@@ -854,6 +875,9 @@ export default function QuizPage() {
     if (q.type === 'single') {
       return current !== undefined;
     }
+    if (isArrangeQuestionType(q.type) || isMatchQuestionType(q.type)) {
+      return Array.isArray(current) && current.length > 0;
+    }
     return null;
   })();
 
@@ -928,7 +952,8 @@ export default function QuizPage() {
             {q.type==='multiple'&&<MultiChoice q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='truefalse'&&<TrueFalse q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted} onOpenImage={openPreview}/>} 
             {q.type==='fill'&&<FillBlank q={q} answer={answers[qIdx]||''} onAnswer={handleAnswer} submitted={submitted}/>}
-            {q.type==='drag'&&<DragDrop key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
+            {isArrangeQuestionType(q.type)&&<ArrangeWords key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
+            {isMatchQuestionType(q.type)&&<MatchWords key={qIdx} q={q} answer={answers[qIdx]} onAnswer={handleAnswer} submitted={submitted}/>} 
             {submitted&&isCorrect!==null&&(
               <div className={`quiz-feedback${isCorrect?' ok':' fail'}`}>
                 {q.type === 'truefalse'

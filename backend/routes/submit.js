@@ -7,6 +7,7 @@ const { isLessonAccessibleForUser } = require("../utils/accessControl");
 const router = express.Router();
 
 const normalize = (value) => `${value ?? ""}`.trim().toLowerCase();
+const normalizeSentence = (value) => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
 
 const normalizeAnswer = (answer) => {
   if (typeof answer === "string") return normalize(answer);
@@ -26,6 +27,12 @@ const normalizeType = (type) => {
     fill: "fill",
     fill_blank: "fill",
     drag: "drag_drop",
+    arrange: "arrange_words",
+    arrange_words: "arrange_words",
+    sort_words: "arrange_words",
+    match: "match_words",
+    match_words: "match_words",
+    connect_words: "match_words",
     drag_drop: "drag_drop",
     "drag-drop": "drag_drop",
   };
@@ -115,6 +122,59 @@ router.post("/", protect, async (req, res) => {
 
           isCorrect = correctUnits === totalUnits;
           correctResponse = answerOptions.map((item) => Boolean(item.isCorrect));
+        }
+      }
+
+      if (type === "arrange_words") {
+        const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
+        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || "").trim()]));
+        const expectedSentence = normalizeSentence(question.answerSentence || "");
+
+        if (expectedSentence) {
+          correctResponse = expectedSentence;
+          if (userAnswer && userAnswer.answer) {
+            const actualSentence = normalizeSentence(
+              (Array.isArray(userAnswer.answer) ? userAnswer.answer : [userAnswer.answer])
+                .map((item) => labelById[String(item || "").trim()] || "")
+                .filter(Boolean)
+                .join(" ")
+            );
+            isCorrect = actualSentence === expectedSentence;
+          }
+        } else {
+        const expectedOrderById = (Array.isArray(question.dragItems) ? question.dragItems : [])
+          .map((item) => String(item.id || "").trim())
+          .filter(Boolean);
+        correctResponse = expectedOrderById;
+
+        if (userAnswer && userAnswer.answer) {
+          const actualOrder = (Array.isArray(userAnswer.answer) ? userAnswer.answer : [userAnswer.answer])
+            .map((item) => String(item || "").trim())
+            .filter(Boolean);
+          isCorrect = expectedOrderById.length === actualOrder.length
+            && expectedOrderById.every((id, idx) => id === actualOrder[idx]);
+        }
+        }
+      }
+
+      if (type === "match_words") {
+        const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
+        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || "").trim()]));
+        const expectedSentence = normalizeSentence(question.answerSentence || "");
+        const expectedOrderById = dragItems.map((item) => String(item.id || "").trim()).filter(Boolean);
+        correctResponse = expectedSentence || expectedOrderById;
+
+        if (userAnswer && userAnswer.answer) {
+          const actualOrder = (Array.isArray(userAnswer.answer) ? userAnswer.answer : [userAnswer.answer])
+            .map((item) => String(item || "").trim())
+            .filter(Boolean);
+          if (expectedSentence) {
+            const actualSentence = normalizeSentence(actualOrder.map((id) => labelById[id] || "").filter(Boolean).join(" "));
+            isCorrect = actualSentence === expectedSentence;
+          } else {
+            isCorrect = expectedOrderById.length === actualOrder.length
+              && expectedOrderById.every((id, idx) => id === actualOrder[idx]);
+          }
         }
       }
 

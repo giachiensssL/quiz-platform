@@ -15,13 +15,16 @@ const isServerToken = (token) => {
 
 const normalizeType = (type) => {
   if (type === 'true_false') return 'truefalse';
-  if (type === 'drag_drop') return 'drag';
+  if (type === 'drag_drop') return 'arrange';
+  if (type === 'arrange_words') return 'arrange';
+  if (type === 'match_words') return 'match';
   return type;
 };
 
 const normalizeQuestion = (q) => ({
   ...q,
   text: q?.text || q?.question || '',
+  answerSentence: q?.answerSentence || '',
   type: normalizeType(q?.type || 'single'),
   imageUrl: q?.imageUrl || '',
   answers: (Array.isArray(q?.answers) ? q.answers : []).map((a, idx) => ({
@@ -171,7 +174,7 @@ const INIT = {
       { id: 15, text: 'Quick Sort', correct: true },
       { id: 16, text: 'Merge Sort', correct: true },
     ]},
-    { id: 6, lessonId: 1, type: 'drag', text: 'Sắp xếp theo tốc độ truy cập từ NHANH đến CHẬM:', answers: [
+    { id: 6, lessonId: 1, type: 'arrange', text: 'Sắp xếp theo tốc độ truy cập từ NHANH đến CHẬM:', answers: [
       { id: 17, text: 'Array', order: 1 },
       { id: 18, text: 'Hash Table', order: 2 },
       { id: 19, text: 'Linked List', order: 3 },
@@ -279,6 +282,7 @@ export function DataProvider({ children }) {
       lessonId: String(q?.lessonId?._id || q?.lessonId || ''),
       type: q.type,
       text: q.question || q.text || '',
+      answerSentence: q.answerSentence || '',
       imageUrl: q.imageUrl || '',
       answers: (Array.isArray(q.answers) ? q.answers : []).map((a, idx) => ({
         id: String(a._id || idx + 1),

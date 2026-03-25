@@ -1,6 +1,14 @@
 const { Schema, model } = require("mongoose");
 
-const QUESTION_TYPES = ["single", "multiple", "true_false", "fill", "drag_drop"];
+const QUESTION_TYPES = [
+  "single",
+  "multiple",
+  "true_false",
+  "fill",
+  "drag_drop",
+  "arrange_words",
+  "match_words",
+];
 
 const answerSchema = new Schema(
   {
@@ -19,6 +27,7 @@ const questionSchema = new Schema(
     imageUrl: { type: String, default: "" },
     answers: [answerSchema],
     hint: { type: String, default: "" },
+    answerSentence: { type: String, default: "", trim: true },
     points: { type: Number, default: 1 },
     order: { type: Number, default: 0 },
     dragItems: [

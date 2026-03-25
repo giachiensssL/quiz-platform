@@ -1228,6 +1228,16 @@ function SubjectStatsBoard({ data }) {
 // ── QUESTIONS PANEL ────────────────────────────────────────────
 function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
   const IMPORT_MAX_FILE_BYTES = 100 * 1024 * 1024;
+  const DRAG_TEMPLATE_SORT = 'sort_words';
+  const DRAG_TEMPLATE_MATCH = 'match_words';
+  const isArrangeType = (type) => type === 'arrange' || type === 'drag';
+  const isMatchType = (type) => type === 'match';
+  const normalizeQuestionType = (type) => {
+    const raw = String(type || '').trim().toLowerCase();
+    if (raw === 'drag' || raw === 'drag_drop' || raw === 'arrange_words') return 'arrange';
+    if (raw === 'match_words') return 'match';
+    return raw || 'single';
+  };
 
   const makeDefaultByType = (type) => {
     if (type === 'truefalse') {
@@ -1263,6 +1273,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     lessonId: '',
     type: 'single',
     text: '',
+    answerSentence: '',
     imageUrl: '',
     answers: makeDefaultByType('single'),
     dragItems: [
@@ -1369,6 +1380,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         lessonId: nextLessonId,
         type: source.type,
         text: source.text || source.question || '',
+        answerSentence: source.answerSentence || '',
         imageUrl: source.imageUrl || '',
         answers: source.answers,
         dragItems: source.dragItems || [],
@@ -1395,6 +1407,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       lessonId: defaultLessonId,
       type: 'single',
       text: '',
+      answerSentence: '',
       imageUrl: '',
       answers: makeDefaultByType('single'),
       dragItems: [
@@ -1426,7 +1439,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   };
 
   const normalizeImportedQuestion = (question) => {
-    const type = String(question?.type || 'single').trim().toLowerCase();
+    const type = normalizeQuestionType(question?.type || 'single');
     const normalizedAnswers = (Array.isArray(question?.answers) ? question.answers : [])
       .map((answer, idx) => ({
         id: idx + 1,
@@ -1882,8 +1895,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     setAnswerImageFileNames({});
     setForm({
       lessonId: q.lessonId,
-      type: q.type || 'single',
+      type: normalizeQuestionType(q.type || 'single'),
       text: q.text || q.question || '',
+      answerSentence: q.answerSentence || '',
       imageUrl: q.imageUrl || '',
       answers: (Array.isArray(q.answers) && q.answers.length ? q.answers : makeDefaultByType(q.type || 'single')).map((a) => ({
         text: a.text || '',
@@ -1917,10 +1931,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       ...prev,
       type: nextType,
       answers: makeDefaultByType(nextType),
-      dragItems: nextType === 'drag'
+      answerSentence: (nextType === 'arrange' || nextType === 'match') ? prev.answerSentence : '',
+      dragItems: (nextType === 'arrange' || nextType === 'match')
         ? [{ id: 'item-1', label: '' }, { id: 'item-2', label: '' }]
         : prev.dragItems,
-      dropTargets: nextType === 'drag'
+      dropTargets: (nextType === 'arrange' || nextType === 'match')
         ? [
           { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
           { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
@@ -2036,6 +2051,55 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     }));
   };
 
+  const applyDragTemplate = (templateId) => {
+    if (templateId === DRAG_TEMPLATE_SORT) {
+      const dragItems = [
+        { id: 'item-1', label: 'Tôi' },
+        { id: 'item-2', label: 'đi' },
+        { id: 'item-3', label: 'học' },
+      ];
+      const dropTargets = [
+        { id: 'slot-1', label: 'Vị trí 1', correctItemId: 'item-1', correctItemIds: ['item-1'] },
+        { id: 'slot-2', label: 'Vị trí 2', correctItemId: 'item-2', correctItemIds: ['item-2'] },
+        { id: 'slot-3', label: 'Vị trí 3', correctItemId: 'item-3', correctItemIds: ['item-3'] },
+      ];
+
+      setForm((prev) => ({
+        ...prev,
+        type: 'arrange',
+        text: prev.text || 'Sắp xếp các từ sau thành câu đúng.',
+        answerSentence: prev.answerSentence || 'Tôi đi học',
+        dragItems,
+        dropTargets,
+      }));
+      setToast('Đã áp dụng mẫu: Sắp xếp từ.');
+      return;
+    }
+
+    if (templateId === DRAG_TEMPLATE_MATCH) {
+      const dragItems = [
+        { id: 'item-1', label: 'Dog' },
+        { id: 'item-2', label: 'Cat' },
+        { id: 'item-3', label: 'Bird' },
+      ];
+      const dropTargets = [
+        { id: 'slot-1', label: 'Con chó', correctItemId: 'item-1', correctItemIds: ['item-1'] },
+        { id: 'slot-2', label: 'Con mèo', correctItemId: 'item-2', correctItemIds: ['item-2'] },
+        { id: 'slot-3', label: 'Con chim', correctItemId: 'item-3', correctItemIds: ['item-3'] },
+      ];
+
+      setForm((prev) => ({
+        ...prev,
+        type: 'match',
+        text: prev.text || 'Bấm vào các từ để ghép thành câu đúng.',
+        answerSentence: prev.answerSentence || 'Dog Cat Bird',
+        dragItems,
+        dropTargets,
+      }));
+      setToast('Đã áp dụng mẫu: Nối từ.');
+    }
+  };
+
   const keepTextareaNewLine = (event) => {
     if (event.key === 'Enter' && !event.nativeEvent?.isComposing) {
       event.stopPropagation();
@@ -2064,11 +2128,17 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       return;
     }
 
-    if (form.type === 'drag') {
+    if (isArrangeType(form.type) || isMatchType(form.type)) {
+      const answerSentence = String(form.answerSentence || '').replace(/\s+/g, ' ').trim();
+      if (!answerSentence) {
+        setToast('Vui lòng nhập câu đáp án chuẩn cho dạng Sắp xếp/Nối từ.');
+        return;
+      }
+
       const dragItems = form.dragItems
         .map((item) => ({ ...item, id: String(item.id || '').trim(), label: String(item.label || '').trim() }))
         .filter((item) => item.label);
-      const dropTargets = form.dropTargets
+      let dropTargets = form.dropTargets
         .map((target) => ({
           ...target,
           label: String(target.label || '').trim(),
@@ -2080,22 +2150,29 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         .filter((target) => target.label);
 
       if (dragItems.length < 2) {
-        setToast('Kéo & thả cần ít nhất 2 mục để kéo.');
+        setToast('Cần ít nhất 2 từ/mục để tạo câu dạng Sắp xếp hoặc Nối từ.');
         return;
       }
-      if (dropTargets.length < 1) {
-        setToast('Kéo & thả cần ít nhất 1 ô đích để kéo vào.');
-        return;
+
+      if (isArrangeType(form.type)) {
+        dropTargets = dragItems.map((item, idx) => ({
+          id: `slot-${idx + 1}`,
+          label: `Vị trí ${idx + 1}`,
+          correctItemId: item.id,
+          correctItemIds: [item.id],
+        }));
       }
-      if (dropTargets.some((target) => target.correctItemIds.length < 1)) {
-        setToast('Mỗi ô đích cần chọn ít nhất 1 mục đúng.');
-        return;
+
+      if (isMatchType(form.type)) {
+        // Match words keeps only the source words in correct order.
+        dropTargets = [];
       }
 
       const payload = {
         lessonId: resolvedLessonId,
-        type: form.type,
+        type: isArrangeType(form.type) ? 'arrange' : 'match',
         text: form.text.trim(),
+        answerSentence,
         imageUrl: form.imageUrl || '',
         dragItems,
         dropTargets: dropTargets.map((target) => ({
@@ -2331,7 +2408,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         <Select label="Bài học *" value={form.lessonId} onChange={e => setForm(f => ({ ...f, lessonId: e.target.value }))}
           options={lessonOptions.map(l => ({ value: l.id, label: l.name }))} />
         <Select label="Loại câu hỏi *" value={form.type} onChange={e => onTypeChange(e.target.value)}
-          options={[{value:'single',label:'Một đáp án'},{value:'multiple',label:'Nhiều đáp án'},{value:'truefalse',label:'Đúng / Sai'},{value:'fill',label:'Điền vào chỗ trống'},{value:'drag',label:'Kéo & Thả'}]} />
+          options={[{value:'single',label:'Một đáp án'},{value:'multiple',label:'Nhiều đáp án'},{value:'truefalse',label:'Đúng / Sai'},{value:'fill',label:'Điền vào chỗ trống'},{value:'arrange',label:'Sắp xếp từ'},{value:'match',label:'Nối từ'}]} />
         <Textarea label="Nội dung câu hỏi *" placeholder="Nhập câu hỏi..." rows={6} value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))} onKeyDown={keepTextareaNewLine} />
         <div style={{ marginBottom: 10 }}>
           <label className="form-label">Hình ảnh câu hỏi (tuỳ chọn)</label>
@@ -2349,7 +2426,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
             />
           )}
         </div>
-        {form.type !== 'drag' && form.type !== 'truefalse' && (
+        {!isArrangeType(form.type) && !isMatchType(form.type) && form.type !== 'truefalse' && (
           <div style={{ marginBottom: 6 }}>
             <label className="form-label">
               {form.type === 'fill' ? 'Đáp án điền (chấp nhận nhiều đáp án)' : 'Đáp án'}
@@ -2464,15 +2541,26 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
           </div>
         )}
 
-        {form.type === 'drag' && (
+        {(isArrangeType(form.type) || isMatchType(form.type)) && (
           <div style={{ display: 'grid', gap: 12 }}>
+            <div style={{ border: '1px dashed var(--border)', borderRadius: 10, padding: 10, background: 'var(--bg)' }}>
+              <div style={{ fontSize: '.84rem', fontWeight: 600, marginBottom: 8 }}>Mẫu nhanh cho dạng Sắp xếp / Nối từ</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <Button variant="ghost" size="sm" onClick={() => applyDragTemplate(DRAG_TEMPLATE_SORT)}>Áp dụng mẫu Sắp xếp từ</Button>
+                <Button variant="ghost" size="sm" onClick={() => applyDragTemplate(DRAG_TEMPLATE_MATCH)}>Áp dụng mẫu Nối từ</Button>
+              </div>
+              <div style={{ marginTop: 6, fontSize: '.78rem', color: 'var(--muted)' }}>
+                Sau khi áp dụng mẫu, bạn có thể sửa lại nội dung câu hỏi và danh sách từ theo đề thực tế.
+              </div>
+            </div>
+
             <div>
-              <label className="form-label">Các mục để kéo</label>
+              <label className="form-label">{isArrangeType(form.type) ? 'Các từ/mục theo đúng thứ tự câu' : 'Các từ để nối'}</label>
               {form.dragItems.map((item, idx) => (
                 <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                   <input
                     className="form-input"
-                    placeholder={`Mục kéo ${idx + 1}`}
+                    placeholder={isArrangeType(form.type) ? `Từ ${idx + 1}` : `Từ ${idx + 1}`}
                     value={item.label}
                     onChange={(e) => setDragItem(item.id, e.target.value)}
                   />
@@ -2481,54 +2569,30 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                   )}
                 </div>
               ))}
-              <Button variant="ghost" size="sm" onClick={addDragItem}>+ Thêm mục kéo</Button>
+              <Button variant="ghost" size="sm" onClick={addDragItem}>{isArrangeType(form.type) ? '+ Thêm từ' : '+ Thêm từ để nối'}</Button>
+              {isArrangeType(form.type) && (
+                <div style={{ marginTop: 6, fontSize: '.78rem', color: 'var(--muted)' }}>
+                  User sẽ bấm từng từ theo thứ tự để ghép thành câu hoàn chỉnh.
+                </div>
+              )}
             </div>
 
+            <Textarea
+              label="Câu đáp án chuẩn *"
+              placeholder="Ví dụ: A wireless hotspot is a location that provides internet access without using cables."
+              rows={3}
+              value={form.answerSentence || ''}
+              onChange={(e) => setForm((prev) => ({ ...prev, answerSentence: e.target.value }))}
+              onKeyDown={keepTextareaNewLine}
+            />
+
+            {isMatchType(form.type) && (
             <div>
-              <label className="form-label">Các ô để kéo vào</label>
-              {form.dropTargets.map((target, idx) => (
-                <div key={target.id} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginBottom: 8 }}>
-                  <input
-                    className="form-input"
-                    placeholder={`Tên ô đích ${idx + 1}`}
-                    value={target.label}
-                    onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
-                  />
-                  {form.dropTargets.length > 2 && (
-                    <button onClick={() => removeDropTarget(target.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '1rem' }}>×</button>
-                  )}
-                  <div style={{ gridColumn: '1 / -1', border: '1px dashed var(--border)', borderRadius: 8, padding: 8 }}>
-                    <div style={{ fontSize: '.8rem', marginBottom: 6, color: 'var(--text-2)' }}>Chọn 1 hoặc nhiều mục đúng cho ô này:</div>
-                    {(form.dragItems || []).filter((item) => item.label.trim()).map((item) => {
-                      const selectedIds = Array.isArray(target.correctItemIds)
-                        ? target.correctItemIds
-                        : (target.correctItemId ? [target.correctItemId] : []);
-                      const checked = selectedIds.includes(item.id);
-                      return (
-                        <label key={`${target.id}-${item.id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginRight: 12, marginBottom: 6, fontSize: '.84rem' }}>
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(e) => {
-                              const next = e.target.checked
-                                ? [...selectedIds, item.id]
-                                : selectedIds.filter((id) => id !== item.id);
-                              setDropTarget(target.id, 'correctItemIds', [...new Set(next)]);
-                              setDropTarget(target.id, 'correctItemId', next[0] || '');
-                            }}
-                          />
-                          {item.label}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              <Button variant="ghost" size="sm" onClick={addDropTarget}>+ Thêm ô đích</Button>
               <div style={{ marginTop: 6, fontSize: '.78rem', color: 'var(--muted)' }}>
-                Mỗi ô đích có thể gán 1 hoặc nhiều mục kéo đúng.
+                User sẽ bấm từng từ ở danh sách để ghép xuống vùng đáp án theo đúng thứ tự câu.
               </div>
             </div>
+            )}
           </div>
         )}
       </Modal>
