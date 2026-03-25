@@ -1318,6 +1318,31 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
     return acc;
   }, {});
 
+  const duplicateGroups = scopedQuestionList.reduce((acc, item) => {
+    const key = buildDuplicateKey(item);
+    if (!key) return acc;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+
+  const compareQuestionById = (a, b) => {
+    const aNum = Number(a?.id);
+    const bNum = Number(b?.id);
+    const aValid = Number.isFinite(aNum);
+    const bValid = Number.isFinite(bNum);
+    if (aValid && bValid && aNum !== bNum) return aNum - bNum;
+    return String(a?.id || '').localeCompare(String(b?.id || ''));
+  };
+
+  const duplicateDeleteIds = Object.values(duplicateGroups).flatMap((group) => {
+    if (!Array.isArray(group) || group.length <= 1) return [];
+    const sorted = [...group].sort(compareQuestionById);
+    return sorted.slice(1).map((item) => String(item.id));
+  });
+
+  const duplicateGroupCount = Object.values(duplicateGroups).filter((group) => Array.isArray(group) && group.length > 1).length;
+
   const duplicateQuestionTotal = scopedQuestionList.filter((item) => (duplicateCountByKey[buildDuplicateKey(item)] || 0) > 1).length;
 
   const questionList = onlyDuplicateQuestions
@@ -1381,6 +1406,25 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
       setToast(`Đã xoá ${successCount} câu hỏi đã chọn.`);
     }
     setSelectedQuestionIds([]);
+  };
+
+  const runDeleteDuplicateQuestionsKeepOne = async () => {
+    const ids = duplicateDeleteIds.map((id) => String(id));
+    if (!ids.length) {
+      setToast('Không có câu trùng để xoá trong phạm vi lọc hiện tại.');
+      return;
+    }
+    startOpProgress('Đang xoá câu trùng...', ids.length);
+    const results = await Promise.allSettled(ids.map((id) => questionsCrud.remove(id)));
+    doneOpProgress('Đã hoàn tất xoá câu trùng');
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+    if (failCount > 0) {
+      setToast(`Đã xoá ${successCount} câu trùng, lỗi ${failCount} câu.`);
+    } else {
+      setToast(`Đã xoá ${successCount} câu trùng và giữ lại 1 câu cho mỗi nhóm.`);
+    }
+    setSelectedQuestionIds((prev) => prev.filter((id) => !ids.includes(String(id))));
   };
 
   const runBulkUpdateLesson = async () => {
@@ -2348,9 +2392,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
   return (
     <>
       <Toast message={toast} type="success" onDone={() => setToast('')} />
-      <Confirm open={!!confirm} title="Xoá câu hỏi" message={confirm?.bulk ? `Xác nhận xoá ${selectedQuestionIds.length} câu hỏi đã chọn?` : 'Xác nhận xoá câu hỏi này?'} danger
+      <Confirm open={!!confirm} title="Xoá câu hỏi" message={confirm?.dedupe ? `Xác nhận xoá ${duplicateDeleteIds.length} câu trùng (giữ lại 1 câu mỗi nhóm)?` : (confirm?.bulk ? `Xác nhận xoá ${selectedQuestionIds.length} câu hỏi đã chọn?` : 'Xác nhận xoá câu hỏi này?')} danger
         onConfirm={async () => {
-          if (confirm?.bulk) {
+          if (confirm?.dedupe) {
+            await runDeleteDuplicateQuestionsKeepOne();
+          } else if (confirm?.bulk) {
             await runBulkDeleteQuestions();
           } else {
             startOpProgress('Đang xoá câu hỏi...', 1);
@@ -2792,6 +2838,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
             <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--muted)' }}>
               Câu trùng trong phạm vi lọc hiện tại: {duplicateQuestionTotal}
             </div>
+            <div style={{ marginTop: 2, fontSize: '.78rem', color: 'var(--muted)' }}>
+              Nhóm trùng: {duplicateGroupCount} | Có thể xoá: {duplicateDeleteIds.length} (giữ 1 mỗi nhóm)
+            </div>
             <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap', maxWidth: 620 }}>
               <Select
                 label="Cập nhật bài cho mục đã chọn"
@@ -2802,6 +2851,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
               <div style={{ display: 'flex', gap: 8, alignItems: 'end' }}>
                 <Button variant="ghost" size="sm" onClick={runBulkUpdateLesson} disabled={!selectedQuestionIds.length || !bulkLessonId}>Cập nhật bài đã chọn</Button>
                 <Button variant="danger" size="sm" onClick={() => setConfirm({ bulk: true })} disabled={!selectedQuestionIds.length}>Xoá đã chọn</Button>
+                <Button variant="danger" size="sm" onClick={() => setConfirm({ dedupe: true })} disabled={!duplicateDeleteIds.length}>Xoá câu trùng (giữ 1)</Button>
                 <Button variant="ghost" size="sm" onClick={() => setSelectedQuestionIds([])} disabled={!selectedQuestionIds.length}>Bỏ chọn</Button>
               </div>
             </div>
