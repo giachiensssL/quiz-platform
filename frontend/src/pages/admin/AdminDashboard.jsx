@@ -2036,6 +2036,12 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     }));
   };
 
+  const keepTextareaNewLine = (event) => {
+    if (event.key === 'Enter' && !event.nativeEvent?.isComposing) {
+      event.stopPropagation();
+    }
+  };
+
   const saveQuestion = async () => {
     const resolvedLessonId = form.lessonId || filterLessonId || (lessonOptions.length === 1 ? String(lessonOptions[0].id) : '');
     if (!resolvedLessonId || !form.text.trim()) {
@@ -2326,7 +2332,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
           options={lessonOptions.map(l => ({ value: l.id, label: l.name }))} />
         <Select label="Loại câu hỏi *" value={form.type} onChange={e => onTypeChange(e.target.value)}
           options={[{value:'single',label:'Một đáp án'},{value:'multiple',label:'Nhiều đáp án'},{value:'truefalse',label:'Đúng / Sai'},{value:'fill',label:'Điền vào chỗ trống'},{value:'drag',label:'Kéo & Thả'}]} />
-        <Textarea label="Nội dung câu hỏi *" placeholder="Nhập câu hỏi..." rows={6} value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))} />
+        <Textarea label="Nội dung câu hỏi *" placeholder="Nhập câu hỏi..." rows={6} value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))} onKeyDown={keepTextareaNewLine} />
         <div style={{ marginBottom: 10 }}>
           <label className="form-label">Hình ảnh câu hỏi (tuỳ chọn)</label>
           <label className="upload-trigger" onDragOver={preventDropDefaults} onDrop={onDropQuestionImage}>
@@ -2367,6 +2373,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                     placeholder="Nhập nội dung đáp án (có thể để trống nếu dùng ảnh)"
                     value={a.text}
                     onChange={e => setAnswer(i, 'text', e.target.value)}
+                    onKeyDown={keepTextareaNewLine}
                   />
                   <label className="upload-trigger upload-trigger-sm" onDragOver={preventDropDefaults} onDrop={(e) => onDropAnswerImage(i, e)}>
                     <input className="file-picker-input" type="file" accept="image/*" onChange={(e) => onPickAnswerImage(i, e)} />
@@ -2413,6 +2420,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                   placeholder="Nhập nội dung ý (có thể dài hoặc nhiều dòng)"
                   value={a.text}
                   onChange={(e) => setAnswer(i, 'text', e.target.value)}
+                  onKeyDown={keepTextareaNewLine}
                 />
                 <label className="upload-trigger upload-trigger-sm" onDragOver={preventDropDefaults} onDrop={(e) => onDropAnswerImage(i, e)}>
                   <input className="file-picker-input" type="file" accept="image/*" onChange={(e) => onPickAnswerImage(i, e)} />
