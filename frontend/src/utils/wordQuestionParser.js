@@ -4,17 +4,23 @@ const QUESTION_HEADER_PATTERNS = [
   /^(?:cau|câu)\s*(?:hoi|hỏi)?\s*(?:so|số)?\s*\d+\s*[:.)-]?\s*(.*)$/i,
   /^(?:cau|câu|question)\s*\d+\s*[:.)-]?\s*(.*)$/i,
   /^(?:q)\s*\d+\s*[:.)-]?\s*(.*)$/i,
-  /^\d+\s*[).:\-]\s*(.*)$/,
 ];
+const NUMERIC_QUESTION_HEADER_RE = /^\d+\s*[).:\-]\s*(.*)$/;
 
 const QUESTION_MARKER_RE = /(?:^|\n)\s*(?:câu|cau|question|q)\s*(?:hỏi|hoi)?\s*(?:số|so)?\s*\d+\s*[:.)-]?/gim;
 const OPTION_RE = /^(?:[-*•]\s*)?([A-H]|\d+)[\s]*[\).:\-\/]?[\s]*(.*)$/i;
 const SIMPLE_OPTION_RE = /^(?:[-*•]\s*)?([A-H])[\s]+(.+)$/i;
 const ANSWER_KEY_RE = /^(?:dap an(?:\s+dung)?|đáp án(?:\s+đúng)?|answer(?:\s+key)?|ans|key)(?:\s*(?:la|là|is))?\s*[:\-]?\s*(.+)$/i;
 const FILL_HINT_RE = /_{2,}|\.{3,}|\(\s*\.\.\.\s*\)/;
+const TRUE_FALSE_PROMPT_RE = /(đúng|dung|true).*(sai|false)|(sai|false).*(đúng|dung|true)/i;
 const ORDER_KEYWORDS = ['sap xep', 'sắp xếp', 'thu tu', 'thứ tự', 'keo tha', 'kéo thả', 'arrange', 'order'];
+const SORT_WORD_KEYWORDS = ['sap xep tu', 'sắp xếp từ', 'xep tu', 'xếp từ', 'arrange words', 'word order'];
+const DRAG_KEYWORDS = ['keo tha', 'kéo thả', 'drag', 'drop'];
 const HIGHLIGHT_TOKEN_OPEN = '[[HL]]';
 const HIGHLIGHT_TOKEN_CLOSE = '[[/HL]]';
+const IMAGE_TOKEN_RE = /\[\[IMG:([^\]]+)\]\]/gi;
+const MARKDOWN_IMAGE_RE = /!\[[^\]]*\]\(([^)]+)\)/gi;
+const STAR_MARKER_RE = /[*+＊﹡∗✱✳✻★☆]/;
 const LESSON_HEADER_PATTERNS = [
   /^(?:bai|bài|lesson)\s*(\d{1,2})\s*[:.)\-]?\s*(.*)$/i,
   /^(\d{1,2})\s*[:.)\-]\s*(?:bai|bài|lesson)\s*(.*)$/i,
@@ -23,6 +29,12 @@ const LESSON_HEADER_PATTERNS = [
 const normalizeText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const normalizeLoose = (value) => normalizeText(value).toLowerCase();
 const removeLeadingBullet = (line) => String(line || '').replace(/^(?:[-*•]\s*)+/, '').trim();
+const stripStarMarkers = (value) => String(value || '')
+  .replace(/^\s*(?:[*+＊﹡∗✱✳✻★☆])+\s*/, '')
+  .replace(/\s*(?:[*+＊﹡∗✱✳✻★☆])+\s*$/, '')
+  .replace(/\s*\(\s*(?:[*+＊﹡∗✱✳✻★☆])\s*\)\s*/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
 
 const decodeXmlEntities = (value) => String(value || '')
   .replace(/&lt;/g, '<')
@@ -30,6 +42,38 @@ const decodeXmlEntities = (value) => String(value || '')
   .replace(/&quot;/g, '"')
   .replace(/&apos;/g, "'")
   .replace(/&amp;/g, '&');
+
+const extractTextAndImages = (value) => {
+  const source = String(value || '');
+  const imageUrls = [];
+
+  const tokenCleared = source
+    .replace(IMAGE_TOKEN_RE, (_, url) => {
+      const normalized = normalizeText(url);
+      if (normalized) imageUrls.push(normalized);
+      return ' ';
+    })
+    .replace(MARKDOWN_IMAGE_RE, (_, url) => {
+      const normalized = normalizeText(url);
+      if (normalized) imageUrls.push(normalized);
+      return ' ';
+    });
+
+  return {
+    text: normalizeText(tokenCleared),
+    imageUrls,
+  };
+};
+
+const extractSlashSegments = (value) => {
+  const source = String(value || '').trim();
+  if (!source || source.includes('://')) return [];
+  if ((source.match(/\//g) || []).length < 2) return [];
+  return source
+    .split('/')
+    .map((item) => normalizeText(item))
+    .filter(Boolean);
+};
 
 const dedupeStrings = (items) => {
   const seen = new Set();
@@ -158,6 +202,8 @@ const htmlToPlainText = (html) => {
   });
 
   return decodeHtmlEntities(markHighlightedSpan)
+    .replace(/<img\b[^>]*src\s*=\s*"([^"]+)"[^>]*>/gi, ' [[IMG:$1]] ')
+    .replace(/<img\b[^>]*src\s*=\s*'([^']+)'[^>]*>/gi, ' [[IMG:$1]] ')
     .replace(/<a\b[^>]*>/gi, ' [[LINK]] ')
     .replace(/<\/a>/gi, ' [[\/LINK]] ')
     .replace(/<mark\b[^>]*>/gi, ` ${HIGHLIGHT_TOKEN_OPEN}`)
@@ -213,18 +259,58 @@ const extractAnswerLabels = (raw) => {
   return [...new Set(labels)];
 };
 
+const extractOrderKeys = (raw) => {
+  const labels = String(raw || '').toUpperCase().match(/[A-H]|\d+/g) || [];
+  return labels.filter(Boolean);
+};
+
+const TRUE_FALSE_VALUE_RE = /^(?:d|đ|t|s|f|true|false|dung|đúng|sai|0|1)$/i;
+
+const looksLikeDelimitedTrueFalseSequence = (value) => {
+  const source = String(value || '').trim();
+  if (!source || !source.includes(',')) return false;
+  const parts = source.split(',').map((item) => normalizeText(item)).filter(Boolean);
+  if (parts.length < 2) return false;
+  return parts.every((item) => TRUE_FALSE_VALUE_RE.test(item));
+};
+
 const extractAnswerTextValues = (raw) => {
-  return String(raw || '')
-    .split(/[;,|/]+/)
-    .map((item) => normalizeText(item))
+  const source = String(raw || '');
+  const splitByComma = looksLikeDelimitedTrueFalseSequence(source);
+  const splitter = splitByComma ? /[;,|/]+|\s*[,]+\s*|\s{2,}/ : /[;|/]+|\s{2,}/;
+  return source
+    .split(splitter)
+    .map((item) => normalizeText(stripStarMarkers(item)))
     .filter(Boolean);
+};
+
+const parseTrueFalseToken = (raw) => {
+  const token = normalizeLoose(raw);
+  if (!token) return null;
+  if (['d', 'đ', 't', 'true', 'đúng', 'dung', '1'].includes(token)) return true;
+  if (['s', 'f', 'false', 'sai', '0'].includes(token)) return false;
+  return null;
+};
+
+const isInstructionLine = (line) => {
+  const value = normalizeLoose(line);
+  if (!value) return true;
+  return value.includes('chọn đáp án')
+    || value.includes('chon dap an')
+    || value.includes('đúng hoặc sai')
+    || value.includes('dung hoac sai')
+    || value.includes('đánh dấu đúng sai')
+    || value.includes('danh dau dung sai');
 };
 
 const extractCorrect = (raw) => {
   const text = String(raw || '');
   const lower = text.toLowerCase();
   const correct =
-    /^\s*[*+]\s*/.test(text)
+    /^\s*(?:[*+＊﹡∗✱✳✻★☆])\s*/.test(text)
+    || /\s(?:[*+＊﹡∗✱✳✻★☆])\s*$/.test(text)
+    || /\(\s*(?:[*+＊﹡∗✱✳✻★☆])\s*\)/.test(text)
+    || STAR_MARKER_RE.test(text)
     || text.includes(HIGHLIGHT_TOKEN_OPEN)
     || /\[\[link\]\]/i.test(text)
     || /\[(x|\u2713)\]/i.test(text)
@@ -232,7 +318,9 @@ const extractCorrect = (raw) => {
     || /\u2705/.test(text);
 
   const cleaned = text
-    .replace(/^\s*[*+]\s*/, '')
+    .replace(/^\s*(?:[*+＊﹡∗✱✳✻★☆])\s*/, '')
+    .replace(/\s*(?:[*+＊﹡∗✱✳✻★☆])\s*$/, '')
+    .replace(/\(\s*(?:[*+＊﹡∗✱✳✻★☆])\s*\)/g, '')
     .replace(new RegExp(HIGHLIGHT_TOKEN_OPEN.replace(/[\[\]]/g, '\\$&'), 'g'), '')
     .replace(new RegExp(HIGHLIGHT_TOKEN_CLOSE.replace(/[\[\]]/g, '\\$&'), 'g'), '')
     .replace(/\[\[\/?link\]\]/ig, '')
@@ -256,7 +344,30 @@ const splitQuestionBlocks = (rawText) => {
   let current = null;
 
   lines.forEach((line) => {
-    const headerText = getQuestionHeaderText(line);
+    const normalized = removeLeadingBullet(line);
+    const numericHeader = normalized.match(NUMERIC_QUESTION_HEADER_RE);
+    let headerText = getQuestionHeaderText(line);
+
+    // Heuristic: inside an existing block, lines like "1) ..." are often options,
+    // not the next question header. Only split when line clearly looks like a question stem.
+    if (!headerText && numericHeader) {
+      const candidate = normalizeText(numericHeader[1]);
+      const questionLeadRe = /^(?:cho|hãy|hay|xác định|chon|chọn|which|what|find|tính|compute)\b/i;
+      const looksQuestionLike = candidate.includes('?')
+        || FILL_HINT_RE.test(candidate)
+        || TRUE_FALSE_PROMPT_RE.test(candidate)
+        || questionLeadRe.test(candidate);
+
+      const currentText = current
+        ? normalizeText([current.head, ...(current.lines || [])].join(' '))
+        : '';
+      const currentIsTrueFalse = TRUE_FALSE_PROMPT_RE.test(currentText);
+
+      if (!current || (looksQuestionLike && !currentIsTrueFalse)) {
+        headerText = candidate;
+      }
+    }
+
     if (headerText !== null) {
       if (current) blocks.push(current);
       current = { head: headerText, lines: [] };
@@ -305,8 +416,11 @@ const splitLessonSections = (rawText) => {
 
 const inferType = (questionText, parsedOptions, answerTexts) => {
   const lowerQuestion = normalizeLoose(questionText);
+  const hasSortWordKeyword = SORT_WORD_KEYWORDS.some((kw) => lowerQuestion.includes(kw));
+  const hasDragKeyword = DRAG_KEYWORDS.some((kw) => lowerQuestion.includes(kw));
   const hasOrderKeyword = ORDER_KEYWORDS.some((kw) => lowerQuestion.includes(kw));
-  if (hasOrderKeyword && parsedOptions.length >= 2) return 'drag';
+  if (hasSortWordKeyword && parsedOptions.length >= 2) return 'match';
+  if ((hasDragKeyword || hasOrderKeyword) && parsedOptions.length >= 2) return 'drag';
 
   if (FILL_HINT_RE.test(questionText)) return 'fill';
   if (answerTexts.length && !parsedOptions.length) return 'fill';
@@ -341,43 +455,62 @@ const parseBlockDetailed = (block, context = {}) => {
     : () => false;
   const optionRows = [];
   const questionRows = [];
+  const questionImageCandidates = [];
   let answerLabels = [];
   let answerTexts = [];
+  let answerKeyRaw = '';
+
+  const headExtract = extractTextAndImages(block.head || '');
+  questionImageCandidates.push(...headExtract.imageUrls);
+  const cleanedHead = headExtract.text;
 
   (block.lines || []).forEach((line) => {
-    const answerKey = line.match(ANSWER_KEY_RE);
+    const extracted = extractTextAndImages(line);
+    const cleanedLine = extracted.text;
+    const lineImages = extracted.imageUrls;
+
+    if (!cleanedLine && lineImages.length) {
+      if (!optionRows.length) questionImageCandidates.push(...lineImages);
+      return;
+    }
+
+    const answerKey = cleanedLine.match(ANSWER_KEY_RE);
     if (answerKey) {
+      answerKeyRaw = answerKey[1];
       answerLabels = extractAnswerLabels(answerKey[1]);
       answerTexts = extractAnswerTextValues(answerKey[1]);
       return;
     }
 
-    const opt = removeLeadingBullet(line).match(OPTION_RE);
+    const opt = removeLeadingBullet(cleanedLine).match(OPTION_RE);
     if (opt && normalizeText(opt[2])) {
       optionRows.push({ label: String(opt[1]).toUpperCase(), raw: opt[2] });
       return;
     }
 
-    const simple = removeLeadingBullet(line).match(SIMPLE_OPTION_RE);
+    const simple = removeLeadingBullet(cleanedLine).match(SIMPLE_OPTION_RE);
     if (simple) {
       optionRows.push({ label: String(simple[1]).toUpperCase(), raw: simple[2] });
       return;
     }
 
-    const inline = extractInlineOptions(line);
+    const inline = extractInlineOptions(cleanedLine);
     if (inline.length >= 2) {
       optionRows.push(...inline);
       return;
     }
 
     if (optionRows.length) {
-      optionRows[optionRows.length - 1].raw = `${optionRows[optionRows.length - 1].raw} ${line}`;
+      optionRows[optionRows.length - 1].raw = `${optionRows[optionRows.length - 1].raw} ${cleanedLine}`;
     } else {
-      questionRows.push(line);
+      questionRows.push(cleanedLine);
+      if (lineImages.length) questionImageCandidates.push(...lineImages);
     }
   });
 
-  const text = normalizeText([block.head, ...questionRows].filter(Boolean).join(' '));
+  const text = normalizeText([cleanedHead, ...questionRows].filter(Boolean).join(' '));
+  const questionImageUrl = normalizeText(questionImageCandidates[0] || '');
+  const slashSegments = extractSlashSegments([cleanedHead, ...questionRows].join(' '));
   if (!text) {
     return { question: null, issue: createParseIssue('empty_question', block, 'Thiếu nội dung câu hỏi') };
   }
@@ -402,6 +535,7 @@ const parseBlockDetailed = (block, context = {}) => {
   }
 
   const type = inferType(text, parsedOptions, answerTexts);
+  const orderKeys = extractOrderKeys(answerKeyRaw);
 
   if (type === 'fill') {
     const fillAnswers = (answerTexts.length ? answerTexts : parsedOptions.filter((item) => item.correct).map((item) => item.text))
@@ -412,7 +546,81 @@ const parseBlockDetailed = (block, context = {}) => {
     if (!fillAnswers.length) {
       return { question: null, issue: createParseIssue('fill_without_answers', block, 'Câu điền khuyết không có đáp án hợp lệ') };
     }
-    return { question: { text, type: 'fill', imageUrl: '', answers: fillAnswers }, issue: null };
+    return { question: { text, type: 'fill', imageUrl: questionImageUrl, answers: fillAnswers }, issue: null };
+  }
+
+  const trueFalsePrompt = TRUE_FALSE_PROMPT_RE.test(text);
+  if (trueFalsePrompt) {
+    const numberedStatementOptions = parsedOptions.filter((item) => /^\d+$/.test(item.label));
+    const hasExplicitTrueFalseChoices = parsedOptions.some((item) => {
+      const optionText = normalizeLoose(item.text);
+      return optionText.includes('đúng')
+        || optionText.includes('dung')
+        || optionText.includes('true')
+        || optionText.includes('sai')
+        || optionText.includes('false');
+    });
+
+    const statementSource = !hasExplicitTrueFalseChoices && numberedStatementOptions.length >= 2
+      ? numberedStatementOptions.map((item) => item.text)
+      : questionRows
+        .map((line) => normalizeText(line))
+        .filter((line) => line && !isInstructionLine(line));
+
+    const pairMatches = [...String(answerKeyRaw || '').matchAll(/(?:^|[;,|\/\s])([A-H]|\d+)\s*[:=\-.]\s*(đúng|dung|sai|true|false|đ|d|s|t|f|0|1)(?=$|[;,|\/\s])/gi)];
+    const pairMap = new Map(pairMatches.map((m) => [String(m[1] || '').toUpperCase(), parseTrueFalseToken(m[2])])) ;
+    const statementLines = questionRows
+      .map((line) => normalizeText(line))
+      .filter((line) => line && !isInstructionLine(line));
+
+    const tfTokens = answerTexts
+      .map((token) => parseTrueFalseToken(token))
+      .filter((token) => token !== null);
+
+    if (statementSource.length >= 2) {
+      const fallbackAnswers = statementSource.map((line, idx) => {
+        const label = numberedStatementOptions[idx]?.label ? String(numberedStatementOptions[idx].label).toUpperCase() : null;
+        const mapped = label && pairMap.has(label) ? pairMap.get(label) : undefined;
+        return {
+        text: line,
+        imageUrl: '',
+        correct: mapped !== undefined ? mapped : (tfTokens[idx] !== undefined ? tfTokens[idx] : false),
+      };
+      });
+      const hasExplicit = tfTokens.length > 0 || pairMap.size > 0;
+      if (!hasExplicit) {
+        return { question: null, issue: createParseIssue('missing_truefalse_key', block, 'Dạng Đúng/Sai theo nhiều ý chưa có khóa đáp án rõ ràng') };
+      }
+      return { question: { text, type: 'truefalse', imageUrl: questionImageUrl, answers: fallbackAnswers }, issue: null };
+    }
+
+    const singleTf = parseTrueFalseToken(answerTexts[0]);
+    if (singleTf !== null) {
+      const tfOptions = [
+        { text: 'Đúng', imageUrl: '', correct: singleTf === true },
+        { text: 'Sai', imageUrl: '', correct: singleTf === false },
+      ];
+      return { question: { text, type: 'truefalse', imageUrl: questionImageUrl, answers: tfOptions }, issue: null };
+    }
+  }
+
+  if (slashSegments.length >= 2 && answerTexts.length >= 1) {
+    const dragItems = slashSegments.map((item, idx) => ({ id: `item-${idx + 1}`, label: item }));
+    const answerSentence = normalizeText(answerTexts.join(' '));
+    if (answerSentence) {
+      return {
+        question: {
+          text,
+          type: 'match',
+          imageUrl: questionImageUrl,
+          answerSentence,
+          answers: slashSegments.map((item) => ({ text: item, imageUrl: '', correct: true })),
+          dragItems,
+          dropTargets: [],
+        },
+        issue: null,
+      };
+    }
   }
 
   if (parsedOptions.length < 2) {
@@ -425,6 +633,12 @@ const parseBlockDetailed = (block, context = {}) => {
   }
 
   if (type === 'drag') {
+    const optionByLabel = new Map(parsedOptions.map((item) => [String(item.label || '').toUpperCase(), item]));
+    const orderedOptions = orderKeys.length >= 2
+      ? orderKeys.map((key) => optionByLabel.get(String(key).toUpperCase())).filter(Boolean)
+      : [];
+    const sequence = orderedOptions.length >= 2 ? orderedOptions : parsedOptions;
+
     const answers = parsedOptions.map((item, idx) => ({
       text: item.text,
       imageUrl: '',
@@ -432,13 +646,42 @@ const parseBlockDetailed = (block, context = {}) => {
       order: idx + 1,
     }));
     const dragItems = parsedOptions.map((item, idx) => ({ id: `item-${idx + 1}`, label: item.text }));
-    const dropTargets = parsedOptions.map((_, idx) => ({
+    const dragItemIdByText = new Map(dragItems.map((item) => [normalizeLoose(item.label), item.id]));
+    const dropTargets = sequence.map((item, idx) => ({
       id: `slot-${idx + 1}`,
       label: `Vi tri ${idx + 1}`,
-      correctItemId: `item-${idx + 1}`,
+      correctItemId: dragItemIdByText.get(normalizeLoose(item.text)) || `item-${idx + 1}`,
     }));
 
-    return { question: { text, type: 'drag', imageUrl: '', answers, dragItems, dropTargets }, issue: null };
+    return { question: { text, type: 'drag', imageUrl: questionImageUrl, answers, dragItems, dropTargets }, issue: null };
+  }
+
+  if (type === 'match') {
+    const optionByLabel = new Map(parsedOptions.map((item) => [String(item.label || '').toUpperCase(), item]));
+    const orderedOptions = orderKeys.length >= 2
+      ? orderKeys.map((key) => optionByLabel.get(String(key).toUpperCase())).filter(Boolean)
+      : [];
+    const sequence = orderedOptions.length >= 2 ? orderedOptions : parsedOptions;
+    const dragItems = sequence.map((item, idx) => ({ id: `item-${idx + 1}`, label: item.text }));
+    const sentenceFromKey = normalizeText(answerTexts.join(' '));
+    const answerSentence = sentenceFromKey || normalizeText(sequence.map((item) => item.text).join(' '));
+
+    if (dragItems.length < 2 || !answerSentence) {
+      return { question: null, issue: createParseIssue('insufficient_match_items', block, 'Dạng Sắp xếp từ/Nối từ cần ít nhất 2 từ và đáp án chuẩn') };
+    }
+
+    return {
+      question: {
+        text,
+        type: 'match',
+        imageUrl: questionImageUrl,
+        answerSentence,
+        answers: sequence.map((item) => ({ text: item.text, imageUrl: '', correct: true })),
+        dragItems,
+        dropTargets: [],
+      },
+      issue: null,
+    };
   }
 
   const finalType = type === 'truefalse' ? 'truefalse' : inferType(text, parsedOptions, answerTexts);
@@ -446,7 +689,7 @@ const parseBlockDetailed = (block, context = {}) => {
     question: {
       text,
       type: finalType,
-      imageUrl: '',
+      imageUrl: questionImageUrl,
       answers: parsedOptions.map(({ label, ...rest }) => rest),
     },
     issue: null,
@@ -606,7 +849,15 @@ export const parseDocxQuestionsWithReport = async (file, options = {}) => {
   const rawResult = await mammoth.extractRawText({ arrayBuffer });
   const rawText = String(rawResult?.value || '');
 
-  const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
+  const htmlResult = await mammoth.convertToHtml({
+    arrayBuffer,
+    convertImage: mammoth.images.inline(async (element) => {
+      const base64 = await element.read('base64');
+      return {
+        src: `data:${element.contentType};base64,${base64}`,
+      };
+    }),
+  });
   const htmlPlain = htmlToPlainText(htmlResult.value);
 
   const rawDetails = parseWithDetails(rawText, mergedOptions);

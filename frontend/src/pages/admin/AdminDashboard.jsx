@@ -1226,7 +1226,7 @@ function SubjectStatsBoard({ data }) {
 }
 
 // ── QUESTIONS PANEL ────────────────────────────────────────────
-function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
+function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
   const IMPORT_MAX_FILE_BYTES = 100 * 1024 * 1024;
   const DRAG_TEMPLATE_SORT = 'sort_words';
   const DRAG_TEMPLATE_MATCH = 'match_words';
@@ -1256,6 +1256,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const [toast, setToast] = useState('');
   const [confirm, setConfirm] = useState(null);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
+  const [onlyDuplicateQuestions, setOnlyDuplicateQuestions] = useState(false);
   const [bulkLessonId, setBulkLessonId] = useState('');
   const [importLessonId, setImportLessonId] = useState('');
   const [importMode, setImportMode] = useState('single');
@@ -1296,7 +1297,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     ? (data.lessons || []).filter((lesson) => String(lesson.subjectId) === String(filterSubjectId))
     : (data.lessons || []);
 
-  const questionList = (data.questions || []).filter((q) => {
+  const scopedQuestionList = (data.questions || []).filter((q) => {
     if (filterLessonId && String(q.lessonId) !== String(filterLessonId)) return false;
     if (onlySelectedSubject && filterSubjectId) {
       const lesson = (data.lessons || []).find((item) => String(item.id) === String(q.lessonId));
@@ -1304,6 +1305,25 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
     }
     return true;
   });
+
+  const buildDuplicateKey = (question) => {
+    const text = String(question?.text || question?.question || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return text;
+  };
+
+  const duplicateCountByKey = scopedQuestionList.reduce((acc, item) => {
+    const key = buildDuplicateKey(item);
+    if (!key) return acc;
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const duplicateQuestionTotal = scopedQuestionList.filter((item) => (duplicateCountByKey[buildDuplicateKey(item)] || 0) > 1).length;
+
+  const questionList = onlyDuplicateQuestions
+    ? scopedQuestionList.filter((item) => (duplicateCountByKey[buildDuplicateKey(item)] || 0) > 1)
+    : scopedQuestionList;
+
   const questionSelectedSet = new Set(selectedQuestionIds.map((id) => String(id)));
   const allVisibleQuestionIds = questionList.map((q) => String(q.id));
   const allVisibleSelected = allVisibleQuestionIds.length > 0 && allVisibleQuestionIds.every((id) => questionSelectedSet.has(id));
@@ -1449,15 +1469,58 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         text: String(answer?.text || '').trim(),
         imageUrl: String(answer?.imageUrl || '').trim(),
         correct: Boolean(answer?.correct ?? answer?.isCorrect),
+        order: Number(answer?.order || 0) || undefined,
       }));
+
+    const providedDragItems = (Array.isArray(question?.dragItems) ? question.dragItems : [])
+      .map((item, idx) => ({
+        id: String(item?.id || `item-${idx + 1}`),
+        label: String(item?.label || item?.text || '').trim(),
+      }))
+      .filter((item) => item.label);
+
+    const dragItems = providedDragItems.length >= 2
+      ? providedDragItems
+      : normalizedAnswers
+        .filter((answer) => String(answer?.text || '').trim())
+        .map((answer, idx) => ({ id: `item-${idx + 1}`, label: String(answer.text || '').trim() }));
+
+    const dragIdSet = new Set(dragItems.map((item) => item.id));
+    const providedDropTargets = (Array.isArray(question?.dropTargets) ? question.dropTargets : [])
+      .map((target, idx) => {
+        const rawIds = Array.isArray(target?.correctItemIds) ? target.correctItemIds : (target?.correctItemId ? [target.correctItemId] : []);
+        const validIds = rawIds.map((id) => String(id || '')).filter((id) => dragIdSet.has(id));
+        return {
+          id: String(target?.id || `slot-${idx + 1}`),
+          prompt: String(target?.prompt || '').trim(),
+          label: String(target?.label || `Vị trí ${idx + 1}`).trim(),
+          correctItemId: validIds[0] || '',
+          correctItemIds: validIds,
+        };
+      })
+      .filter((target) => target.label);
+
+    const dropTargets = providedDropTargets.length
+      ? providedDropTargets
+      : dragItems.map((item, idx) => ({
+        id: `slot-${idx + 1}`,
+        prompt: '',
+        label: `Vị trí ${idx + 1}`,
+        correctItemId: item.id,
+        correctItemIds: [item.id],
+      }));
+
+    const answerSentence = String(question?.answerSentence || '').trim()
+      || (type === 'match' ? dragItems.map((item) => item.label).join(' ').trim() : '');
 
     return {
       text: String(question?.text || '').trim(),
       type,
+      answerSentence,
       imageUrl: String(question?.imageUrl || '').trim(),
       answers: normalizedAnswers,
-      dragItems: Array.isArray(question?.dragItems) ? question.dragItems : [],
-      dropTargets: Array.isArray(question?.dropTargets) ? question.dropTargets : [],
+      dragItems,
+      dropTargets,
     };
   };
 
@@ -1823,6 +1886,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
 
       const totalSkipped = importSkipLogs.length + runtimeSkipLogs.length;
       setImportSkipLogs((prev) => [...prev, ...runtimeSkipLogs]);
+      await syncFromServer?.();
       setToast(`Đã import ${importedQuestions} câu. Tạo mới ${createdLessons} bài. Bỏ qua ${totalSkipped} mục.`);
       doneOpProgress('Đã hoàn tất import câu hỏi');
       setImportModal(false);
@@ -2420,7 +2484,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         )}
       </Modal>
 
-      <Modal open={modal} title={editing ? 'Sửa câu hỏi' : 'Thêm câu hỏi'} onClose={() => setModal(false)}
+      <Modal open={modal} title={editing ? 'Sửa câu hỏi' : 'Thêm câu hỏi'} onClose={() => setModal(false)} closeOnOverlay={false}
         footer={<><Button variant="ghost" onClick={() => setModal(false)}>Huỷ</Button><Button variant="primary" onClick={saveQuestion}>Lưu</Button></>}>
         <Select label="Bài học *" value={form.lessonId} onChange={e => setForm(f => ({ ...f, lessonId: e.target.value }))}
           options={lessonOptions.map(l => ({ value: l.id, label: l.name }))} />
@@ -2616,12 +2680,16 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                       style={{ gridColumn: '1 / -1' }}
                     />
                   )}
-                  <input
-                    className="form-input"
-                    placeholder={(form.dragLayout || 'position') === 'table' ? `Tên ô đích cột phải ${idx + 1}` : `Tên vị trí ${idx + 1}`}
-                    value={target.label}
-                    onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
-                  />
+                  {(form.dragLayout || 'position') !== 'table' ? (
+                    <input
+                      className="form-input"
+                      placeholder={`Tên vị trí ${idx + 1}`}
+                      value={target.label}
+                      onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
+                    />
+                  ) : (
+                    <div style={{ fontSize: '.78rem', color: 'var(--muted)' }}>Ô đáp án cột phải sẽ tự tạo theo từng dòng.</div>
+                  )}
                   {form.dropTargets.length > 1 && (
                     <button onClick={() => removeDropTarget(target.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '1rem' }}>×</button>
                   )}
@@ -2712,6 +2780,18 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
               />
               Chỉ hiện môn đang chọn (mặc định)
             </label>
+            <label style={{ marginTop: 6, marginLeft: 12, display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: '.84rem', color: 'var(--text-2)' }}>
+              <input
+                type="checkbox"
+                checked={onlyDuplicateQuestions}
+                onChange={(e) => setOnlyDuplicateQuestions(e.target.checked)}
+                style={{ width: 16, height: 16, accentColor: 'var(--orange)' }}
+              />
+              Chỉ hiện câu trùng
+            </label>
+            <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--muted)' }}>
+              Câu trùng trong phạm vi lọc hiện tại: {duplicateQuestionTotal}
+            </div>
             <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap', maxWidth: 620 }}>
               <Select
                 label="Cập nhật bài cho mục đã chọn"
@@ -2766,7 +2846,12 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
                     />
                   </td>
                   <td style={{ color: 'var(--muted)' }}>{i + 1}</td>
-                  <td style={{ maxWidth: 260 }}><div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{q.text || q.question}</div></td>
+                  <td style={{ maxWidth: 260 }}>
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{q.text || q.question}</div>
+                    {(duplicateCountByKey[buildDuplicateKey(q)] || 0) > 1 && (
+                      <div style={{ marginTop: 4 }}><Badge color="red">Trùng x{duplicateCountByKey[buildDuplicateKey(q)]}</Badge></div>
+                    )}
+                  </td>
                   <td><Badge color={q.type === 'single' ? 'blue' : q.type === 'multiple' ? 'orange' : 'gray'}>{q.type}</Badge></td>
                   <td>
                     {q.imageUrl ? (
@@ -2853,7 +2938,7 @@ export default function AdminDashboard() {
       case 'lessons': return <LessonsPanel data={data} lessonsCrud={lessons}
         subjectId={lessonsSubjectId} setSubjectId={setLessonsSubjectId}
         onlySelectedSubject={lessonsOnlySelected} setOnlySelectedSubject={setLessonsOnlySelected} />;
-      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions} lessonsCrud={lessons}
+      case 'questions': return <QuestionsPanel data={data} questionsCrud={questions} lessonsCrud={lessons} syncFromServer={syncFromServer}
         filterSubjectId={qFilterSubjectId} setFilterSubjectId={setQFilterSubjectId}
         filterLessonId={qFilterLessonId} setFilterLessonId={setQFilterLessonId}
         onlySelectedSubject={qOnlySelected} setOnlySelectedSubject={setQOnlySelected} />;

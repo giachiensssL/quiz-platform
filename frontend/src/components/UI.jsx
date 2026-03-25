@@ -48,14 +48,14 @@ export function Badge({ children, color = 'blue' }) {
   return <span className={`badge badge-${color}`}>{children}</span>;
 }
 
-export function Modal({ open, title, children, footer, onClose }) {
+export function Modal({ open, title, children, footer, onClose, closeOnOverlay = true }) {
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
   if (!open) return null;
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose?.()}>
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && closeOnOverlay && onClose?.()}>
       <div className="modal-box">
         <div className="flex items-center justify-between" style={{marginBottom:16}}>
           <div className="modal-title">{title}</div>

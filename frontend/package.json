@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "axios": "^1.6.0",
     "mammoth": "^1.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "axios": "^1.6.0"
+    "react-router-dom": "^6.20.0"
   },
   "scripts": {
     "start": "node --max_old_space_size=4096 ./node_modules/react-scripts/scripts/start.js",

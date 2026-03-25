@@ -25,6 +25,32 @@ const api = axios.create({
   withCredentials: true,
 });
 
+let refreshPromise = null;
+
+const requestTokenRefresh = async () => {
+  const refreshToken = localStorage.getItem('qm_refresh_token');
+  if (!refreshToken) throw new Error('Missing refresh token');
+
+  const response = await axios.post(
+    `${API_BASE_URL}/auth/refresh`,
+    { refreshToken },
+    {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    }
+  );
+
+  const payload = response?.data || {};
+  if (!payload?.token) throw new Error('Refresh did not return token');
+
+  localStorage.setItem('qm_token', payload.token);
+  if (payload.refreshToken) {
+    localStorage.setItem('qm_refresh_token', payload.refreshToken);
+  }
+
+  return payload.token;
+};
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('qm_token');
   if (isLikelyJwt(token)) config.headers.Authorization = `Bearer ${token}`;
@@ -33,14 +59,38 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
+  async (err) => {
     const status = err?.response?.status;
     const serverMessage = String(err?.response?.data?.message || '');
     const requestUrl = String(err?.config?.url || '').toLowerCase();
     const isLoginRequest = requestUrl.includes('/auth/login');
+    const isRefreshRequest = requestUrl.includes('/auth/refresh');
+    const isLogoutRequest = requestUrl.includes('/auth/logout');
     const skipAuthRedirect = Boolean(err?.config?.skipAuthRedirect);
+    const canRetry = !err?.config?._retry;
     const hasSessionToken = Boolean(localStorage.getItem('qm_token'));
+    const hasRefreshToken = Boolean(localStorage.getItem('qm_refresh_token'));
     const isOnLoginPage = String(window?.location?.pathname || '').startsWith('/login');
+
+    if (status === 401 && !isLoginRequest && !isRefreshRequest && !isLogoutRequest && canRetry && hasSessionToken && hasRefreshToken) {
+      const kickedByOtherSession = serverMessage.toLowerCase().includes('đăng nhập ở thiết bị khác');
+      if (!kickedByOtherSession) {
+        try {
+          if (!refreshPromise) {
+            refreshPromise = requestTokenRefresh();
+          }
+          const nextAccessToken = await refreshPromise;
+          err.config._retry = true;
+          err.config.headers = err.config.headers || {};
+          err.config.headers.Authorization = `Bearer ${nextAccessToken}`;
+          return api.request(err.config);
+        } catch {
+          // fall through to logout handling below
+        } finally {
+          refreshPromise = null;
+        }
+      }
+    }
 
     if (status === 401 && !isLoginRequest && !skipAuthRedirect && hasSessionToken) {
       const kickedByOtherSession = serverMessage.toLowerCase().includes('đăng nhập ở thiết bị khác');

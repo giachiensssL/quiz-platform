@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>Cau 1: Chon gia tri dung cua bieu thuc x + y khi x = 10, y = 20</w:t></w:r></w:p>
+    <w:p><w:r><w:t>A. x + y = 15</w:t></w:r></w:p>
+    <w:p><w:r><w:t>B. x + y = 30 *</w:t></w:r></w:p>
+    <w:p><w:r><w:t>C. x + y = 40</w:t></w:r></w:p>
+    <w:p><w:r><w:t>D. x + y = 10</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>Cau 2: Chon tat ca menh de dung ve so hoc</w:t></w:r></w:p>
+    <w:p><w:r><w:t>A. 2 + 2 = 4 *</w:t></w:r></w:p>
+    <w:p><w:r><w:t>B. 10 % 3 = 1 *</w:t></w:r></w:p>
+    <w:p><w:r><w:t>C. 7 - 9 = 1</w:t></w:r></w:p>
+    <w:p><w:r><w:t>D. 5 * 5 = 10</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>Cau 3: Dung hay sai cho tung y duoi day</w:t></w:r></w:p>
+    <w:p><w:r><w:t>1. Neu a = b thi a - b = 0</w:t></w:r></w:p>
+    <w:p><w:r><w:t>2. Neu n la so chan thi n % 2 = 1</w:t></w:r></w:p>
+    <w:p><w:r><w:t>3. Neu x &gt; y thi x - y &gt; 0</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Dap an: 1-D, 2-S, 3-D</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>Cau 4: Keo tha theo vi tri dung cua quy trinh Giai bai toan</w:t></w:r></w:p>
+    <w:p><w:r><w:t>A. Hieu de bai</w:t></w:r></w:p>
+    <w:p><w:r><w:t>B. Kiem tra ket qua</w:t></w:r></w:p>
+    <w:p><w:r><w:t>C. Lap ke hoach</w:t></w:r></w:p>
+    <w:p><w:r><w:t>D. Trinh bay loi giai</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Dap an: A, C, D, B</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>Cau 5: Sap xep tu de thanh cau dung</w:t></w:r></w:p>
+    <w:p><w:r><w:t>A. Time</w:t></w:r></w:p>
+    <w:p><w:r><w:t>B. flies</w:t></w:r></w:p>
+    <w:p><w:r><w:t>C. like</w:t></w:r></w:p>
+    <w:p><w:r><w:t>D. arrow</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Dap an: A, B, C, D</w:t></w:r></w:p>
+
+    <w:p><w:r><w:t>Cau 6: Dien vao cho trong: Gia tri cua p trong 50% la ___</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Dap an: 0.5</w:t></w:r></w:p>
+
+    <w:sectPr/>
+  </w:body>
+</w:document>
