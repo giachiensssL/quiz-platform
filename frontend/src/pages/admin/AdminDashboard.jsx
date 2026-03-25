@@ -1282,8 +1282,8 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       { id: 'item-2', label: '' },
     ],
     dropTargets: [
-      { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
-      { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
+      { id: 'slot-1', prompt: '', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+      { id: 'slot-2', prompt: '', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
     ],
   });
 
@@ -1913,10 +1913,11 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         label: item.label || item.text || '',
       })),
       dropTargets: (Array.isArray(q.dropTargets) && q.dropTargets.length ? q.dropTargets : [
-        { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
-        { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
+        { id: 'slot-1', prompt: '', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+        { id: 'slot-2', prompt: '', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
       ]).map((target, idx) => ({
         id: target.id || `slot-${idx + 1}`,
+        prompt: target.prompt || '',
         label: target.label || `Vị trí ${idx + 1}`,
         correctItemId: target.correctItemId || '',
         correctItemIds: Array.isArray(target.correctItemIds)
@@ -1938,8 +1939,8 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
         : prev.dragItems,
       dropTargets: (nextType === 'match' || nextType === 'drag')
         ? [
-          { id: 'slot-1', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
-          { id: 'slot-2', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
+          { id: 'slot-1', prompt: '', label: 'Vị trí 1', correctItemId: '', correctItemIds: [] },
+          { id: 'slot-2', prompt: '', label: 'Vị trí 2', correctItemId: '', correctItemIds: [] },
         ]
         : prev.dropTargets,
     }));
@@ -2034,7 +2035,7 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
   const addDropTarget = () => {
     setForm((prev) => ({
       ...prev,
-      dropTargets: [...prev.dropTargets, { id: `slot-${Date.now()}`, label: `Vị trí ${prev.dropTargets.length + 1}`, correctItemId: '', correctItemIds: [] }],
+      dropTargets: [...prev.dropTargets, { id: `slot-${Date.now()}`, prompt: '', label: `Vị trí ${prev.dropTargets.length + 1}`, correctItemId: '', correctItemIds: [] }],
     }));
   };
 
@@ -2142,13 +2143,14 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
       let dropTargets = form.dropTargets
         .map((target) => ({
           ...target,
+          prompt: String(target.prompt || '').trim(),
           label: String(target.label || '').trim(),
           correctItemIds: (Array.isArray(target.correctItemIds)
             ? target.correctItemIds
             : (target.correctItemId ? [target.correctItemId] : [])
           ).map((itemId) => String(itemId || '').trim()).filter(Boolean),
         }))
-        .filter((target) => target.label);
+        .filter((target) => target.label || target.prompt);
 
       if (dragItems.length < 2) {
         setToast('Cần ít nhất 2 từ/mục để tạo câu dạng Sắp xếp hoặc Nối từ.');
@@ -2579,12 +2581,21 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, filterSubjectId, set
 
             {isDragType(form.type) && (
             <div>
-              <label className="form-label">Các ô đích kéo thả</label>
+              <label className="form-label">Bảng kéo thả (cột trái phát biểu, cột phải đáp án kéo vào)</label>
               {form.dropTargets.map((target, idx) => (
                 <div key={target.id} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginBottom: 8 }}>
+                  <Textarea
+                    label={`Phát biểu dòng ${idx + 1}`}
+                    rows={3}
+                    placeholder="Nhập phát biểu ở cột trái..."
+                    value={target.prompt || ''}
+                    onChange={(e) => setDropTarget(target.id, 'prompt', e.target.value)}
+                    onKeyDown={keepTextareaNewLine}
+                    style={{ gridColumn: '1 / -1' }}
+                  />
                   <input
                     className="form-input"
-                    placeholder={`Tên ô đích ${idx + 1}`}
+                    placeholder={`Tên ô đích cột phải ${idx + 1}`}
                     value={target.label}
                     onChange={(e) => setDropTarget(target.id, 'label', e.target.value)}
                   />

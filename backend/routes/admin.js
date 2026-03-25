@@ -228,6 +228,7 @@ const sanitizeDropTargets = (dropTargets, dragItems) => {
       const correctItemIds = [...new Set(rawIds.map((id) => String(id || "").trim()).filter((id) => validDragIds.has(id)))];
       return {
         id: String(target?.id || `slot-${idx + 1}`).trim(),
+        prompt: String(target?.prompt || "").trim(),
         label: String(target?.label || `Vị trí ${idx + 1}`).trim(),
         correctItemId: correctItemIds[0] || "",
         correctItemIds,

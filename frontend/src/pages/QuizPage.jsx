@@ -515,7 +515,7 @@ function ArrangeWords({ q, answer, onAnswer, submitted }) {
       <div className="drag-pool">
         {remaining.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã chọn hết</span>}
         {remaining.map((item) => (
-          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer' }} onClick={() => pick(item.id)} disabled={submitted}>
+          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer', touchAction: 'manipulation' }} onClick={() => pick(item.id)} disabled={submitted}>
             {item.label}
           </button>
         ))}
@@ -526,7 +526,7 @@ function ArrangeWords({ q, answer, onAnswer, submitted }) {
           <div key={`${item.id}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
             <span style={{ marginRight: 5, color: 'var(--muted)', fontSize: '.7rem' }}>{idx + 1}.</span>
             {item.label}
-            {!submitted && <button onClick={() => remove(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+            {!submitted && <button onClick={() => remove(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem', touchAction: 'manipulation' }}>×</button>}
           </div>
         ))}
       </div>
@@ -575,7 +575,7 @@ function MatchWords({ q, answer, onAnswer, submitted }) {
       <div className="drag-pool">
         {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã chọn hết từ</span>}
         {availableItems.map((item) => (
-          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer' }} onClick={() => pickWord(item.id)} disabled={submitted}>
+          <button key={item.id} type="button" className="drag-chip" style={{ cursor: submitted ? 'default' : 'pointer', touchAction: 'manipulation' }} onClick={() => pickWord(item.id)} disabled={submitted}>
             {item.label}
           </button>
         ))}
@@ -588,7 +588,7 @@ function MatchWords({ q, answer, onAnswer, submitted }) {
           {selectedWords.map((item, idx) => (
             <div key={`${item.id}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
               {item.label}
-              {!submitted && <button onClick={() => removeWord(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
+              {!submitted && <button onClick={() => removeWord(item.id)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem', touchAction: 'manipulation' }}>×</button>}
             </div>
           ))}
         </div>
@@ -609,6 +609,7 @@ function DragDropQuestion({ q, answer, onAnswer, submitted }) {
     return Object.fromEntries(targets.map((target) => [target.id, []]));
   });
   const [overSlot, setOverSlot] = useState('');
+  const [touchDrag, setTouchDrag] = useState({ active: false, itemId: '', x: 0, y: 0 });
 
   useEffect(() => {
     if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
@@ -620,10 +621,22 @@ function DragDropQuestion({ q, answer, onAnswer, submitted }) {
 
   const usedIds = Object.values(slotMap).flat();
   const availableItems = items.filter((item) => !usedIds.includes(item.id));
+  const isTableLayout = targets.some((target) => String(target?.prompt || '').trim());
 
   const pushAnswer = (nextMap) => {
     setSlotMap(nextMap);
     onAnswer(nextMap);
+  };
+
+  const placeItemToSlot = (itemId, slotId) => {
+    if (submitted || !itemId || !slotId) return;
+    const nextMap = Object.fromEntries(Object.entries(slotMap).map(([id, values]) => [id, [...values].filter(Boolean)]));
+    const currentSlotId = Object.keys(nextMap).find((id) => nextMap[id].includes(itemId));
+    if (currentSlotId) {
+      nextMap[currentSlotId] = nextMap[currentSlotId].filter((id) => id !== itemId);
+    }
+    nextMap[slotId] = [...(nextMap[slotId] || []), itemId];
+    pushAnswer(nextMap);
   };
 
   const handleDropToSlot = (event, slotId) => {
@@ -633,15 +646,48 @@ function DragDropQuestion({ q, answer, onAnswer, submitted }) {
 
     const itemId = String(event.dataTransfer.getData('text/item-id') || '');
     if (!itemId) return;
-
-    const nextMap = Object.fromEntries(Object.entries(slotMap).map(([id, values]) => [id, [...values].filter(Boolean)]));
-    const currentSlotId = Object.keys(nextMap).find((id) => nextMap[id].includes(itemId));
-    if (currentSlotId) {
-      nextMap[currentSlotId] = nextMap[currentSlotId].filter((id) => id !== itemId);
-    }
-    nextMap[slotId] = [...(nextMap[slotId] || []), itemId];
-    pushAnswer(nextMap);
+    placeItemToSlot(itemId, slotId);
   };
+
+  useEffect(() => {
+    if (!touchDrag.active || submitted) return undefined;
+
+    const handleTouchMove = (event) => {
+      const touch = event.touches?.[0];
+      if (!touch) return;
+      event.preventDefault();
+      const x = touch.clientX;
+      const y = touch.clientY;
+      const hovered = document.elementFromPoint(x, y)?.closest?.('[data-drop-slot-id]');
+      const slotId = hovered?.getAttribute('data-drop-slot-id') || '';
+      setOverSlot(slotId);
+      setTouchDrag((prev) => ({ ...prev, x, y }));
+    };
+
+    const handleTouchEnd = (event) => {
+      const touch = event.changedTouches?.[0];
+      let slotId = '';
+      if (touch) {
+        const hovered = document.elementFromPoint(touch.clientX, touch.clientY)?.closest?.('[data-drop-slot-id]');
+        slotId = hovered?.getAttribute('data-drop-slot-id') || '';
+      }
+      if (slotId) {
+        placeItemToSlot(touchDrag.itemId, slotId);
+      }
+      setTouchDrag({ active: false, itemId: '', x: 0, y: 0 });
+      setOverSlot('');
+    };
+
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+    return () => {
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [touchDrag.active, touchDrag.itemId, submitted, slotMap]);
 
   const removeFromSlot = (slotId, itemId) => {
     if (submitted) return;
@@ -652,46 +698,109 @@ function DragDropQuestion({ q, answer, onAnswer, submitted }) {
     pushAnswer(nextMap);
   };
 
+  const renderSlot = (target) => (
+    <div
+      className={`drop-zone${overSlot === target.id ? ' over' : ''}`}
+      data-drop-slot-id={target.id}
+      onDragOver={(e) => { e.preventDefault(); setOverSlot(target.id); }}
+      onDragLeave={() => setOverSlot('')}
+      onDrop={(e) => handleDropToSlot(e, target.id)}
+      style={{ minHeight: 52, alignItems: 'flex-start' }}
+    >
+      {!isTableLayout && <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>{target.label || target.id}</div>}
+      {(slotMap[target.id] || []).length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo mục vào ô này...</span>}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {(slotMap[target.id] || []).map((itemId, idx) => {
+          const item = items.find((x) => String(x.id) === String(itemId));
+          return (
+            <div key={`${target.id}-${itemId}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
+              {item?.label || itemId}
+              {!submitted && <button onClick={() => removeFromSlot(target.id, itemId)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem', touchAction: 'manipulation' }}>×</button>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginBottom: 8 }}>
         Kéo các mục ở khung trên vào ô đích tương ứng.
       </div>
+      <div style={{ fontSize: '.78rem', color: 'var(--muted)', marginBottom: 8 }}>
+        Trên điện thoại: nhấn giữ mục kéo rồi rê ngón tay vào ô đích để thả.
+      </div>
       <div className="drag-pool">
         {availableItems.length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Đã dùng hết mục kéo</span>}
         {availableItems.map((item) => (
-          <div key={item.id} className="drag-chip" draggable={!submitted} onDragStart={(e) => e.dataTransfer.setData('text/item-id', item.id)}>
+          <button
+            key={item.id}
+            type="button"
+            className="drag-chip"
+            draggable={!submitted}
+            onDragStart={(e) => e.dataTransfer.setData('text/item-id', item.id)}
+            onTouchStart={(e) => {
+              if (submitted) return;
+              const touch = e.touches?.[0];
+              if (!touch) return;
+              setTouchDrag({ active: true, itemId: item.id, x: touch.clientX, y: touch.clientY });
+            }}
+            style={{
+              cursor: submitted ? 'default' : 'pointer',
+              touchAction: 'none',
+            }}
+          >
             {item.label}
-          </div>
+          </button>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
-        {targets.map((target) => (
-          <div
-            key={target.id}
-            className={`drop-zone${overSlot === target.id ? ' over' : ''}`}
-            onDragOver={(e) => { e.preventDefault(); setOverSlot(target.id); }}
-            onDragLeave={() => setOverSlot('')}
-            onDrop={(e) => handleDropToSlot(e, target.id)}
-            style={{ minHeight: 52, alignItems: 'flex-start' }}
-          >
-            <div style={{ width: '100%', marginBottom: 6, fontWeight: 600, fontSize: '.84rem' }}>{target.label || target.id}</div>
-            {(slotMap[target.id] || []).length === 0 && <span style={{ fontSize: '.8rem', color: 'var(--muted)' }}>Kéo mục vào ô này...</span>}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {(slotMap[target.id] || []).map((itemId, idx) => {
-                const item = items.find((x) => String(x.id) === String(itemId));
-                return (
-                  <div key={`${target.id}-${itemId}-${idx}`} className="drag-chip" style={{ cursor: 'default' }}>
-                    {item?.label || itemId}
-                    {!submitted && <button onClick={() => removeFromSlot(target.id, itemId)} style={{ marginLeft: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '.85rem' }}>×</button>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
+      {isTableLayout ? (
+        <div style={{ marginTop: 10, overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+            <tbody>
+              {targets.map((target, idx) => (
+                <tr key={target.id}>
+                  <td style={{ border: '1px solid var(--border)', padding: 10, verticalAlign: 'top', width: '72%' }}>
+                    <div style={{ whiteSpace: 'pre-line', lineHeight: 1.45 }}>{target.prompt || `Phát biểu ${idx + 1}`}</div>
+                  </td>
+                  <td style={{ border: '1px solid var(--border)', padding: 8, verticalAlign: 'top', width: '28%' }}>
+                    {renderSlot(target)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
+          {targets.map((target) => (
+            <div key={target.id}>{renderSlot(target)}</div>
+          ))}
+        </div>
+      )}
+
+      {touchDrag.active && (
+        <div
+          style={{
+            position: 'fixed',
+            left: touchDrag.x + 12,
+            top: touchDrag.y + 12,
+            zIndex: 9999,
+            pointerEvents: 'none',
+            padding: '8px 10px',
+            borderRadius: 999,
+            border: '1px solid var(--blue)',
+            background: 'var(--surface)',
+            boxShadow: '0 6px 16px rgba(0,0,0,.15)',
+            fontSize: '.84rem',
+            fontWeight: 600,
+          }}
+        >
+          {items.find((item) => item.id === touchDrag.itemId)?.label || ''}
+        </div>
+      )}
     </div>
   );
 }

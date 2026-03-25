@@ -39,6 +39,7 @@ const questionSchema = new Schema(
     dropTargets: [
       {
         id: { type: String },
+        prompt: { type: String, default: "" },
         label: { type: String },
         correctItemId: { type: String },
         correctItemIds: [{ type: String }],
