@@ -47,6 +47,38 @@ const issueTokens = async (user, options = {}) => {
   };
 };
 
+const computeStreakDays = (attempts = []) => {
+  if (!Array.isArray(attempts) || !attempts.length) return 0;
+
+  const uniqueDays = Array.from(new Set(
+    attempts
+      .map((item) => {
+        const date = new Date(item?.createdAt || item?.updatedAt || Date.now());
+        if (Number.isNaN(date.getTime())) return "";
+        return date.toISOString().slice(0, 10);
+      })
+      .filter(Boolean)
+  )).sort((a, b) => (a < b ? 1 : -1));
+
+  if (!uniqueDays.length) return 0;
+
+  let streak = 1;
+  let cursor = new Date(`${uniqueDays[0]}T00:00:00.000Z`);
+
+  for (let i = 1; i < uniqueDays.length; i += 1) {
+    const next = new Date(`${uniqueDays[i]}T00:00:00.000Z`);
+    const diffDays = Math.round((cursor.getTime() - next.getTime()) / (24 * 60 * 60 * 1000));
+    if (diffDays === 1) {
+      streak += 1;
+      cursor = next;
+      continue;
+    }
+    break;
+  }
+
+  return streak;
+};
+
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -113,6 +145,68 @@ router.post("/logout", verifyToken, async (req, res) => {
     await req.user.save();
 
     return res.json({ message: "Đăng xuất thành công" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/me", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+      .populate({ path: "attempts.lesson", select: "title" })
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    const attempts = Array.isArray(user.attempts) ? user.attempts : [];
+    const totalAttempts = attempts.length;
+    const totalScore = attempts.reduce((sum, item) => sum + Number(item?.score || 0), 0);
+    const totalCorrect = attempts.reduce((sum, item) => sum + Number(item?.correct || 0), 0);
+    const totalIncorrect = attempts.reduce((sum, item) => sum + Number(item?.incorrect || 0), 0);
+    const totalAnswered = totalCorrect + totalIncorrect;
+    const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+    const bestScore = attempts.reduce((max, item) => Math.max(max, Number(item?.score || 0)), 0);
+
+    const recentActivities = [...attempts]
+      .sort((a, b) => new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime())
+      .slice(0, 5)
+      .map((item) => {
+        const correct = Number(item?.correct || 0);
+        const incorrect = Number(item?.incorrect || 0);
+        const answered = correct + incorrect;
+        const activityAccuracy = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+        return {
+          id: String(item?._id || ""),
+          lessonName: item?.lesson?.title || "Bài học",
+          score: Number(item?.score || 0),
+          total: Number(item?.total || 0),
+          correct,
+          incorrect,
+          accuracy: activityAccuracy,
+          createdAt: item?.createdAt || null,
+        };
+      });
+
+    return res.json({
+      user: {
+        id: String(user._id),
+        username: user.username,
+        fullName: user.fullName || "",
+        email: user.email || "",
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      stats: {
+        totalAttempts,
+        accuracy,
+        totalScore,
+        bestScore,
+        streakDays: computeStreakDays(attempts),
+      },
+      recentActivities,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
