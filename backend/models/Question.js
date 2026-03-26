@@ -22,6 +22,8 @@ const answerSchema = new Schema(
 const questionSchema = new Schema(
   {
     lessonId: { type: Schema.Types.ObjectId, ref: "Lesson", required: true },
+    source: { type: String, default: "", index: true },
+    sourceId: { type: String, default: "", index: true },
     type: { type: String, enum: QUESTION_TYPES, required: true },
     question: { type: String, required: true, trim: true },
     imageUrl: { type: String, default: "" },
@@ -52,6 +54,7 @@ const questionSchema = new Schema(
 
 questionSchema.index({ lessonId: 1, order: 1 });
 questionSchema.index({ createdAt: -1 });
+questionSchema.index({ source: 1, sourceId: 1 }, { unique: false });
 
 questionSchema.virtual("lesson")
   .get(function getLesson() {
