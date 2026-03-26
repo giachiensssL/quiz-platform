@@ -24,6 +24,9 @@ const badRequest = (message) => {
 const notifyCatalogUpdated = () => {
   broadcast("catalog-updated", { source: "admin" });
 };
+const notifyUsersUpdated = () => {
+  broadcast("users-updated", { source: "admin" });
+};
 
 const sanitizeRefId = (value) => {
   if (value === undefined || value === null) return undefined;
@@ -421,6 +424,8 @@ router.post(
       refreshTokens: [],
     });
 
+    notifyUsersUpdated();
+
     res.status(201).json({
       id: user._id,
       username: user.username,
@@ -505,6 +510,7 @@ router.patch(
     }
 
     await user.save();
+    notifyUsersUpdated();
     return res.json({
       id: user._id,
       username: user.username,
@@ -549,6 +555,7 @@ router.patch(
 
     user.accessLocks = buildAccessLocksPayload(req.body?.accessLocks || {});
     await user.save();
+    notifyUsersUpdated();
 
     return res.json({
       message: "Đã cập nhật danh sách khóa truy cập theo tài khoản",
@@ -572,6 +579,7 @@ router.patch(
 
     user.password = newPassword;
     await user.save();
+    notifyUsersUpdated();
 
     return res.json({ message: "Đặt lại mật khẩu thành công", plainPassword: user.plainPassword || "" });
   })
@@ -593,6 +601,7 @@ router.patch(
 
     user.isBlocked = Boolean(blocked);
     await user.save();
+    notifyUsersUpdated();
 
     res.json({ message: user.isBlocked ? "Đã khóa tài khoản" : "Đã mở khóa tài khoản" });
   })
@@ -614,6 +623,7 @@ router.delete(
     }
 
     await User.findByIdAndDelete(req.params.id);
+    notifyUsersUpdated();
     res.json({ message: "Đã xoá người dùng" });
   })
 );

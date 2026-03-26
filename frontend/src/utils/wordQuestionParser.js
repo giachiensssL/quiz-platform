@@ -8,7 +8,7 @@ const QUESTION_HEADER_PATTERNS = [
 const NUMERIC_QUESTION_HEADER_RE = /^\d+\s*[).:\-]\s*(.*)$/;
 
 const QUESTION_MARKER_RE = /(?:^|\n)\s*(?:câu|cau|question|q)\s*(?:hỏi|hoi)?\s*(?:số|so)?\s*\d+\s*[:.)-]?/gim;
-const OPTION_RE = /^(?:[-*•]\s*)?([A-H]|\d+)[\s]*[\).:\-\/]?[\s]*(.*)$/i;
+const OPTION_RE = /^(?:[-*•]\s*)?([A-H]|\d+)\s*[\).:\-\/]\s*(.*)$/i;
 const SIMPLE_OPTION_RE = /^(?:[-*•]\s*)?([A-H])[\s]+(.+)$/i;
 const ANSWER_KEY_RE = /^(?:dap an(?:\s+dung)?|đáp án(?:\s+đúng)?|answer(?:\s+key)?|ans|key)(?:\s*(?:la|là|is))?\s*[:\-]?\s*(.+)$/i;
 const FILL_HINT_RE = /_{2,}|\.{3,}|\(\s*\.\.\.\s*\)/;
@@ -483,8 +483,8 @@ const parseBlockDetailed = (block, context = {}) => {
     }
 
     const opt = removeLeadingBullet(cleanedLine).match(OPTION_RE);
-    if (opt && normalizeText(opt[2])) {
-      optionRows.push({ label: String(opt[1]).toUpperCase(), raw: opt[2] });
+    if (opt) {
+      optionRows.push({ label: String(opt[1]).toUpperCase(), raw: normalizeText(opt[2] || '') });
       return;
     }
 
@@ -527,6 +527,9 @@ const parseBlockDetailed = (block, context = {}) => {
       };
     })
     .filter((item) => item.text);
+
+  // When imported text wraps, option label may be on one line and content on next line.
+  // If an option still has no text after reconstruction, ignore it.
 
   if (answerLabels.length) {
     parsedOptions.forEach((item) => {

@@ -1,8 +1,8 @@
 // src/pages/admin/AdminDashboard.jsx
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import { adminDataAPI } from '../../api/api';
+import { API_BASE_URL, adminDataAPI } from '../../api/api';
 import Navbar from '../../components/Navbar';
 import { Button, Input, Select, Textarea, Modal, Confirm, Toast, Badge, EmptyState } from '../../components/UI';
 import { parseDocxQuestionsWithReport, parseLessonsFromTextWithReport, parseQuestionsFromTextWithReport } from '../../utils/wordQuestionParser';
@@ -116,7 +116,7 @@ function UsersPanel() {
     setMode('local');
   };
 
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     const token = localStorage.getItem('qm_token') || '';
     const isLocalToken = !token || token === 'admin-token' || token.startsWith('token-');
 
@@ -136,11 +136,59 @@ function UsersPanel() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mockUsers]);
 
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [loadUsers]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('qm_token') || '';
+    const isLocalToken = !token || token === 'admin-token' || token.startsWith('token-');
+    if (isLocalToken) return undefined;
+
+    const wsBase = API_BASE_URL.replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
+    const wsUrl = `${wsBase}/ws`;
+
+    let socket;
+    let reconnectTimer;
+
+    const connect = () => {
+      socket = new WebSocket(wsUrl);
+
+      socket.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data || '{}');
+          if (payload?.event === 'users-updated') {
+            loadUsers();
+          }
+        } catch {
+          // Ignore malformed websocket payloads.
+        }
+      };
+
+      socket.onclose = () => {
+        reconnectTimer = window.setTimeout(connect, 1500);
+      };
+
+      socket.onerror = () => {
+        try {
+          socket.close();
+        } catch {
+          // noop
+        }
+      };
+    };
+
+    connect();
+
+    return () => {
+      if (reconnectTimer) window.clearTimeout(reconnectTimer);
+      if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+        socket.close();
+      }
+    };
+  }, [loadUsers]);
 
   const save = async () => {
     const username = form.username.trim().toLowerCase();
@@ -1228,6 +1276,7 @@ function SubjectStatsBoard({ data }) {
 // ── QUESTIONS PANEL ────────────────────────────────────────────
 function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject }) {
   const IMPORT_MAX_FILE_BYTES = 100 * 1024 * 1024;
+  const UNDO_DELETE_WINDOW_MS = 15000;
   const DRAG_TEMPLATE_SORT = 'sort_words';
   const DRAG_TEMPLATE_MATCH = 'match_words';
   const isDragType = (type) => type === 'drag';
@@ -1270,6 +1319,9 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
   const [answerImageFileNames, setAnswerImageFileNames] = useState({});
   const [imagePreview, setImagePreview] = useState({ url: '', title: 'Xem hình ảnh câu hỏi' });
   const [opProgress, setOpProgress] = useState({ active: false, label: '', current: 0, total: 0 });
+  const [undoDelete, setUndoDelete] = useState(null);
+  const [undoClock, setUndoClock] = useState(Date.now());
+  const [isUndoingDelete, setIsUndoingDelete] = useState(false);
   // filterSubjectId, setFilterSubjectId, filterLessonId, setFilterLessonId, onlySelectedSubject, setOnlySelectedSubject → lifted to AdminDashboard
   const [form, setForm] = useState({
     lessonId: '',
@@ -1395,11 +1447,20 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
   const runBulkDeleteQuestions = async () => {
     const ids = selectedQuestionIds.map((id) => String(id));
     if (!ids.length) return;
+    const snapshotById = new Map(
+      (data.questions || [])
+        .filter((item) => ids.includes(String(item.id)))
+        .map((item) => [String(item.id), buildRestorePayload(item)])
+    );
     startOpProgress('Đang xoá câu hỏi...', ids.length);
     const results = await Promise.allSettled(ids.map((id) => questionsCrud.remove(id)));
     doneOpProgress('Đã hoàn tất xoá câu hỏi');
     const successCount = results.filter((result) => result.status === 'fulfilled').length;
     const failCount = results.length - successCount;
+    const deletedPayloads = results
+      .map((result, idx) => (result.status === 'fulfilled' ? snapshotById.get(String(ids[idx])) : null))
+      .filter(Boolean);
+    armUndoDelete(deletedPayloads, 'xóa câu đã chọn');
     if (failCount > 0) {
       setToast(`Đã xoá ${successCount} câu, lỗi ${failCount} câu.`);
     } else {
@@ -1414,11 +1475,20 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
       setToast('Không có câu trùng để xoá trong phạm vi lọc hiện tại.');
       return;
     }
+    const snapshotById = new Map(
+      (data.questions || [])
+        .filter((item) => ids.includes(String(item.id)))
+        .map((item) => [String(item.id), buildRestorePayload(item)])
+    );
     startOpProgress('Đang xoá câu trùng...', ids.length);
     const results = await Promise.allSettled(ids.map((id) => questionsCrud.remove(id)));
     doneOpProgress('Đã hoàn tất xoá câu trùng');
     const successCount = results.filter((result) => result.status === 'fulfilled').length;
     const failCount = results.length - successCount;
+    const deletedPayloads = results
+      .map((result, idx) => (result.status === 'fulfilled' ? snapshotById.get(String(ids[idx])) : null))
+      .filter(Boolean);
+    armUndoDelete(deletedPayloads, 'xóa câu trùng');
     if (failCount > 0) {
       setToast(`Đã xoá ${successCount} câu trùng, lỗi ${failCount} câu.`);
     } else {
@@ -1607,6 +1677,80 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
     window.setTimeout(() => {
       setOpProgress({ active: false, label: '', current: 0, total: 0 });
     }, 900);
+  };
+
+  const buildRestorePayload = (question) => {
+    if (!question) return null;
+
+    return {
+      lessonId: String(question.lessonId || ''),
+      type: normalizeQuestionType(question.type || 'single'),
+      text: String(question.text || question.question || '').trim(),
+      answerSentence: String(question.answerSentence || '').trim(),
+      imageUrl: String(question.imageUrl || '').trim(),
+      answers: (Array.isArray(question.answers) ? question.answers : []).map((item, idx) => ({
+        text: String(item?.text || '').trim(),
+        imageUrl: String(item?.imageUrl || '').trim(),
+        correct: Boolean(item?.correct ?? item?.isCorrect),
+        order: Number(item?.order || idx + 1),
+      })),
+      dragItems: Array.isArray(question.dragItems) ? question.dragItems : [],
+      dropTargets: Array.isArray(question.dropTargets) ? question.dropTargets : [],
+    };
+  };
+
+  const armUndoDelete = (items, label) => {
+    if (!Array.isArray(items) || !items.length) return;
+    setUndoDelete({
+      items,
+      label: String(label || '').trim() || 'xóa câu hỏi',
+      expiresAt: Date.now() + UNDO_DELETE_WINDOW_MS,
+    });
+    setUndoClock(Date.now());
+  };
+
+  useEffect(() => {
+    if (!undoDelete) return undefined;
+
+    const timer = window.setInterval(() => {
+      if (Date.now() >= Number(undoDelete.expiresAt || 0)) {
+        setUndoDelete(null);
+        window.clearInterval(timer);
+        return;
+      }
+      setUndoClock(Date.now());
+    }, 500);
+
+    return () => window.clearInterval(timer);
+  }, [undoDelete]);
+
+  const undoRemainingSeconds = undoDelete
+    ? Math.max(0, Math.ceil((Number(undoDelete.expiresAt || 0) - undoClock) / 1000))
+    : 0;
+
+  const undoDeleteQuestions = async () => {
+    if (!undoDelete || isUndoingDelete) return;
+    if (Date.now() >= Number(undoDelete.expiresAt || 0)) {
+      setUndoDelete(null);
+      setToast('Hết thời gian quay lại thao tác xóa.');
+      return;
+    }
+
+    setIsUndoingDelete(true);
+    startOpProgress('Đang khôi phục câu hỏi...', undoDelete.items.length);
+    const results = await Promise.allSettled(undoDelete.items.map((payload) => questionsCrud.add(payload)));
+    doneOpProgress('Đã hoàn tất khôi phục câu hỏi');
+
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failCount = results.length - successCount;
+    if (failCount > 0) {
+      setToast(`Đã khôi phục ${successCount} câu, lỗi ${failCount} câu.`);
+    } else {
+      setToast(`Đã khôi phục ${successCount} câu hỏi.`);
+    }
+
+    setUndoDelete(null);
+    setIsUndoingDelete(false);
   };
 
   const toSkipLog = ({ reason, lessonLabel, questionText, detail }) => ({
@@ -2399,10 +2543,13 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
           } else if (confirm?.bulk) {
             await runBulkDeleteQuestions();
           } else {
+            const snapshot = (data.questions || []).find((item) => String(item.id) === String(confirm?.id));
             startOpProgress('Đang xoá câu hỏi...', 1);
             await questionsCrud.remove(confirm?.id);
             doneOpProgress('Đã xoá câu hỏi');
             setToast('Đã xoá!');
+            const payload = buildRestorePayload(snapshot);
+            if (payload) armUndoDelete([payload], 'xóa 1 câu hỏi');
           }
           setConfirm(null);
         }} onCancel={() => setConfirm(null)} />
@@ -2869,6 +3016,14 @@ function QuestionsPanel({ data, questionsCrud, lessonsCrud, syncFromServer, filt
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: `${Math.round((Math.min(opProgress.current, opProgress.total) / Math.max(1, opProgress.total)) * 100)}%` }} />
             </div>
+          </div>
+        )}
+        {undoDelete && (
+          <div style={{ padding: '8px 12px', borderTop: '1px dashed var(--orange)', borderBottom: '1px dashed var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: 'rgba(251, 146, 60, 0.08)' }}>
+            <div style={{ fontSize: '.84rem', color: 'var(--text-2)' }}>
+              Bạn vừa thực hiện thao tác {undoDelete.label}. Có thể quay lại trong {undoRemainingSeconds}s.
+            </div>
+            <Button variant="ghost" size="sm" onClick={undoDeleteQuestions} loading={isUndoingDelete}>↩ Quay lại</Button>
           </div>
         )}
         {questionList.length === 0 ? <EmptyState icon="❓" text="Chưa có câu hỏi" /> : (
