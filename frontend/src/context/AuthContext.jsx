@@ -5,6 +5,27 @@ const ADMIN_CREDS = { username: 'Janscient125', password: 'Janscient2005' };
 const USERS_STORAGE_KEY = 'qm_mock_users';
 const REFRESH_TOKEN_KEY = 'qm_refresh_token';
 const ENABLE_LOCAL_AUTH_FALLBACK = String(process.env.REACT_APP_ENABLE_LOCAL_AUTH || '').toLowerCase() === 'true';
+const safeStorageGet = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+const safeStorageSet = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage write errors in restricted browser mode.
+  }
+};
+const safeStorageRemove = (key) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore storage remove errors in restricted browser mode.
+  }
+};
 const INIT_USERS = [
   { id: 1, username: 'sinhvien01', password: '123456', role: 'user', name: 'Nguyễn Văn A', blocked: false, email: 'a@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
   { id: 2, username: 'sinhvien02', password: '123456', role: 'user', name: 'Trần Thị B', blocked: false, email: 'b@sv.edu.vn', attempts: [], totalScore: 0, quizzesTaken: 0 },
@@ -19,10 +40,10 @@ const normalizeUser = (user) => ({
 });
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => { try { return JSON.parse(localStorage.getItem('qm_user')) || null; } catch { return null; } });
+  const [user, setUser] = useState(() => { try { return JSON.parse(safeStorageGet('qm_user')) || null; } catch { return null; } });
   const [mockUsers, setMockUsers] = useState(() => {
     try {
-      const raw = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || 'null');
+      const raw = JSON.parse(safeStorageGet(USERS_STORAGE_KEY) || 'null');
       if (Array.isArray(raw) && raw.length) return raw.map(normalizeUser);
     } catch {
       // fallback to seed users
@@ -31,19 +52,19 @@ export function AuthProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(mockUsers));
+    safeStorageSet(USERS_STORAGE_KEY, JSON.stringify(mockUsers));
   }, [mockUsers]);
 
   useEffect(() => {
     if (ENABLE_LOCAL_AUTH_FALLBACK) return;
-    const token = localStorage.getItem('qm_token') || '';
+    const token = safeStorageGet('qm_token') || '';
     const isLocalToken = token === 'admin-token' || token.startsWith('token-');
     if (!isLocalToken) return;
 
     setUser(null);
-    localStorage.removeItem('qm_user');
-    localStorage.removeItem('qm_token');
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    safeStorageRemove('qm_user');
+    safeStorageRemove('qm_token');
+    safeStorageRemove(REFRESH_TOKEN_KEY);
   }, []);
 
   const login = useCallback(async (username, password) => {
@@ -58,9 +79,9 @@ export function AuthProvider({ children }) {
         name: backendUser.username || username,
       };
       setUser(u);
-      localStorage.setItem('qm_user', JSON.stringify(u));
-      localStorage.setItem('qm_token', payload.token || '');
-      if (payload.refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, payload.refreshToken);
+      safeStorageSet('qm_user', JSON.stringify(u));
+      safeStorageSet('qm_token', payload.token || '');
+      if (payload.refreshToken) safeStorageSet(REFRESH_TOKEN_KEY, payload.refreshToken);
       return { success: true, role: u.role };
     } catch (error) {
       const status = error?.response?.status;
@@ -91,23 +112,23 @@ export function AuthProvider({ children }) {
 
     if (username === ADMIN_CREDS.username && password === ADMIN_CREDS.password) {
       const u = { username, role: 'admin', name: 'Admin' };
-      setUser(u); localStorage.setItem('qm_user', JSON.stringify(u)); localStorage.setItem('qm_token', 'admin-token');
+      setUser(u); safeStorageSet('qm_user', JSON.stringify(u)); safeStorageSet('qm_token', 'admin-token');
       return { success: true, role: 'admin' };
     }
     const found = mockUsers.find(u => u.username === username && u.password === password);
     if (found) {
       if (found.blocked) return { success: false, error: 'Tài khoản bị khoá. Liên hệ admin.' };
       const u = { id: found.id, username: found.username, role: 'user', name: found.name };
-      setUser(u); localStorage.setItem('qm_user', JSON.stringify(u)); localStorage.setItem('qm_token', `token-${found.id}`);
+      setUser(u); safeStorageSet('qm_user', JSON.stringify(u)); safeStorageSet('qm_token', `token-${found.id}`);
       return { success: true, role: 'user' };
     }
     return { success: false, error: 'Tên đăng nhập hoặc mật khẩu không đúng.' };
   }, [mockUsers]);
   const logout = useCallback(() => {
     setUser(null);
-    localStorage.removeItem('qm_user');
-    localStorage.removeItem('qm_token');
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    safeStorageRemove('qm_user');
+    safeStorageRemove('qm_token');
+    safeStorageRemove(REFRESH_TOKEN_KEY);
   }, []);
   return <AuthContext.Provider value={{ user, login, logout, mockUsers, setMockUsers }}>{children}</AuthContext.Provider>;
 }

@@ -100,10 +100,17 @@ export default function LeaderboardPage() {
 
     const timer = window.setInterval(loadLeaderboard, 10000);
 
-    const wsBase = API_BASE_URL.replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
+    const wsBase = String(API_BASE_URL || '').replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
     const wsUrl = `${wsBase}/ws`;
     const connectSocket = () => {
-      socket = new WebSocket(wsUrl);
+      try {
+        // Validate URL to avoid runtime crash when API base is misconfigured.
+        // eslint-disable-next-line no-new
+        new URL(wsUrl);
+        socket = new WebSocket(wsUrl);
+      } catch {
+        return;
+      }
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data || '{}');

@@ -1,7 +1,14 @@
 // src/api/api.js
 import axios from 'axios';
 
-const envApiBase = process.env.REACT_APP_API_URL || '';
+const fallbackApiBase = typeof window !== 'undefined'
+  ? `${window.location.protocol}//${window.location.hostname}:5001/api`
+  : 'http://localhost:5001/api';
+
+const envApiBase = process.env.REACT_APP_API_URL
+  || process.env.REACT_APP_API_BASE_URL
+  || process.env.REACT_APP_API
+  || fallbackApiBase;
 
 const normalizeApiBase = (base) => {
   const value = String(base || '').trim().replace(/\/+$/, '');

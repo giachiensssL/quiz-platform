@@ -59,6 +59,7 @@ export default function Navbar() {
         {user?.role !== 'admin' && (
           <div className="navbar-nav">
             <button className={`nav-link${location.pathname==='/'?' active':''}`} onClick={()=>navigate('/')}>Trang chủ</button>
+            <button className={`nav-link${isActive('/practice')?' active':''}`} onClick={()=>navigate('/practice')}>Luyện thi</button>
             <button className={`nav-link${isActive('/leaderboard')?' active':''}`} onClick={()=>navigate('/leaderboard')}>Bảng xếp hạng</button>
             <button className={`nav-link${isActive('/profile')?' active':''}`} onClick={()=>navigate('/profile')}>Hồ sơ</button>
           </div>

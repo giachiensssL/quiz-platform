@@ -7,6 +7,20 @@ import { API_BASE_URL, adminDataAPI, facultiesAPI, lessonsAPI, questionsAPI, sem
 const DataContext = createContext(null);
 const DATA_STORAGE_KEY = 'qm_data_store';
 const ENABLE_LOCAL_DATA_FALLBACK = String(process.env.REACT_APP_ENABLE_LOCAL_DATA_FALLBACK || '').toLowerCase() === 'true';
+const safeStorageGet = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+const safeStorageSet = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage write errors in restricted browser mode.
+  }
+};
 const isServerToken = (token) => {
   const value = String(token || '');
   if (!value) return false;
@@ -196,9 +210,9 @@ const INIT = {
 export function DataProvider({ children }) {
   const [realtimeStatus, setRealtimeStatus] = useState('disconnected');
   const [data, setData] = useState(() => {
-    const hasServerSession = isServerToken(localStorage.getItem('qm_token'));
+    const hasServerSession = isServerToken(safeStorageGet('qm_token'));
     try {
-      const raw = JSON.parse(localStorage.getItem(DATA_STORAGE_KEY) || 'null');
+      const raw = JSON.parse(safeStorageGet(DATA_STORAGE_KEY) || 'null');
       if (raw && typeof raw === 'object') {
         return normalizeData(raw, { includeKtmtSeed: !hasServerSession });
       }
@@ -214,7 +228,7 @@ export function DataProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(data));
+    safeStorageSet(DATA_STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
   const syncFromServer = useCallback(async () => {
@@ -317,7 +331,7 @@ export function DataProvider({ children }) {
   }, [syncFromServer]);
 
   useEffect(() => {
-    const token = localStorage.getItem('qm_token');
+    const token = safeStorageGet('qm_token');
     if (!isServerToken(token)) return undefined;
 
     syncFromServer().catch(() => {});
@@ -339,8 +353,13 @@ export function DataProvider({ children }) {
   }, [syncFromServer, debouncedSync]);
 
   useEffect(() => {
-    const token = localStorage.getItem('qm_token');
+    const token = safeStorageGet('qm_token');
     if (!isServerToken(token)) {
+      setRealtimeStatus('disconnected');
+      return undefined;
+    }
+
+    if (!API_BASE_URL) {
       setRealtimeStatus('disconnected');
       return undefined;
     }
@@ -348,12 +367,27 @@ export function DataProvider({ children }) {
     const wsBase = API_BASE_URL.replace(/\/api\/?$/, '').replace(/^http/i, 'ws');
     const wsUrl = `${wsBase}/ws`;
 
+    try {
+      // Validate URL early to avoid hard runtime crashes that can blank the app.
+      // eslint-disable-next-line no-new
+      new URL(wsUrl);
+    } catch {
+      setRealtimeStatus('disconnected');
+      return undefined;
+    }
+
     let socket;
     let reconnectTimer;
 
     const connect = () => {
       setRealtimeStatus('connecting');
-      socket = new WebSocket(wsUrl);
+      try {
+        socket = new WebSocket(wsUrl);
+      } catch {
+        setRealtimeStatus('disconnected');
+        reconnectTimer = window.setTimeout(connect, 3000);
+        return;
+      }
 
       socket.onopen = () => {
         setRealtimeStatus('connected');
@@ -400,7 +434,7 @@ export function DataProvider({ children }) {
     list: () => data[key],
     add: async (item) => {
       let nextItem = { ...item, id: item?.id || Date.now(), locked: Boolean(item?.locked) };
-      const token = localStorage.getItem('qm_token');
+      const token = safeStorageGet('qm_token');
       const shouldUseServer = isServerToken(token);
       let serverSynced = false;
 
@@ -494,7 +528,7 @@ export function DataProvider({ children }) {
       return nextItem;
     },
     update: async (id, changes) => {
-      const token = localStorage.getItem('qm_token');
+      const token = safeStorageGet('qm_token');
       const shouldUseServer = isServerToken(token);
       let serverSynced = false;
       try {
@@ -615,7 +649,7 @@ export function DataProvider({ children }) {
       }));
     },
     remove: async (id) => {
-      const token = localStorage.getItem('qm_token');
+      const token = safeStorageGet('qm_token');
       const shouldUseServer = isServerToken(token);
       let serverSynced = false;
       try {

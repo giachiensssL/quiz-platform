@@ -7,6 +7,7 @@ const Semester = require("../models/Semester");
 const Subject = require("../models/Subject");
 const Lesson = require("../models/Lesson");
 const Question = require("../models/Question");
+const DeletionBackup = require("../models/DeletionBackup");
 const pdfParse = require("pdf-parse");
 const { verifyToken, isAdmin } = require("../middleware/auth");
 const { broadcast } = require("../realtime");
@@ -26,6 +27,102 @@ const notifyCatalogUpdated = () => {
 };
 const notifyUsersUpdated = () => {
   broadcast("users-updated", { source: "admin" });
+};
+
+const toPlain = (doc) => {
+  if (!doc) return null;
+  return typeof doc.toObject === "function" ? doc.toObject() : doc;
+};
+
+const stripMongoFields = (doc) => {
+  if (!doc || typeof doc !== "object") return doc;
+  const plain = { ...doc };
+  delete plain._id;
+  delete plain.__v;
+  delete plain.createdAt;
+  delete plain.updatedAt;
+  return plain;
+};
+
+const createDeletionBackup = async ({ entityType, entityId, entityLabel, payload, req }) => {
+  if (!payload) {
+    throw badRequest("Không thể backup dữ liệu rỗng");
+  }
+
+  await DeletionBackup.create({
+    entityType,
+    entityId: String(entityId || ""),
+    entityLabel: String(entityLabel || "").trim(),
+    payload,
+    deletedBy: {
+      id: String(req?.user?._id || ""),
+      username: String(req?.user?.username || "").trim(),
+    },
+  });
+};
+
+const restoreQuestionPayload = async (questionDoc) => {
+  const payload = stripMongoFields(questionDoc);
+  if (!payload?.lessonId || !isValidObjectId(String(payload.lessonId))) {
+    throw badRequest("Backup câu hỏi không hợp lệ: lessonId thiếu hoặc sai định dạng");
+  }
+  return Question.create(payload);
+};
+
+const restoreLessonBundle = async (bundle) => {
+  const lessonSource = stripMongoFields(bundle?.lesson || {});
+  if (!lessonSource?.subject || !isValidObjectId(String(lessonSource.subject))) {
+    throw badRequest("Backup bài học không hợp lệ: thiếu subject");
+  }
+
+  const createdLesson = await Lesson.create(lessonSource);
+  const oldLessonId = String(bundle?.oldLessonId || bundle?.lesson?._id || "");
+  const questions = Array.isArray(bundle?.questions) ? bundle.questions : [];
+
+  for (const question of questions) {
+    const payload = stripMongoFields(question);
+    payload.lessonId = createdLesson._id;
+    await Question.create(payload);
+  }
+
+  return { createdLessonId: String(createdLesson._id), oldLessonId, restoredQuestions: questions.length };
+};
+
+const restoreSubjectBundle = async (bundle) => {
+  const subjectSource = stripMongoFields(bundle?.subject || {});
+  if (!subjectSource?.faculty || !subjectSource?.year || !subjectSource?.semester) {
+    throw badRequest("Backup môn học không hợp lệ: thiếu thông tin khoa/năm/kỳ");
+  }
+
+  const createdSubject = await Subject.create(subjectSource);
+  const lessons = Array.isArray(bundle?.lessons) ? bundle.lessons : [];
+  const questions = Array.isArray(bundle?.questions) ? bundle.questions : [];
+  const lessonIdMap = new Map();
+
+  for (const lesson of lessons) {
+    const oldId = String(lesson?._id || "");
+    const lessonPayload = stripMongoFields(lesson);
+    lessonPayload.subject = createdSubject._id;
+    const createdLesson = await Lesson.create(lessonPayload);
+    if (oldId) lessonIdMap.set(oldId, createdLesson._id);
+  }
+
+  let restoredQuestions = 0;
+  for (const question of questions) {
+    const oldLessonId = String(question?.lessonId || "");
+    const mappedLessonId = lessonIdMap.get(oldLessonId);
+    if (!mappedLessonId) continue;
+    const questionPayload = stripMongoFields(question);
+    questionPayload.lessonId = mappedLessonId;
+    await Question.create(questionPayload);
+    restoredQuestions += 1;
+  }
+
+  return {
+    createdSubjectId: String(createdSubject._id),
+    restoredLessons: lessons.length,
+    restoredQuestions,
+  };
 };
 
 const sanitizeRefId = (value) => {
@@ -816,10 +913,30 @@ router.delete(
     if (!isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "ID môn học không hợp lệ" });
     }
+    const subject = await Subject.findById(req.params.id);
+    if (!subject) {
+      return res.status(404).json({ message: "Không tìm thấy môn học" });
+    }
+    const lessons = await Lesson.find({ subject: req.params.id });
+    const lessonIds = lessons.map((item) => item._id);
+    const questions = lessonIds.length ? await Question.find({ lessonId: { $in: lessonIds } }) : [];
+
+    await createDeletionBackup({
+      entityType: "subject",
+      entityId: req.params.id,
+      entityLabel: subject.name || "Môn học",
+      payload: {
+        subject: toPlain(subject),
+        lessons: lessons.map((item) => toPlain(item)),
+        questions: questions.map((item) => toPlain(item)),
+      },
+      req,
+    });
+
     await Lesson.deleteMany({ subject: req.params.id });
     await Subject.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
-    res.json({ message: "Đã xoá môn học" });
+    res.json({ message: "Đã xoá môn học (đã backup trước khi xóa)" });
   })
 );
 
@@ -862,10 +979,28 @@ router.put(
 router.delete(
   "/lessons/:id",
   asyncHandler(async (req, res) => {
+    const lesson = await Lesson.findById(req.params.id);
+    if (!lesson) {
+      return res.status(404).json({ message: "Không tìm thấy bài học" });
+    }
+    const questions = await Question.find({ lessonId: req.params.id });
+
+    await createDeletionBackup({
+      entityType: "lesson",
+      entityId: req.params.id,
+      entityLabel: lesson.title || "Bài học",
+      payload: {
+        oldLessonId: String(lesson._id),
+        lesson: toPlain(lesson),
+        questions: questions.map((item) => toPlain(item)),
+      },
+      req,
+    });
+
     await Question.deleteMany({ lessonId: req.params.id });
     await Lesson.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
-    res.json({ message: "Đã xoá bài học" });
+    res.json({ message: "Đã xoá bài học (đã backup trước khi xóa)" });
   })
 );
 
@@ -926,18 +1061,100 @@ router.put(
 router.delete(
   "/questions/:id",
   asyncHandler(async (req, res) => {
+    const question = await Question.findById(req.params.id);
+    if (!question) {
+      return res.status(404).json({ message: "Không tìm thấy câu hỏi" });
+    }
+
+    await createDeletionBackup({
+      entityType: "question",
+      entityId: req.params.id,
+      entityLabel: String(question.question || "Câu hỏi").slice(0, 120),
+      payload: toPlain(question),
+      req,
+    });
+
     await Question.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
-    res.json({ message: "Đã xoá câu hỏi" });
+    res.json({ message: "Đã xoá câu hỏi (đã backup trước khi xóa)" });
   })
 );
 
 router.delete(
   "/question/:id",
   asyncHandler(async (req, res) => {
+    const question = await Question.findById(req.params.id);
+    if (!question) {
+      return res.status(404).json({ message: "Không tìm thấy câu hỏi" });
+    }
+
+    await createDeletionBackup({
+      entityType: "question",
+      entityId: req.params.id,
+      entityLabel: String(question.question || "Câu hỏi").slice(0, 120),
+      payload: toPlain(question),
+      req,
+    });
+
     await Question.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();
-    res.json({ message: "Đã xoá câu hỏi" });
+    res.json({ message: "Đã xoá câu hỏi (đã backup trước khi xóa)" });
+  })
+);
+
+router.get(
+  "/backups",
+  asyncHandler(async (req, res) => {
+    const entityType = String(req.query?.entityType || "").trim();
+    const limit = Math.min(200, Math.max(1, Number(req.query?.limit || 50)));
+
+    const filter = {};
+    if (entityType) filter.entityType = entityType;
+
+    const backups = await DeletionBackup.find(filter)
+      .sort({ deletedAt: -1 })
+      .limit(limit)
+      .select("entityType entityId entityLabel deletedAt deletedBy restoreStatus restoredAt restoreNote");
+
+    res.json(backups);
+  })
+);
+
+router.post(
+  "/backups/:id/restore",
+  asyncHandler(async (req, res) => {
+    const backup = await DeletionBackup.findById(req.params.id);
+    if (!backup) {
+      return res.status(404).json({ message: "Không tìm thấy backup" });
+    }
+    if (backup.restoreStatus === "restored") {
+      return res.status(400).json({ message: "Backup này đã được khôi phục trước đó" });
+    }
+
+    let restoreResult;
+    if (backup.entityType === "question") {
+      const created = await restoreQuestionPayload(backup.payload);
+      restoreResult = { createdQuestionId: String(created._id) };
+    } else if (backup.entityType === "lesson") {
+      restoreResult = await restoreLessonBundle(backup.payload || {});
+    } else if (backup.entityType === "subject") {
+      restoreResult = await restoreSubjectBundle(backup.payload || {});
+    } else {
+      return res.status(400).json({ message: "Loại backup chưa được hỗ trợ khôi phục" });
+    }
+
+    backup.restoreStatus = "restored";
+    backup.restoredAt = new Date();
+    backup.restoreNote = `Restored by ${String(req?.user?.username || "admin")}`;
+    await backup.save();
+    notifyCatalogUpdated();
+
+    res.json({
+      message: "Khôi phục backup thành công",
+      backupId: String(backup._id),
+      entityType: backup.entityType,
+      restoreResult,
+    });
   })
 );
 

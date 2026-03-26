@@ -15,6 +15,8 @@ const TYPE_LABELS = {
   drag:'Kéo thả',
 };
 const TIME_PER_QUESTION_SECONDS = 90;
+const PRACTICE_TARGET_QUESTIONS = 50;
+const PRACTICE_DURATION_SECONDS = 45 * 60;
 const COMPARE_TEXT_LIMIT = 120;
 const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
 const isDragQuestionType = (type) => type === 'drag';
@@ -31,22 +33,6 @@ const formatTime = (seconds) => {
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 };
 
-const shuffleWithNoImmediateRepeat = (items, storageKey) => {
-  if (items.length <= 1) return items;
-
-  const shuffled = [...items].sort(() => Math.random() - 0.5);
-  const lastOrder = localStorage.getItem(storageKey);
-  const nextOrder = shuffled.map((q) => q.id).join(',');
-
-  if (lastOrder && lastOrder === nextOrder) {
-    const first = shuffled.shift();
-    if (first) shuffled.push(first);
-  }
-
-  localStorage.setItem(storageKey, shuffled.map((q) => q.id).join(','));
-  return shuffled;
-};
-
 const shuffleArray = (items) => {
   const cloned = [...items];
   for (let i = cloned.length - 1; i > 0; i -= 1) {
@@ -54,6 +40,132 @@ const shuffleArray = (items) => {
     [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
   }
   return cloned;
+};
+
+const safeStorageGet = (key) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return '';
+  }
+};
+
+const safeStorageSet = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage errors in restricted browser mode.
+  }
+};
+
+const shouldShuffleAnswers = (type) => type === 'single' || type === 'multiple';
+
+const cloneQuestionForAttempt = (question) => {
+  const nextQuestion = {
+    ...question,
+    answers: Array.isArray(question?.answers) ? [...question.answers] : [],
+  };
+
+  if (shouldShuffleAnswers(nextQuestion.type) && nextQuestion.answers.length > 1) {
+    nextQuestion.answers = shuffleArray(nextQuestion.answers);
+  }
+
+  return nextQuestion;
+};
+
+const getQuestionAttemptSignature = (questions) => {
+  const questionPart = questions.map((q) => String(q.id ?? '')).join(',');
+  const answerPart = questions
+    .map((q) => {
+      if (!Array.isArray(q.answers) || q.answers.length <= 1) {
+        return `${String(q.id ?? '')}:`;
+      }
+      const answerOrder = q.answers
+        .map((a, idx) => String(a?.id ?? a?.text ?? idx))
+        .join('|');
+      return `${String(q.id ?? '')}:${answerOrder}`;
+    })
+    .join(';');
+
+  return `${questionPart}__${answerPart}`;
+};
+
+const buildShuffledAttempt = (baseQuestions, storageKey) => {
+  if (!Array.isArray(baseQuestions) || baseQuestions.length === 0) return [];
+
+  const previousSignature = safeStorageGet(storageKey);
+  let picked = null;
+  const maxAttempts = 8;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const shuffledQuestions = shuffleArray(baseQuestions).map(cloneQuestionForAttempt);
+    const signature = getQuestionAttemptSignature(shuffledQuestions);
+    if (signature !== previousSignature || attempt === maxAttempts - 1) {
+      picked = { shuffledQuestions, signature };
+      break;
+    }
+  }
+
+  if (!picked) {
+    const fallback = shuffleArray(baseQuestions).map(cloneQuestionForAttempt);
+    const fallbackSignature = getQuestionAttemptSignature(fallback);
+    safeStorageSet(storageKey, fallbackSignature);
+    return fallback;
+  }
+
+  safeStorageSet(storageKey, picked.signature);
+  return picked.shuffledQuestions;
+};
+
+const distributeQuestionQuota = (buckets, targetTotal) => {
+  const target = Math.max(0, Number(targetTotal) || 0);
+  if (!Array.isArray(buckets) || !buckets.length || target === 0) return new Map();
+
+  const quota = new Map(buckets.map((bucket) => [bucket.lessonId, 0]));
+  let remaining = Math.min(target, buckets.reduce((sum, bucket) => sum + bucket.questions.length, 0));
+
+  while (remaining > 0) {
+    let changed = false;
+    for (const bucket of buckets) {
+      if (remaining <= 0) break;
+      const current = quota.get(bucket.lessonId) || 0;
+      if (current < bucket.questions.length) {
+        quota.set(bucket.lessonId, current + 1);
+        remaining -= 1;
+        changed = true;
+      }
+    }
+    if (!changed) break;
+  }
+
+  return quota;
+};
+
+const buildPracticeQuestions = (allQuestions, lessons, subjectId) => {
+  const lessonBuckets = lessons
+    .map((lesson) => ({
+      lessonId: String(lesson.id),
+      order: Number(lesson.order || lesson.id || 0),
+      questions: allQuestions.filter((question) => String(question.lessonId) === String(lesson.id)),
+    }))
+    .filter((bucket) => bucket.questions.length > 0)
+    .sort((a, b) => a.order - b.order);
+
+  const quota = distributeQuestionQuota(lessonBuckets, PRACTICE_TARGET_QUESTIONS);
+  const picked = [];
+
+  for (const bucket of lessonBuckets) {
+    const need = quota.get(bucket.lessonId) || 0;
+    if (need <= 0) continue;
+    const sampled = shuffleArray(bucket.questions).slice(0, need);
+    picked.push(...sampled);
+  }
+
+  return shuffleArray(picked).map((question, idx) => ({
+    ...question,
+    id: `practice-${subjectId}-${idx + 1}-${String(question.id)}`,
+    originalQuestionId: question.id,
+  }));
 };
 
 const evaluateQuestion = (question, userAnswer) => {
@@ -806,15 +918,28 @@ function DragDropQuestion({ q, answer, onAnswer, submitted }) {
 }
 
 export default function QuizPage() {
-  const { lessonId } = useParams();
+  const { lessonId, subjectId } = useParams();
   const navigate = useNavigate();
   const { data } = useData();
+  const practiceMode = !lessonId && Boolean(subjectId);
+  const practiceSubject = practiceMode
+    ? data.subjects.find((item) => String(item.id) === String(subjectId))
+    : null;
   const lesson = data.lessons.find((l) => String(l.id) === String(lessonId));
-  const subject = data.subjects.find(s=>s.id===lesson?.subjectId);
-  const baseQuestions = useMemo(
-    () => data.questions.filter((item) => String(item.lessonId) === String(lessonId)),
-    [data.questions, lessonId]
-  );
+  const subject = practiceMode
+    ? practiceSubject
+    : data.subjects.find((s) => s.id === lesson?.subjectId);
+  const practiceLessons = useMemo(() => {
+    if (!practiceMode) return [];
+    return data.lessons.filter((item) => String(item.subjectId) === String(subjectId) && !item.locked);
+  }, [data.lessons, practiceMode, subjectId]);
+  const baseQuestions = useMemo(() => {
+    if (practiceMode) {
+      const practiceLessonIds = new Set(practiceLessons.map((item) => String(item.id)));
+      return data.questions.filter((item) => practiceLessonIds.has(String(item.lessonId)));
+    }
+    return data.questions.filter((item) => String(item.lessonId) === String(lessonId));
+  }, [data.questions, lessonId, practiceLessons, practiceMode]);
   const [questions, setQuestions] = useState([]);
   const [qIdx,setQIdx]=useState(0);
   const [answers,setAnswers]=useState({});
@@ -831,8 +956,12 @@ export default function QuizPage() {
   const handleAnswer=useCallback((val)=>setAnswers(prev=>({...prev,[qIdx]:val})),[qIdx]);
 
   const startNewAttempt = useCallback(() => {
-    const key = `qm_last_order_${lessonId}`;
-    const next = shuffleWithNoImmediateRepeat(baseQuestions, key);
+    const attemptScope = practiceMode ? `practice_${subjectId}` : `lesson_${lessonId}`;
+    const key = `qm_last_attempt_signature_${attemptScope}`;
+    const attemptQuestions = practiceMode
+      ? buildPracticeQuestions(baseQuestions, practiceLessons, subjectId)
+      : baseQuestions;
+    const next = buildShuffledAttempt(attemptQuestions, key);
     setQuestions(next);
     setQIdx(0);
     setAnswers({});
@@ -840,13 +969,14 @@ export default function QuizPage() {
     setShowResult(false);
     setTimeoutTriggered(false);
     setServerSubmitted(false);
-    setRemainingSeconds(next.length * TIME_PER_QUESTION_SECONDS);
-  }, [lessonId, baseQuestions]);
+    setRemainingSeconds(practiceMode ? PRACTICE_DURATION_SECONDS : (next.length * TIME_PER_QUESTION_SECONDS));
+  }, [practiceMode, subjectId, lessonId, baseQuestions, practiceLessons]);
 
   useEffect(() => {
-    const lessonChanged = attemptLessonRef.current !== lessonId;
+    const attemptId = practiceMode ? `practice:${subjectId}` : `lesson:${lessonId}`;
+    const lessonChanged = attemptLessonRef.current !== attemptId;
     if (lessonChanged) {
-      attemptLessonRef.current = lessonId;
+      attemptLessonRef.current = attemptId;
       setQuestions([]);
       setQIdx(0);
       setAnswers({});
@@ -861,7 +991,7 @@ export default function QuizPage() {
     if (baseQuestions.length > 0 && questions.length === 0) {
       startNewAttempt();
     }
-  }, [lessonId, baseQuestions.length, questions.length, startNewAttempt]);
+  }, [practiceMode, subjectId, lessonId, baseQuestions.length, questions.length, startNewAttempt]);
 
   useEffect(() => {
     if (showResult || questions.length === 0) return;
@@ -881,7 +1011,7 @@ export default function QuizPage() {
   }, [showResult, questions.length]);
 
   useEffect(() => {
-    if (!showResult || serverSubmitted || !lessonId || !questions.length) return;
+    if (!showResult || serverSubmitted || !lessonId || !questions.length || practiceMode) return;
     const token = localStorage.getItem('qm_token');
     if (!token || token === 'admin-token' || token.startsWith('token-')) return;
 
@@ -948,7 +1078,7 @@ export default function QuizPage() {
     };
 
     submitResult();
-  }, [answers, lessonId, questions, remainingSeconds, serverSubmitted, showResult]);
+  }, [answers, lessonId, practiceMode, questions, remainingSeconds, serverSubmitted, showResult]);
 
   const openPreview = (src) => {
     if (!src) return;
@@ -957,7 +1087,7 @@ export default function QuizPage() {
 
   const closePreview = () => setPreviewImage('');
 
-  if (lesson?.locked) {
+  if (!practiceMode && lesson?.locked) {
     return (
       <div className="app-wrapper"><Navbar/>
         <div className="page-content" style={{paddingTop:60}}>
@@ -968,12 +1098,26 @@ export default function QuizPage() {
     );
   }
 
+  if (practiceMode && !practiceSubject) {
+    return (
+      <div className="app-wrapper"><Navbar/>
+        <div className="page-content" style={{textAlign:'center',paddingTop:60}}>
+          <div style={{fontSize:'2.5rem'}}>📚</div>
+          <p style={{color:'var(--muted)',marginTop:12}}>Không tìm thấy môn học để luyện thi.</p>
+          <Button variant="ghost" onClick={()=>navigate('/practice')} style={{marginTop:16}}>← Quay lại Luyện thi</Button>
+        </div>
+      </div>
+    );
+  }
+
   if(!questions.length) return (
     <div className="app-wrapper"><Navbar/>
       <div className="page-content" style={{textAlign:'center',paddingTop:60}}>
         <div style={{fontSize:'2.5rem'}}>📭</div>
-        <p style={{color:'var(--muted)',marginTop:12}}>Bài học chưa có câu hỏi.</p>
-        <Button variant="ghost" onClick={()=>navigate(-1)} style={{marginTop:16}}>← Quay lại</Button>
+        <p style={{color:'var(--muted)',marginTop:12}}>{practiceMode ? 'Môn học này chưa đủ dữ liệu để tạo đề luyện.' : 'Bài học chưa có câu hỏi.'}</p>
+        <Button variant="ghost" onClick={()=>navigate(practiceMode ? '/practice' : -1)} style={{marginTop:16}}>
+          {practiceMode ? '← Quay lại Luyện thi' : '← Quay lại'}
+        </Button>
       </div>
     </div>
   );
@@ -1025,7 +1169,7 @@ export default function QuizPage() {
               <div className={`score-ring${pct>=70?' pass':''}`}><span className="score-num">{pct}%</span></div>
               <div style={{fontSize:'1.3rem',fontWeight:700,marginBottom:8}}>{pct>=70?'🎉 Xuất sắc!':pct>=50?'👍 Khá tốt!':'📚 Cần ôn thêm!'}</div>
               <p style={{color:'var(--muted)',fontSize:'.875rem',marginBottom:24}}>
-                Đúng {summary.fullyCorrect}/{questions.length} câu • Điểm {summary.earnedScore}/{summary.totalScore} • {lesson?.name}
+                Đúng {summary.fullyCorrect}/{questions.length} câu • Điểm {summary.earnedScore}/{summary.totalScore} • {practiceMode ? `Luyện thi ${subject?.name || ''}` : lesson?.name}
               </p>
               {isSubmittingResult && (
                 <div style={{ marginBottom: 14, fontSize: '.82rem', color: 'var(--muted)' }}>
@@ -1046,8 +1190,10 @@ export default function QuizPage() {
                 ))}
               </div>
               <div style={{display:'flex',gap:10,justifyContent:'center'}}>
-                <Button variant="ghost" onClick={()=>navigate(-1)}>← Về danh sách bài</Button>
-                <Button variant="primary" onClick={startNewAttempt}>Làm lại</Button>
+                <Button variant="ghost" onClick={()=>navigate(practiceMode ? '/practice' : -1)}>
+                  {practiceMode ? '← Về chọn môn luyện thi' : '← Về danh sách bài'}
+                </Button>
+                <Button variant="primary" onClick={startNewAttempt}>{practiceMode ? 'Làm đề mới' : 'Làm lại'}</Button>
               </div>
               </div>
 
@@ -1155,8 +1301,8 @@ export default function QuizPage() {
         <aside className="quiz-sidepanel">
           <div className="quiz-side-block">
             <div className="quiz-side-label">Bài học</div>
-            <div className="quiz-side-title">{lesson?.name}</div>
-            <div className="quiz-side-meta">{subject?.name || 'Quiz Practice'}</div>
+            <div className="quiz-side-title">{practiceMode ? `Luyện thi ${subject?.name || ''}` : lesson?.name}</div>
+            <div className="quiz-side-meta">{practiceMode ? `${questions.length} câu • 45 phút` : (subject?.name || 'Quiz Practice')}</div>
           </div>
 
           <div className="quiz-side-block">
@@ -1189,14 +1335,14 @@ export default function QuizPage() {
             </div>
           </div>
 
-          <Button variant="ghost" size="sm" onClick={()=>navigate(-1)}>✕ Thoát</Button>
+          <Button variant="ghost" size="sm" onClick={()=>navigate(practiceMode ? '/practice' : -1)}>✕ Thoát</Button>
         </aside>
 
         <div className="quiz-main-panel">
           <div className="quiz-topbar">
             <div>
               <div style={{fontWeight:700,fontSize:'.9rem'}}>Câu {qIdx+1}</div>
-              <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:2}}>{lesson?.name}</div>
+              <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:2}}>{practiceMode ? `Luyện thi • ${subject?.name || ''}` : lesson?.name}</div>
             </div>
             <div className="quiz-progress-block">
               <div className="progress-label">Tiến trình</div>

@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const ITEMS = [
   { label: 'Tất cả ngành học', icon: '🏛', path: '/' },
+  { label: 'Luyện thi', icon: '📝', path: '/practice' },
   { label: 'Bảng xếp hạng', icon: '🏆', path: '/leaderboard' },
   { label: 'Hồ sơ cá nhân', icon: '👤', path: '/profile' },
 ];

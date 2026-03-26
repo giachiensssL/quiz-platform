@@ -11,6 +11,7 @@ import SemesterPage    from './pages/SemesterPage';
 import SubjectPage     from './pages/SubjectPage';
 import LessonPage      from './pages/LessonPage';
 import QuizPage        from './pages/QuizPage';
+import PracticePage    from './pages/PracticePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage     from './pages/ProfilePage';
 import AdminDashboard  from './pages/admin/AdminDashboard';
@@ -62,6 +63,8 @@ function App() {
             <Route path="/subject/:semesterId" element={<ProtectedRoute><SubjectPage /></ProtectedRoute>} />
             <Route path="/lesson/:subjectId" element={<ProtectedRoute><LessonPage /></ProtectedRoute>} />
             <Route path="/quiz/:lessonId" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
+            <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
+            <Route path="/practice/:subjectId" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

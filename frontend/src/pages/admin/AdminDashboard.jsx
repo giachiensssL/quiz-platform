@@ -3099,9 +3099,19 @@ const SECTIONS = [
 export default function AdminDashboard() {
   const [section, setSection] = useState('overview');
   const [analytics, setAnalytics] = useState({ totalVisits: 0, onlineUsers: 0, peakOnline: 0 });
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState('');
   const { data, syncFromServer } = useData();
   const { faculties, years, semesters, subjects, lessons, questions } = useData();
   const { user } = useAuth();
+  const sessionToken = (() => {
+    try {
+      return localStorage.getItem('qm_token') || '';
+    } catch {
+      return '';
+    }
+  })();
+  const isServerSession = String(sessionToken || '').split('.').length === 3;
 
   // ── Filter states lifted here so they survive data re-syncs ──
   const [lessonsSubjectId, setLessonsSubjectId] = useState('');
@@ -3110,9 +3120,26 @@ export default function AdminDashboard() {
   const [qFilterLessonId, setQFilterLessonId] = useState('');
   const [qOnlySelected, setQOnlySelected] = useState(true);
 
-  useEffect(() => {
-    syncFromServer?.().catch(() => {});
+  const pullCatalogNow = useCallback(async () => {
+    if (!syncFromServer) return;
+    try {
+      setSyncing(true);
+      setSyncError('');
+      await syncFromServer();
+    } catch {
+      setSyncError('Không đồng bộ được dữ liệu từ server. Kiểm tra backend và đăng nhập lại admin server.');
+    } finally {
+      setSyncing(false);
+    }
   }, [syncFromServer]);
+
+  useEffect(() => {
+    pullCatalogNow();
+    const timer = window.setInterval(() => {
+      pullCatalogNow();
+    }, 15000);
+    return () => window.clearInterval(timer);
+  }, [pullCatalogNow]);
 
   useEffect(() => {
     if (user?.role !== 'admin') return;
@@ -3174,6 +3201,19 @@ export default function AdminDashboard() {
             <div className="page-title">⚙️ Admin Dashboard</div>
             <div className="page-sub">Quản lý toàn bộ hệ thống QuizMaster</div>
           </div>
+          {!isServerSession && (
+            <div style={{ marginBottom: 10, padding: '10px 12px', border: '1px solid #f5c78a', background: '#fff7ed', color: '#9a3412', borderRadius: 10, fontSize: '.84rem' }}>
+              Bạn đang dùng phiên admin cục bộ. Dữ liệu trên trang admin có thể không đầy đủ theo server và không đồng bộ đa thiết bị.
+            </div>
+          )}
+          {(syncing || syncError) && (
+            <div style={{ marginBottom: 10, padding: '10px 12px', border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 10, fontSize: '.84rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+              <span style={{ color: syncError ? 'var(--danger)' : 'var(--muted)' }}>
+                {syncError || 'Đang đồng bộ dữ liệu từ server...'}
+              </span>
+              <Button variant="ghost" size="sm" onClick={pullCatalogNow} loading={syncing}>Đồng bộ ngay</Button>
+            </div>
+          )}
           <div className="admin-main">{renderContent()}</div>
         </div>
       </div>

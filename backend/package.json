@@ -16,6 +16,8 @@
     "align:monhoc:business": "node seed/alignBusinessSubjects.js",
     "import:monhoc:questions:dry": "node seed/importMonhocQuestionsFromPdf.js --dry-run",
     "import:monhoc:questions": "node seed/importMonhocQuestionsFromPdf.js",
+    "import:vatly:html:dry": "node seed/importVatLyFromHtml.js --dry-run",
+    "import:vatly:html": "node seed/importVatLyFromHtml.js",
     "extract:tmdt:answers": "python seed/extractTmdtAnswersFromImages.py",
     "apply:tmdt:answers:dry": "node seed/applyTmdtAnswerKey.js --dry-run",
     "apply:tmdt:answers": "node seed/applyTmdtAnswerKey.js",
