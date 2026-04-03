@@ -144,12 +144,28 @@ export default function ProfilePage() {
               <EmptyState icon="📝" text="Bạn chưa làm bài nào. Hồ sơ hiện đang bắt đầu từ đầu." />
             )}
             {!loading && profile.recentActivities.map((item, i) => (
-              <div key={item.id || `${item.lessonName}-${i}`} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'11px 16px',borderBottom:i<4?'1px solid var(--border-soft)':'none'}}>
+              <div 
+                key={item.id || `${item.lessonName}-${i}`} 
+                className="activity-row"
+                style={{
+                  display:'flex',
+                  alignItems:'center',
+                  justifyContent:'space-between',
+                  padding:'12px 16px',
+                  borderBottom:i<4?'1px solid var(--border-soft)':'none',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => navigate(`/review/${item.id}`)}
+              >
                 <div>
                   <div style={{fontWeight:600,fontSize:'.875rem'}}>{item.lessonName}</div>
                   <div style={{fontSize:'.75rem',color:'var(--muted)',marginTop:2}}>{formatRelative(item.createdAt)}</div>
                 </div>
-                <span className="badge badge-green">{Number(item.accuracy || 0)}%</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span className="badge badge-green">{Number(item.accuracy || 0)}%</span>
+                  <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>→</span>
+                </div>
               </div>
             ))}
           </div>

@@ -1,0 +1,2525 @@
+{
+  "subject": "NGOẠI NGỮ 2",
+  "lessons": [
+    {
+      "lesson": "Bài 1",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Tôi không dùng cà rốt nhưng tôi dùng một ít hành, và một ít cà chua.",
+          "options": {
+            "A": "I don't use any carrots, but I use some eggs and tomatoes.",
+            "B": "I don't use any carrots, but I use some onions and tomatoes.",
+            "C": "I don't use any carrots, but I use some onions and potatoes."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Tôi thường thêm một ít hạt và nho khô lên trên.",
+          "options": {
+            "A": "I put some lentils and chips on the top.",
+            "B": "I put some cheese and grapes on the top.",
+            "C": "I put some nuts and raisins on the top."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "Can I have ......large cup of coffee, please?",
+          "options": {
+            "A": "an",
+            "B": "some",
+            "C": "a"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Do you want...... tea?",
+          "options": {
+            "A": "A",
+            "B": "any",
+            "C": "some"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "She wants............cheese in her burgers.",
+          "options": {
+            "A": "A",
+            "B": "some",
+            "C": "any"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "passage": "It is kabsa. It's a popular dish in my country and also in other countries, like Yemen. You need some chicken, or some people make it with fish. Cook the chicken with an onion, some salt and pepper, and other spices. You can add some tomatoes as well. We eat it with rice. I put some nuts and raisins on the top, and sometimes some eggs. It tastes delicious.",
+          "question": "What is the main ingredient to make kabsa?",
+          "options": {
+            "A": "Eggs or chicken",
+            "B": "Chicken or fish",
+            "C": "Nuts or raisins"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "passage": "It is kabsa. It's a popular dish in my country and also in other countries, like Yemen. You need some chicken, or some people make it with fish. Cook the chicken with an onion, some salt and pepper, and other spices. You can add some tomatoes as well. We eat it with rice. I put some nuts and raisins on the top, and sometimes some eggs.",
+          "question": "What can you add to kabsa as a topping?",
+          "options": {
+            "A": "Onions",
+            "B": "Eggs",
+            "C": "Tomatoes"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "passage": "Ceviche is popular in Peru, but also in countries like Chile. It's easy to make. It's fish, but you don't cook it. You put some juice from a lemon on the fish and this 'cooks' it. Sometimes we eat it with onions and maybe some salad as well. Ceviche is rich in protein from the fish and vitamin C from the lemon juice.",
+          "question": "What \"cooks\" ceviche?",
+          "options": {
+            "A": "Lemon juice",
+            "B": "Salad",
+            "C": "Onions"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "single_choice",
+          "passage": "Spaghetti Bolognese is a famous dish all over the world but the real Bolognese comes from my city of Bologna in Italy and our city's dish is pasta with Bolognese sauce. People put different things in the sauce and every Italian has their favourite recipe. For example, some people use carrots. I don't use any carrots but you always need some meat, and some onions and tomatoes.",
+          "question": "What do you always need to make Bolognese sauce?",
+          "options": {
+            "A": "You need meat, onions and tomatoes.",
+            "B": "You need carrots and tomatoes.",
+            "C": "You need fish, onions and potatoes."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "passage": "This is kabsa. It's a popular dish in my country and also in other countries, like Yemen. You need some chicken, or some people make it with fish. Cook the chicken with an onion, some salt and pepper, and other spices. You can add some tomatoes as well. We eat it with rice. I put some nuts and raisins on the top, and sometimes some eggs. It tastes delicious.",
+          "question": "Summary: Kabsa is chicken or fish cooked with......., salt and pepper and other spices. You can top it with nuts, raisins or eggs and eat it with rice.",
+          "instruction": "Fill in the summary with TWO WORDS from the text.",
+          "answer": "an onion"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "passage": "Paella is a traditional dish from Spain, especially popular in the Valencia region. It is a rice dish that is often cooked with many kinds of ingredients, including chicken and seafood. The rice is cooked with saffron, which gives it a beautiful yellow color. People usually eat paella with a fresh lemon. It's a great dish for family gatherings and celebrations.",
+          "question": "Summary: Paella is from Spain. It is rice cooked with chicken, seafood and saffron. People usually eat paella with a.......at family meals and celebrations.",
+          "instruction": "Fill in the summary with TWO WORDS from the text.",
+          "answer": "fresh lemon"
+        },
+        {
+          "number": 12,
+          "type": "fill_in_blank",
+          "passage": "Sushi is a popular Japanese dish. It's made with vinegared rice and other ingredients, often including seafood. The rice is mixed with a special vinegar. It can be topped with raw fish, cooked seafood, or vegetables. Sometimes, the rice and toppings are wrapped in seaweed to make sushi rolls.",
+          "question": "Summary: Sushi is a popular Japanese dish made of vinegared rice with raw fish, .......or vegetables as toppings. People use seaweed to make sushi rolls.",
+          "instruction": "Fill in the summary with TWO WORDS from the text.",
+          "answer": "cooked seafood"
+        },
+        {
+          "number": 13,
+          "type": "fill_in_blank",
+          "passage": "Butter chicken is a popular dish from India. It is famous for its rich and creamy sauce. You cook chicken in spiced tomatoes and butter sauce. People eat it with rice or bread because it goes well with the delicious sauce. Many people around the world enjoy eating butter chicken and it is a favorite in Indian restaurants.",
+          "question": "Summary: Butter chicken is chicken cooked in ....... and butter sauce, and often served with rice or bread. It is a favourite in India and popular around the world.",
+          "instruction": "Fill in the summary with TWO WORDS from the text.",
+          "answer": "spiced tomatoes"
+        },
+        {
+          "number": 14,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentences with THREE WORDS to make them correct and meaningful. Use the given prompts to guide your answers.",
+          "prompts": "I/ not/ use/ carrot/ the sauce.",
+          "question": "I don't .... in the sauce",
+          "answer": "use a carrot"
+        },
+        {
+          "number": 15,
+          "type": "arrange_words",
+          "words": ["for the sauce", "use", "any", "I don't", "carrots", "and onions"],
+          "answer": "I don't use any carrots and onions for the sauce."
+        },
+        {
+          "number": 16,
+          "type": "arrange_words",
+          "words": ["People", "raisins", "eat kabsa", "with", "some rice,", "and", "some eggs.", "some"],
+          "answer": "People eat kabsa with some rice, some raisins and some eggs."
+        },
+        {
+          "number": 17,
+          "type": "arrange_words",
+          "words": ["after", "have", "some", "or orange", "We", "Ice-cream", "juice", "usually", "dinner."],
+          "answer": "We usually have some ice-cream or orange juice after dinner."
+        },
+        {
+          "number": 18,
+          "type": "single_choice",
+          "question": "Are there...... apples in the bowl?",
+          "options": {
+            "A": "an",
+            "B": "any",
+            "C": "some"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 20,
+          "type": "arrange_words",
+          "words": ["have", "Do", "for dinner", "any", "or chicken", "fish", "you", "this evening?"],
+          "answer": "Do you have any fish or chicken for dinner this evening?"
+        },
+        {
+          "number": 21,
+          "type": "arrange_words",
+          "words": ["the", "milk", "fridge", "not", "for breakfast,", "is", "in", "any", "There"],
+          "answer": "There is not any milk in the fridge for breakfast."
+        },
+        {
+          "number": 22,
+          "type": "single_choice",
+          "question": "Đôi khi chúng tôi ăn nó với hành và một ít Cà chua",
+          "options": {
+            "A": "Sometimes we eat it with onions and some tomatoes",
+            "B": "Some time we eat it with onions and some salad",
+            "C": "Sometimes we eat it with potatoes and some tomatoes"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 23,
+          "type": "single_choice",
+          "question": "I don't have............vegetables in the fridge",
+          "options": {
+            "A": "Some",
+            "B": "Any",
+            "C": "a"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 24,
+          "type": "fill_in_blank",
+          "passage": "Ceviche is popular in Peru, but also in countries like Chile. It's easy to make. It's fish, but you don't cook it. You put some juice from a lemon on the fish and this 'cooks' it. Sometimes we eat it with onions and maybe some salad as well. Ceviche is rich in protein from the fish and vitamin C from the lemon juice.",
+          "question": "Summary: You make ceviche by putting lemon juice on....... you can eat it with onions and salad. It is rich in protein and vitamin C",
+          "instruction": "Fill in the summary with TWO WORDS from the text.",
+          "answer": "the fish"
+        },
+        {
+          "number": 25,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentences with THREE WORDS to make them correct and meaningful. Use the given prompts to guide your answers.",
+          "prompts": "We / want / rice / vegetables / lunch.",
+          "question": "We.......and vegetables for lunch",
+          "answer": "want some rice"
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentences with THREE WORDS to make them correct and meaningful. Use the given prompts to guide your answers.",
+          "prompts": "I / have / glass / orange juice, please?",
+          "question": "Can ....... glass of orange juice, please?",
+          "answer": "i have a"
+        },
+        {
+          "number": 27,
+          "type": "single_choice",
+          "question": "Tôi không có bất kỳ quả chuối nào, nhưng tôi có một ít táo và lê.",
+          "options": {
+            "A": "I don't have any bananas, but I have some apples and pears.",
+            "B": "I don't have any bananas, but I have some oranges and peaches.",
+            "C": "I don't have any bananas, but I have some apples and grapes."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "question": "Tôi luôn thêm một ít mật ong vào trà của mình.",
+          "options": {
+            "A": "I always add some salt to my tea.",
+            "B": "I always add some honey to my tea.",
+            "C": "I always add some sugar to my tea."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 29,
+          "type": "single_choice",
+          "question": "There isn't ....... milk in the fridge.",
+          "options": {
+            "A": "Some",
+            "B": "Any",
+            "C": "a"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Would you like ....... orange juice?",
+          "options": {
+            "A": "A",
+            "B": "Some",
+            "C": "An"
+          },
+          "answer": "B"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 2",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Tôi muốn mua 2 gói mì pasta.",
+          "options": {
+            "A": "I'd like two pieces of pasta, please.",
+            "B": "I'd like two glasses of pasta, please.",
+            "C": "I'd like two packets of pasta, please."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Cô ấy uống cà phê với nhiều đường và sữa.",
+          "options": {
+            "A": "She drinks coffee with some sugar and milk.",
+            "B": "She drinks coffee with some sugar and a lot of milk.",
+            "C": "She drinks coffee with a lot of sugar and milk."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "Anh muốn mua mấy kilo gạo?",
+          "options": {
+            "A": "How many bottles of rice would you like?",
+            "B": "How many kilos of rice would you like?",
+            "C": "How many bags of rice would you like?"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Bạn có ăn nhiều dâu tây vào mùa hè không?",
+          "options": {
+            "A": "Do you eat much strawberries in the summer?",
+            "B": "Do your friends eat a lot of strawberries in the summer?",
+            "C": "Do you eat a lot of strawberries in the summer?"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "There isn't... food left in the fridge.",
+          "options": {
+            "A": "much",
+            "B": "many",
+            "C": "lot"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "question": "How .......bottles of sauce does he want to buy?",
+          "options": {
+            "A": "much",
+            "B": "a lot of",
+            "C": "many"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "question": "How............fresh fruit do they eat?",
+          "options": {
+            "A": "lot of",
+            "B": "much",
+            "C": "many"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "question": "Do you buy .........sweets for the children?",
+          "options": {
+            "A": "much",
+            "B": "many",
+            "C": "lot of"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 9,
+          "type": "single_choice",
+          "question": "They eat a....... vegetables for dinner.",
+          "options": {
+            "A": "many",
+            "B": "lot of",
+            "C": "lots of"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 10,
+          "type": "single_choice",
+          "passage": "Kreta Ayer Wet Market, Singapore: There's a lot of different food here. Go at around 6 a.m. and have some tasty noodles for breakfast in the restaurant upstairs. | La Vucciria, Palermo, Italy: In Palermo, musicians play and sing as shoppers buy their sausages and fresh pasta. | Borough Market, London, England: Borough Market is very popular, so try to go early. There isn't much food left by the end of the day!",
+          "question": "What market has live music?",
+          "options": {
+            "A": "La Vucciria, Palermo, Italy",
+            "B": "Castries Market, St Lucia",
+            "C": "Kreta Ayer Wet Market, Singapore"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 11,
+          "type": "single_choice",
+          "passage": "Kreta Ayer Wet Market, Singapore: There's a lot of different food here. Go at around 6 a.m. and have some tasty noodles for breakfast in the restaurant upstairs. | La Vucciria, Palermo, Italy: In Palermo, musicians play and sing as shoppers buy their sausages and fresh pasta. | Borough Market, London, England: Borough Market is very popular, so try to go early. There isn't much food left by the end of the day!",
+          "question": "Which market hasn't got a lot of food left by the end of the day?",
+          "options": {
+            "A": "Kreta Ayer Wet Market, Singapore",
+            "B": "Borough Market, London, England",
+            "C": "La Vucciria, Palermo, Italy"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 12,
+          "type": "single_choice",
+          "passage": "St Lawrence, Toronto, Canada: St Lawrence food market, in Toronto, is 200 years old. There are a lot of shops with every kind of meat and seafood. | Castries Market, St Lucia: Naturally, this island in the Caribbean has a market famous for fish and fruit. Try the local sauce it's very hot and spicy! | Kreta Ayer Wet Market, Singapore: There's a great restaurant upstairs. Go at around 6 a.m. and have some tasty noodles for breakfast.",
+          "question": "Which market has got great food for breakfast?",
+          "options": {
+            "A": "Castries Market, St Lucia",
+            "B": "St Lawrence, Toronto, Canada",
+            "C": "Kreta Ayer Wet Market, Singapore"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 13,
+          "type": "single_choice",
+          "passage": "Some countries use traffic lights on labels to help customers with their choices. Red means the food has a lot of fat, salt or sugar and is unhealthy. Orange means it's OK and green means it's very healthy. More and more countries plan to use traffic lights because they're easy to understand and you don't need to read every word.",
+          "question": "What do traffic lights on food labels help you?",
+          "options": {
+            "A": "read every word easily",
+            "B": "choose healthy food",
+            "C": "understand their needs"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 14,
+          "type": "single_choice",
+          "passage": "The \"best before\" date on food is there to help you know when the food is at its best quality. However, it does not mean that you have to throw the food away immediately. Many foods are still safe to eat after the \"best before\" date. Before you decide to throw something away, check how it looks, smells, and tastes.",
+          "question": "What does the 'best before' date mean?",
+          "options": {
+            "A": "The food is good to eat before the date.",
+            "B": "Throw away the food immediately after the date.",
+            "C": "Don't eat the food after the date"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 15,
+          "type": "fill_in_blank",
+          "question": "Summary: The 'best before' date shows when food is at its......., but you can still eat it after this date. So check before throwing it away.",
+          "instruction": "Fill in with TWO WORDS from the text.",
+          "answer": "best quality"
+        },
+        {
+          "number": 16,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "Do you buy many oranges for the children?",
+          "question": "Do you buy a lot....... the children?",
+          "answer": "of oranges for"
+        },
+        {
+          "number": 17,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "There aren't a lot of local markets in my region.",
+          "question": "There aren't....... in my region",
+          "answer": "many local markets"
+        },
+        {
+          "number": 18,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with TWO WORDS so that it has the same meaning. [Image: Text about 'natural' food labels often costing more, but some foods with the label still have unnatural ingredients]",
+          "question": "Summary: Foods labeled \"natural\" often cost more because the word means everything is from nature. But ....... with the label still have unnatural ingredients.",
+          "answer": "some foods"
+        },
+        {
+          "number": 19,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about superfoods having lots of vitamins and minerals but being expensive. Anyone can label food as a 'superfood', so always check the full label carefully.]",
+          "question": "Superfoods have lots of vitamins and minerals, but are often........ Anyone can label food as a \"superfood,\" so always check the full label carefully.",
+          "answer": "more expensive"
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "There isn't a lot of milk in the fridge",
+          "question": "There isn't... .the fridge.",
+          "answer": "much milk in"
+        },
+        {
+          "number": 21,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "I don't eat much bread and milk for breakfast",
+          "question": "I don't eat a .......and milk for breakfast.",
+          "answer": "lot of bread"
+        },
+        {
+          "number": 22,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "She doesn't put a lot of salt on her food",
+          "question": "She doesn't put ....... her food.",
+          "answer": "much salt on"
+        },
+        {
+          "number": 23,
+          "type": "arrange_words",
+          "words": ["by the end", "Isn't", "the day.", "much", "There", "food left", "of"],
+          "answer": "There isn't much food left by the end of the day."
+        },
+        {
+          "number": 24,
+          "type": "arrange_words",
+          "words": ["of", "lot", "are", "seafood.", "There", "every kind", "with", "a", "and", "shops", "of meat"],
+          "answer": "There are a lot of shops with every kind of meat and seafood."
+        },
+        {
+          "number": 25,
+          "type": "arrange_words",
+          "words": ["with", "the world.", "live music", "in", "aren't", "There", "markets", "many"],
+          "answer": "There aren't many markets with live music in the world."
+        },
+        {
+          "number": 26,
+          "type": "arrange_words",
+          "words": ["great", "Kreta Ayer Wet", "There's", "a", "restaurant", "at", "upstairs", "Market."],
+          "answer": "There's a great restaurant upstairs at Kreta Ayer Wet Market."
+        },
+        {
+          "number": 27,
+          "type": "arrange_words",
+          "words": ["There", "lot", "different foods", "are", "of", "at", "our", "local market.", "a"],
+          "answer": "There are a lot of different foods at our local market."
+        },
+        {
+          "number": 28,
+          "type": "fill_in_blank",
+          "passage": "Some countries use traffic lights on labels to help customers with their choices. Red means the food has a lot of fat, salt or sugar and is unhealthy. Orange means it's OK and green means it's very healthy. More and more countries plan to use traffic lights because they're easy to understand and you don't need to read every word.",
+          "question": "Summary: .......on food labels help customers choose food. Red means unhealthy, orange means it's OK, and green means healthy. More countries plan to use this simple system.",
+          "instruction": "Fill in with TWO WORDS from the text.",
+          "answer": "Traffic lights"
+        },
+        {
+          "number": 29,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about food labels - question about 'added sugar' in product summaries]",
+          "question": "Summary: [Image passage about food labels]. Fill in the blank.",
+          "answer": "added sugar"
+        },
+        {
+          "number": 30,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it has the same meaning as the given one.",
+          "original": "She eats a lot of vegetables every day.",
+          "question": "She eats ....... day.",
+          "answer": "many vegetables every"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 3",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Chúng tôi đã ở một ngôi làng nhỏ ở Mộc Châu cách đây một tuần.",
+          "options": {
+            "A": "We were in a small village in Moc Chau a week later.",
+            "B": "We were in a small village in Moc Chau for a week.",
+            "C": "We were in a small village in Moc Chau a week ago."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Những chiếc điện thoại di động đầu tiên xuất hiện vào những năm 1970.",
+          "options": {
+            "A": "The first mobile phones were in the nineteen seventeen.",
+            "B": "The first mobile phones were in nineteen seventy.",
+            "C": "The first mobile phones were in the nineteen seventies."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "A: Was Tim with you at the cinema? B: No, only Celine and David me. there with",
+          "options": {
+            "A": "are",
+            "B": "were",
+            "C": "was"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Where....you yesterday afternoon? I called you, but you ...... at home.",
+          "options": {
+            "A": "were/weren't",
+            "B": "was/was",
+            "C": "were/wasn't"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "A: Were your parents at the party last night? B: My father ...... there, but my mum.......",
+          "options": {
+            "A": "was/wasn't",
+            "B": "was/was",
+            "C": "wasn't/wasn't"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Timeline/info about Frida Kahlo - she married Diego Rivera in the nineteen twenties]",
+          "question": "When did Frida Kahlo marry Diego Rivera?",
+          "options": {
+            "A": "In the nineteen thirties",
+            "B": "In the nineteen forties",
+            "C": "In the nineteen twenties"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Timeline/info about George Washington - born in the 18th century]",
+          "question": "When was George Washington born?",
+          "options": {
+            "A": "In the 19th century",
+            "B": "In the 21st century",
+            "C": "In the 18th century"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Biography of Arthur - his wife was a pianist]",
+          "question": "What was Arthur's wife's job?",
+          "options": {
+            "A": "A pianist",
+            "B": "A composer",
+            "C": "A singer"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text passage about an architect who designed many buildings. Fill in the summary with TWO WORDS from the text.]",
+          "question": "Summary: [Architect's name] designed many ........ in his lifetime.",
+          "answer": "of buildings"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text passage about someone who lived during a certain period. Fill in the summary with TWO WORDS from the text.]",
+          "question": "Summary: [Person] ........ the 19th century.",
+          "answer": "lived during"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about famous people. Fill in the summary with THREE WORDS from the text.]",
+          "question": "Summary: Many artists ........ the 19th century.",
+          "answer": "were famous in"
+        },
+        {
+          "number": 12,
+          "type": "arrange_words",
+          "words": ["a", "write", "were", "popular.", "Ichiyo Higuchi", "her books", "very", "and", "was"],
+          "answer": "Ichiyo Higuchi was a writer and her books were very popular."
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "words": ["Long's", "were", "party", "with", "Who", "at", "last", "Saturday?", "you"],
+          "answer": "Who were you with at Long's party last Saturday?"
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "words": ["on", "their notes", "were", "There", "Queen Elizabeth II's face", "by 1953.", "with", "nine countries"],
+          "answer": "There were nine countries with Queen Elizabeth II's face on their notes by 1953."
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "Arthur Honegger sinh ra ở Paris vào cuối thế kỷ 19.",
+          "options": {
+            "A": "Arthur Honegger was born in Paris in the early nineteenth century.",
+            "B": "Arthur Honegger was born in Paris at the end of the nineteenth century.",
+            "C": "Arthur Honegger was born in Paris before the nineteenth century."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "The weather is nice today, but it ......... horrible last weekend.",
+          "options": {
+            "A": "Was",
+            "B": "Were",
+            "C": "Is"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "question": "A: .......You at the stadium yesterday? B: Yes, I ....",
+          "options": {
+            "A": "Was/ was",
+            "B": "Were/ wasn't",
+            "C": "Were/was"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 18,
+          "type": "single_choice",
+          "instruction": "[Image: Information about Queen Elizabeth II's face on British pound note - first appeared in 1960]",
+          "question": "When was Queen Elizabeth II's face on the British pound note for the first time?",
+          "options": {
+            "A": "By 1953",
+            "B": "In 1960",
+            "C": "After 2002"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 19,
+          "type": "single_choice",
+          "instruction": "[Image: Biography about Arthur and his wife - they were married for 29 years]",
+          "question": "How long were Arthur and his wife married?",
+          "options": {
+            "A": "For 29 years",
+            "B": "For 39 years",
+            "C": "For 19 years"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a composer whose music was famous. Fill in the summary with TWO WORDS from the text.]",
+          "question": "Summary: ........ was very popular in many countries.",
+          "answer": "His music"
+        },
+        {
+          "number": 21,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Queen Elizabeth II. Fill in the summary with TWO WORDS from the text.]",
+          "question": "Summary: There were ........ countries with her face on their notes.",
+          "answer": "nine countries"
+        },
+        {
+          "number": 22,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about people and their age. Fill in the summary with THREE WORDS from the text.]",
+          "question": "Summary: The photo shows people ........ young.",
+          "answer": "when they were"
+        },
+        {
+          "number": 23,
+          "type": "arrange_words",
+          "words": ["in", "were", "born", "in the", "and Sarah", "sixties", "Clives", "France."],
+          "answer": "Clives and Sarah were born in the sixties in France."
+        },
+        {
+          "number": 24,
+          "type": "single_choice",
+          "question": "Khuôn mặt của George Washington đã xuất hiện trên đồng đô la Mỹ vào thế kỷ 19.",
+          "options": {
+            "A": "George Washington's face was on the US dollar in the nineties.",
+            "B": "George Washington's face was on the US dollar in the 19th century.",
+            "C": "George Washington's face was on the US dollar in the nineteens."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 25,
+          "type": "arrange_words",
+          "words": ["a", "His aunt", "was", "21.", "to", "French painter", "was married", "when", "she"],
+          "answer": "His aunt was married to a French painter when she was 21."
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "instruction": "Điền ba từ vào chỗ trống. Prompts: My mother/ not born/ big city",
+          "question": "My mother ..... a big city",
+          "answer": "wasn't born in"
+        },
+        {
+          "number": 27,
+          "type": "arrange_words",
+          "words": ["go", "did", "Where", "summer", "last", "you", "holiday", "on?"],
+          "answer": "Where did you go on holiday last summer?"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "question": "Cô ấy đã rời khỏi văn phòng 10 phút trước.",
+          "options": {
+            "A": "She left the office 10 minutes ago.",
+            "B": "She left the office for 10 minutes.",
+            "C": "She left the office in 10 minutes."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 29,
+          "type": "single_choice",
+          "question": "Chúng tôi đã không đến trường vào hôm qua vì trời mưa to.",
+          "options": {
+            "A": "We didn't go to school yesterday because it rained heavily.",
+            "B": "We didn't go to school yesterday because it was raining heavily.",
+            "C": "We didn't go to school yesterday because it rains heavily."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Họ đã xây dựng cây cầu này vào năm 2005.",
+          "options": {
+            "A": "They built this bridge in 2005.",
+            "B": "They were building this bridge in 2005.",
+            "C": "They build this bridge in 2005."
+          },
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 4",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Yandu Bista đã sống trong một hang động cổ ở Mustang.",
+          "options": {
+            "A": "Yandu Bista lived in a Mustang ancient cave.",
+            "B": "Yandu Bista was born in a Mustang ancient cave.",
+            "C": "Yandu Bista stayed in a Mustang ancient house."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Nhiều người đã sống trong các hang động ở thế kỷ thứ 15.",
+          "options": {
+            "A": "Many people grew up in caves until the fifteenth century.",
+            "B": "Many people lived in caves in the fifteenth century.",
+            "C": "Many people stayed in houses after the fifteenth century."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "They me a nice painting on my birthday a week ago.",
+          "options": {
+            "A": "gave",
+            "B": "give",
+            "C": "gived"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Did you ....... playing computer games when you ....... 10?",
+          "options": {
+            "A": "start/were",
+            "B": "start/are",
+            "C": "started/were"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "A: Did Helen visit the White House on her trip to America? B: No, she .......",
+          "options": {
+            "A": "did not",
+            "B": "wasn't",
+            "C": "didn't"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Biography about Marco Polo - he started his journey to Asia at age 17]",
+          "question": "How old was Marco Polo when he started his journey to Asia?",
+          "options": {
+            "A": "13",
+            "B": "24",
+            "C": "17"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Biography about Marco Polo - he returned to Venice after 24 years]",
+          "question": "When did Marco Polo return to Venice?",
+          "options": {
+            "A": "After 24 years",
+            "B": "After 20 years",
+            "C": "After 17 years"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Biography about Ella Fitzgerald - her mother died in 1932]",
+          "question": "When did Ella Fitzgerald's mother die?",
+          "options": {
+            "A": "In 1932",
+            "B": "In 1925",
+            "C": "In 1927"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone who worked for a company. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: He ........ a famous company for many years.",
+          "answer": "worked for"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a writer who writes about adventures. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She ........ famous expeditions in her books.",
+          "answer": "writes about"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone who went somewhere. Fill in with THREE WORDS from the text.]",
+          "question": "Summary: Last year, I ........ grandmother's house.",
+          "answer": "went to my"
+        },
+        {
+          "number": 12,
+          "type": "arrange_words",
+          "words": ["write", "Samuel Pepys", "didn't", "other countries", "in", "about", "important events", "diary."],
+          "answer": "Samuel Pepys didn't write about important events in other countries in his diary."
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "words": ["in London.", "a diary", "of the people", "wrote", "Pepys", "daily lives", "about", "the"],
+          "answer": "Pepys wrote a diary about the daily lives of the people in London."
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "words": ["the 15th century.", "people", "the lives of", "from", "saw", "an exhibition", "about", "I"],
+          "answer": "I saw an exhibition about the lives of people from the 15th century."
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "Marco Polo đã quay trở lại Venice sau những chuyến hành trình của ông ấy ở Châu Á.",
+          "options": {
+            "A": "Marco Polo went to Venice before his trips in Asia.",
+            "B": "Marco Polo travelled to Venice during his adventures in Asia.",
+            "C": "Marco Polo returned to Venice after his journeys in Asia."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Samuel Pepys' diary being used today]",
+          "question": "How do people use Samuel Pepys' diary today?",
+          "options": {
+            "A": "To describe famous people in the 21st century",
+            "B": "To study old English history",
+            "C": "To understand the lives of the people in Europe"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 17,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a place that had no something. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: In the past, there ........ electricity in the caves.",
+          "answer": "was no"
+        },
+        {
+          "number": 18,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone's birth. Fill in with THREE WORDS from the text.]",
+          "question": "Summary: She ........ France in 1901.",
+          "answer": "was born in"
+        },
+        {
+          "number": 19,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about Marco Polo travelling to Asia]",
+          "answer": "Marco Polo travelled to Asia with his father and uncle at the age of seventeen."
+        },
+        {
+          "number": 20,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled question about how young people record their daily lives nowadays]",
+          "answer": "How do young people record and share their daily lives nowadays?"
+        },
+        {
+          "number": 21,
+          "type": "single_choice",
+          "instruction": "[Image: Biography about Frida Kahlo and Diego Rivera - they travelled around the world during the 1930s]",
+          "question": "What did Frida Kahlo and Diego Rivera do during the 1930s?",
+          "options": {
+            "A": "They travelled around the world.",
+            "B": "They worked for an art school.",
+            "C": "They painted around Mexico."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 22,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone who worked with a famous person. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She ........ famous artists during her career.",
+          "answer": "worked with"
+        },
+        {
+          "number": 23,
+          "type": "single_choice",
+          "question": "Cindy đã không đến bảo tàng vào chiều qua vì cô ấy bận",
+          "options": {
+            "A": "Cindy didn't go to the museum yesterday afternoon because she was busy",
+            "B": "Cindy went to see the museum yesterday afternoon because she was free",
+            "C": "Cindy not visited the museum yesterday afternoon because she wasn't busy"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 24,
+          "type": "single_choice",
+          "question": "A: What did you do last weekend? B: We .... a museum in Birmingham",
+          "options": {
+            "A": "Visit",
+            "B": "Was visited",
+            "C": "Visited"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 25,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentences with THREE WORDS to make them correct and meaningful. Prompts: I grow/big city/ my brother and sister",
+          "question": "I ..... a big city with my brother and sister",
+          "answer": "grew up in"
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "passage": "In the 17th century, Samuel Pepys wrote the most famous diary in the English language. He began the diary in 1660 and finished it in 1669. Pepys wrote about important event in the history of England and about the lives of famous people. His diary also described the everyday lives of the people in London and his family. So, this diary is very useful for historians in the 21st century.",
+          "question": "Summary: Samuel Pepys wrote a famous diary (1660-1669) about English history, famous people, and daily life in London. It is very ....the 21st-century historians.",
+          "instruction": "Fill in with TWO WORDS from the text.",
+          "answer": "useful for"
+        },
+        {
+          "number": 27,
+          "type": "single_choice",
+          "question": "Last week, we ..... a lot of photos in the Central Park",
+          "options": {
+            "A": "Took",
+            "B": "Were took",
+            "C": "Taked"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "question": "Mọi người mang nước từ con sông gần đó lên núi",
+          "options": {
+            "A": "People brought water from nearby river up to the mountain",
+            "B": "People bought water from the nearby up to the hill",
+            "C": "People took water to the river from the nearby mountain"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 29,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentences with THREE WORDS to make them correct and meaningful. Prompts: I/ not write/ any emails/friends/because/I/busy/last week.",
+          "question": "I .......emails to my friends because I was busy last week.",
+          "answer": "didn't write any"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Last week, we ..... a lot of views in the Central City",
+          "options": {
+            "A": "See",
+            "B": "Saw",
+            "C": "Seen"
+          },
+          "answer": "B"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 5",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Chuyến đi thuyền thật thú vị và chúng tôi được nhìn thấy nhiều cảnh đẹp.",
+          "options": {
+            "A": "It was a tiring boat trip, but we saw many beautiful things.",
+            "B": "The boat trip was interesting, and we saw many beautiful things.",
+            "C": "The boat trip was terrible, and we saw many beautiful things."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Chuyến bay của chúng tôi đã rất nguy hiểm vì cơn bão.",
+          "options": {
+            "A": "Our flight was tiring because of the storm.",
+            "B": "It was a difficult flight because of the storm.",
+            "C": "Our flight was dangerous because of the storm."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "The bus ticket is $10 and the train ticket is $12, so the bus is.......",
+          "options": {
+            "A": "cheaper",
+            "B": "cheapper",
+            "C": "more expensive"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Football is..........than basketball in many countries.",
+          "options": {
+            "A": "popularer",
+            "B": "popular more",
+            "C": "more popular"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "Our new house has four bedrooms. It's ....... than our old house.",
+          "options": {
+            "A": "biger",
+            "B": "bigger",
+            "C": "big"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Text about salmon laying eggs - their babies are safer in freshwater]",
+          "question": "Why do salmon lay their eggs in freshwater?",
+          "options": {
+            "A": "Their babies are fresher there.",
+            "B": "Their babies are stronger there.",
+            "C": "Their babies are safer there."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Text about monarch butterflies travelling to Mexico for the winter]",
+          "question": "Why do monarch butterflies travel to Mexico?",
+          "options": {
+            "A": "for nature",
+            "B": "for a rest",
+            "C": "for the winter"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Text about elephant seals travelling to Mexico to find food and warmer waters]",
+          "question": "Where do elephant seals travel to find food and warmer waters?",
+          "options": {
+            "A": "to Guadeloupe",
+            "B": "to California",
+            "C": "to Mexico"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about salmon laying eggs. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Salmon travel to rivers to lay ........ in freshwater.",
+          "answer": "their eggs"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about animals and where they give birth. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Elephant seals travel to warmer waters to ........ to their young.",
+          "answer": "give birth"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about an animal that is faster than another. Fill in with THREE WORDS from the text.]",
+          "question": "Summary: A cheetah is ........ horse.",
+          "answer": "faster than a"
+        },
+        {
+          "number": 12,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about turtles having longer journeys]",
+          "answer": "Many turtles have longer journeys than other sea animals."
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about reading being more interesting than watching a movie]",
+          "answer": "Reading a book is more interesting than watching a movie."
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about an old house being smaller than a new one]",
+          "answer": "Their old house is smaller than their new house."
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "Quãng đường tôi về quê thì dài nhưng thú vị.",
+          "options": {
+            "A": "My journey back to my hometown is slow and boring.",
+            "B": "My journey back to my hometown is long but interesting.",
+            "C": "My journey back to my hometown is short but interesting."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "The questions on the exam this year were more difficult.......last year.",
+          "options": {
+            "A": "that",
+            "B": "than",
+            "C": "then"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "question": "The blue car weighs 2200 kg. The green car weighs 1800 kg. The blue car is ....... than the green car.",
+          "options": {
+            "A": "heavier",
+            "B": "more heavier",
+            "C": "heavy"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 18,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about tree frogs having shorter journeys]",
+          "answer": "Tree frogs have shorter journeys than other animals."
+        },
+        {
+          "number": 19,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about sea turtles returning to the same beaches. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Sea turtles return to the ........ where they were born.",
+          "answer": "same beaches"
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text comparing sizes of two things. Fill in with THREE WORDS from the text.]",
+          "question": "Summary: The Pacific Ocean ........ the Atlantic Ocean.",
+          "answer": "is larger than"
+        },
+        {
+          "number": 21,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about yellow car being more modern than blue car]",
+          "answer": "The yellow car is more modern than the blue car."
+        },
+        {
+          "number": 22,
+          "type": "single_choice",
+          "instruction": "[Image: Text about the Arctic tern's migration journey being longer than other animals]",
+          "question": "How is the Arctic tern's migration journey?",
+          "options": {
+            "A": "longer than other animals' journeys",
+            "B": "better than other animals' journeys",
+            "C": "more relaxing than other animals' journeys"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 23,
+          "type": "single_choice",
+          "question": "Chuyến đi lên núi của chúng tôi đã thật dài và mệt mỏi.",
+          "options": {
+            "A": "Our trip to the mountain was slow and terrible.",
+            "B": "Our trip to the mountain was long and tiring.",
+            "C": "Our trip to the mountain was long and relaxing."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 24,
+          "type": "single_choice",
+          "instruction": "[Image: Text about salmon's journey back to their birthplace being dangerous]",
+          "question": "How is the salmon's journey back to where they were born?",
+          "options": {
+            "A": "dangerous",
+            "B": "safe",
+            "C": "relaxing"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 25,
+          "type": "fill_in_blank",
+          "context": "Mount Everest is 8,848 meters high. Mount God-Austen is 8,611 meters high.",
+          "question": "Mount Everest is ....... Godwin-Austen.",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "higher than mount"
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about salmon swimming upstream in rivers. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Salmon swim upstream in ........ to lay their eggs.",
+          "answer": "the rivers"
+        },
+        {
+          "number": 27,
+          "type": "single_choice",
+          "question": "Chuyến đi đến trang trại thật nhàm chán vì chẳng có gì để xem",
+          "options": {
+            "A": "The trip to the farm was boring because there was nothing to see",
+            "B": "The trip to the farm was relaxing because there was nothing to see",
+            "C": "The trip to the farm was terrible because there was nothing to see"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 28,
+          "type": "fill_in_blank",
+          "context": "London has a population of 8.6 million. Madrid has a population of 3.1 million.",
+          "question": "The population of London ....... that of Madrid.",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "is bigger than"
+        },
+        {
+          "number": 29,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about migration being important for certain animals. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Migration is ........ many animals' survival.",
+          "answer": "important for"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Chuyến đi đến trang trại thật nhàm chán vì chẳng có gì để xem",
+          "options": {
+            "A": "The trip to the farm was boring because there was nothing to see",
+            "B": "The trip to the farm was relaxing because there was nothing to see",
+            "C": "The trip to the farm was terrible because there was nothing to see"
+          },
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 6",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Mùa hè là mùa nóng nhất trong năm.",
+          "options": {
+            "A": "Summer is the hottest season of the year.",
+            "B": "Summer this year is hotter than last year.",
+            "C": "Summer is the hot season of the year."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Ai là ca sĩ nổi tiếng nhất ở Việt Nam hiện nay?",
+          "options": {
+            "A": "Who is the famous singer in Vietnam these days?",
+            "B": "Who is more famous singer in Vietnam these days?",
+            "C": "Who is the most famous singer in Vietnam these days?"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "The Nile is ....... in the world.",
+          "options": {
+            "A": "the longest river",
+            "B": "long river",
+            "C": "the river longest"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "Everest is the ....... in the world.",
+          "options": {
+            "A": "mountain high",
+            "B": "mountain highest",
+            "C": "highest mountain"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "Jupiter is ......... planet in our solar system.",
+          "options": {
+            "A": "big",
+            "B": "biggest",
+            "C": "the biggest"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Text about David Carter studying the Mariana Trench]",
+          "question": "What is the deepest place David Carter studied?",
+          "options": {
+            "A": "The oceans",
+            "B": "The Mariana Trench",
+            "C": "Hidden Depths"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Ciudad Perdida - it takes 4 days to walk there]",
+          "question": "How long does it take to walk to Ciudad Perdida?",
+          "options": {
+            "A": "4 days",
+            "B": "1,241 steps",
+            "C": "A thousand years"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Cartagena - the people there are friendly]",
+          "question": "How are the people in Cartagena?",
+          "options": {
+            "A": "Busy",
+            "B": "Fantastic",
+            "C": "Friendly"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Dr. Johnson exploring the Naica Mine with huge crystals and temperatures up to 50°C]",
+          "question": "Summary: Dr. Johnson explored the Naica Mine, which has huge crystals and temperatures up to 50°C. She discovered .....living inside the crystals.",
+          "answer": "tiny creatures"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Cartagena - a coastal city with fantastic seafood and tropical fruit]",
+          "question": "Summary: Cartagena is Colombia's coastal city with fantastic seafood and ........ The people here are always willing to talk.",
+          "answer": "tropical fruit"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "context": "Mount Fansipan is 3,147 meters high. It is higher than any other mountain in Vietnam.",
+          "question": "Mount Fansipan is ....... in Vietnam.",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "the highest mountain"
+        },
+        {
+          "number": 12,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about Cartagena being one of the friendliest places in the world]",
+          "answer": "Cartagena is one of the friendliest places in the world."
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about seeing the most beautiful paintings in the world at that museum]",
+          "answer": "I saw the most beautiful paintings in the world at that museum."
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about Titanic being the most popular film by James Cameron]",
+          "answer": "Titanic is the most popular film by James Cameron."
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "John là cầu thủ giỏi nhất trong đội của chúng tôi.",
+          "options": {
+            "A": "John is the best football player in our team.",
+            "B": "John is better than only one football player in our team.",
+            "C": "John is the better football player in our team."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "Hong Kong is the ....... city in the world.",
+          "options": {
+            "A": "most expensive",
+            "B": "more expensive",
+            "C": "expensivest"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Naica Mine being very hot inside - Dr. Johnson and team wore special cooling suits]",
+          "question": "Why did Dr. Johnson and her team wear special cooling suits?",
+          "options": {
+            "A": "It is very hot inside the Naica Mine.",
+            "B": "There were the biggest crystals in the Naica Mine.",
+            "C": "There were tiny creatures inside the crystals"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 18,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about photographer Anna Lee taking pictures of mountains and volcanoes in Iceland]",
+          "question": "Summary: Photographer Anna Lee took pictures of different places. Recently, she ....... of the beautiful views of mountains and volcanoes in Iceland.",
+          "answer": "took photos"
+        },
+        {
+          "number": 19,
+          "type": "fill_in_blank",
+          "context": "The pink car is $6000. The yellow car is $3000. The black car is $2500.",
+          "question": "The pink car is ......... of the three cars.",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "the most expensive"
+        },
+        {
+          "number": 20,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about yellow car being the most modern of the four cars]",
+          "answer": "The yellow car is the most modern of the four cars."
+        },
+        {
+          "number": 21,
+          "type": "single_choice",
+          "question": "Châu Á là châu lục lớn nhất thế giới.",
+          "options": {
+            "A": "Asia is the big continent in the world.",
+            "B": "Asia is the best continent in the world.",
+            "C": "Asia is the biggest continent in the world."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 22,
+          "type": "single_choice",
+          "question": "Peter ......... boy in our class.",
+          "options": {
+            "A": "the funniest",
+            "B": "funniest",
+            "C": "is the funniest"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 23,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Cali - the people know how to enjoy life]",
+          "question": "How are the people in Cali described?",
+          "options": {
+            "A": "They know how to enjoy life.",
+            "B": "They work hard in concerts and nightclubs.",
+            "C": "They don't like the annual festivals."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 24,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Cartagena - Colombia's coastal city with fantastic seafood and tropical fruit]",
+          "question": "Summary: Cartagena is Colombia's coastal city with fantastic seafood and ........ The people here are always willing to talk.",
+          "answer": "tropical fruit"
+        },
+        {
+          "number": 25,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Ciudad Perdida - a four-day trek leads to ancient stone walls and mountain views]",
+          "question": "Summary: A four-day trek through rivers and jungle leads to the ancient Ciudad Perdida, where you find ....... and incredible mountain views.",
+          "answer": "stone walls"
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "context": "This tree is 100 years old. It is older than other trees in my garden.",
+          "question": "This is ......... in my garden.",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "the oldest tree"
+        },
+        {
+          "number": 27,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled question about the most popular place for tourists in your country]",
+          "answer": "What is the most popular place for tourists in your country?"
+        },
+        {
+          "number": 28,
+          "type": "fill_in_blank",
+          "context": "A lion can run at 100 kph. A horse can run at 80 kph. A cheetah can run 120 kph.",
+          "question": "A cheetah ..... of the three animals",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "is the fastest"
+        },
+        {
+          "number": 29,
+          "type": "fill_in_blank",
+          "passage": "Cali is a city where people work hard, but they also know how to have a good time. The city is famous for its music and dancing and there are lots of concerts and nightclubs. It's also the home of Salsa in Colombia. The annual Festival of Pacific Music and the World Festival of Salsa are in August and September, so these are good months to visit.",
+          "question": "Summary: People in Cali work hard but also enjoy life. The city is famous for its music and dancing, with lots ...., nightclubs, and two annual festivals.",
+          "instruction": "Fill in with TWO WORDS from the text.",
+          "answer": "of concerts"
+        },
+        {
+          "number": 30,
+          "type": "fill_in_blank",
+          "context": "Minh is 1.8m tall. Long is 1.7m tall. Xuan is 1.65m tall.",
+          "question": "Minh ....... of the three boys",
+          "instruction": "Complete with THREE WORDS.",
+          "answer": "is the tallest"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 7",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Tôi muốn tiết kiệm tiền để mua điện thoại mới.",
+          "options": {
+            "A": "I want to save money to buy a new phone.",
+            "B": "I want to earn money to buy a new phone.",
+            "C": "I want to borrow money to buy a new phone."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Bạn có thể cho tôi mượn 20 đô la được không?",
+          "options": {
+            "A": "Can you borrow me twenty dollars?",
+            "B": "Can you pay me twenty dollars?",
+            "C": "Can you lend me twenty dollars?"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "Can ..........me ten dollars for a taxi?",
+          "options": {
+            "A": "lend you",
+            "B": "you",
+            "C": "you lend"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "....... by credit card or by cash?",
+          "options": {
+            "A": "Can pay",
+            "B": "Can I pay",
+            "C": "I can pay"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "Could you help me with my homework, ..........?",
+          "options": {
+            "A": "I could",
+            "B": "could you",
+            "C": "please"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Text about a family holiday - they enjoyed Disneyland the most]",
+          "question": "What did the family enjoy most about their holiday?",
+          "options": {
+            "A": "Disneyland",
+            "B": "The car journey",
+            "C": "Visiting Paris"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Text about a train journey - the best view was Lake Baikal]",
+          "question": "What was the best view the writer had during the journey?",
+          "options": {
+            "A": "The rivers",
+            "B": "The forests",
+            "C": "Lake Baikal"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Text about a plane making an unexpected stop in Alaska due to a problem]",
+          "question": "Why did the plane make an unexpected stop in Alaska?",
+          "options": {
+            "A": "There was a problem.",
+            "B": "It was too small.",
+            "C": "The weather was bad."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a journey from Switzerland to England - stopped near Paris at a garage]",
+          "question": "Summary: We started travelling from Switzerland to England in the early morning. At midday we stopped at .......near Paris to fix an engine problem.",
+          "answer": "a garage"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a 600km bike ride from San Francisco to Los Angeles]",
+          "question": "Summary: I finished a 600-kilometre-long ....... from San Francisco to Los Angeles, enjoying coastal views along the way. I felt exhausted, but proud.",
+          "answer": "bike ride"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about forgetting cash and having to pay with credit card. Fill in with THREE WORDS from the text.]",
+          "question": "I forgot to bring cash, ....... to pay with my credit card.",
+          "answer": "so i had"
+        },
+        {
+          "number": 12,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about borrowing money to buy a train ticket]",
+          "answer": "Can I borrow some money to buy a train ticket?"
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about a friend lending money because there was no cash]",
+          "answer": "My friend lent me ten dollars because I didn't have any cash."
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about taking money from a cash machine]",
+          "answer": "We can take out some money from the cash machine over there."
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "Cô ấy luôn chi rất nhiều tiền cho quần áo.",
+          "options": {
+            "A": "She always saves a lot of money on clothes.",
+            "B": "She always spends a lot of money on clothes.",
+            "C": "She always earns a lot of money on clothes."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "A: Can I borrow your pen? B: Yes, of.........",
+          "options": {
+            "A": "course",
+            "B": "sure",
+            "C": "certainly"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "instruction": "[Image: Text about a family stopping near Paris because of an engine problem]",
+          "question": "Why did the family stop near Paris?",
+          "options": {
+            "A": "There was an engine problem.",
+            "B": "They wanted some rest.",
+            "C": "They were tired."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 18,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a plane stopping in Alaska to fix a small problem]",
+          "question": "Summary: Our plane had to stop in Alaska to fix a small problem. After a few hours, we ......... trip and arrived in Tokyo at night.",
+          "answer": "continued our"
+        },
+        {
+          "number": 19,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a train journey from Moscow to Vladivostok lasting 6 days]",
+          "question": "Summary: We finished our 6-day ....... from Moscow to Vladivostok yesterday. We enjoyed views of forests, rivers, mountains and Lake Baikal along the trip.",
+          "answer": "train journey"
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about a brother with extra money who lends some when needed. Fill in with THREE WORDS from the text.]",
+          "question": "My brother has some extra money, .......me a little when I need it.",
+          "answer": "so he lends"
+        },
+        {
+          "number": 21,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about not having cash, so paying by credit card]",
+          "answer": "I don't have any cash, so could I pay by credit card?"
+        },
+        {
+          "number": 22,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about needing money and looking for a cash machine]",
+          "answer": "I needed some money, so I looked for a cash machine."
+        },
+        {
+          "number": 23,
+          "type": "single_choice",
+          "question": "Anh trai tôi thường cho bạn bè vay tiền.",
+          "options": {
+            "A": "My brother often lends his friends money.",
+            "B": "My brother often borrows money from his friends.",
+            "C": "My brother often takes out money from his friends."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 24,
+          "type": "single_choice",
+          "question": "......... help me exchange this currency at the bank?",
+          "options": {
+            "A": "Can I",
+            "B": "Can you",
+            "C": "Can"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 25,
+          "type": "single_choice",
+          "instruction": "[Image: Text about a train journey lasting six days]",
+          "question": "How many days did the journey last?",
+          "options": {
+            "A": "Six days",
+            "B": "Nine days",
+            "C": "Four days"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 26,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about flying from New York to Tokyo and stopping in Alaska to fix a small problem]",
+          "question": "Summary: I flew over mountains and from New York to Tokyo last month. We had to stop in Alaska to fix a ......... with the plane.",
+          "answer": "small problem"
+        },
+        {
+          "number": 27,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS using SO or BECAUSE. Original: They borrowed money from the bank. They needed to buy a new car.",
+          "question": "They borrowed money from the bank to buy a new car .........",
+          "answer": "because they needed"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "question": "Anh ấy dự định đổi một ít tiền trước chuyến đi châu Âu.",
+          "options": {
+            "A": "He plans to take out some money before his trip to Europe.",
+            "B": "He plans to change some money before his trip to Europe.",
+            "C": "He plans to earn some money before his trip to Europe."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 29,
+          "type": "single_choice",
+          "question": "Tôi muốn kiếm tiền để mua điện thoại mới.",
+          "options": {
+            "A": "I want to save money to buy a new phone.",
+            "B": "I want to earn money to buy a new phone.",
+            "C": "I want to borrow money to buy a new phone."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Bạn có thể cho tôi mượn 30 đô la được không?",
+          "options": {
+            "A": "Can you borrow me forty dollars?",
+            "B": "Can you pay me twenty dollars?",
+            "C": "Can you lend me thirty dollars?"
+          },
+          "answer": "C"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 8",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Tôi chỉ mặc quần soóc, áo phông và váy vào mùa hè.",
+          "options": {
+            "A": "I only wear jeans, T-shirts, and dresses in the summer.",
+            "B": "I only wear shorts, T-shirts, and dresses in the summer.",
+            "C": "I only wear short, T-shirt, and dress in the summer."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Tôi mặc áo khoác, áo len và đi giày cao cổ vào mùa đông.",
+          "options": {
+            "A": "I wear a tie, a sweater and boots in the winter.",
+            "B": "I wear a shirt, a scarf, and shoes in the winter.",
+            "C": "I wear a coat, a sweater and boots in the winter."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "question": "We....... in the office today.",
+          "options": {
+            "A": "aren't working",
+            "B": "not working",
+            "C": "aren't work"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 4,
+          "type": "single_choice",
+          "question": "I....for some new clothes at the moment.",
+          "options": {
+            "A": "am shoping",
+            "B": "shop",
+            "C": "am shopping"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "My sister......... clothes and fashion.",
+          "options": {
+            "A": "likes",
+            "B": "is liking",
+            "C": "like"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "instruction": "[Image: Photo of Anna wearing a black hoodie with a bold logo]",
+          "question": "What type of hoodie is Anna wearing in the photo?",
+          "options": {
+            "A": "A silver hoodie with a black logo",
+            "B": "A black hoodie with a bold logo",
+            "C": "A white hoodie with a silver logo"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Sophia's style - matching bright tops with simple jeans]",
+          "question": "What is Sophia's matching style?",
+          "options": {
+            "A": "Dresses with white sneakers",
+            "B": "Yellow tops with blue jeans",
+            "C": "Bright tops with simple jeans"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Jake - he cares most about comfort when choosing his clothes]",
+          "question": "What does Jake care about most when choosing his clothes?",
+          "options": {
+            "A": "Brand names",
+            "B": "Comfort",
+            "C": "Style"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 9,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone who works for a clothing company. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She works for a famous ........ that makes designer clothes.",
+          "answer": "clothing company"
+        },
+        {
+          "number": 10,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about famous brands in fashion. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: Young people today often prefer wearing ........ of clothes.",
+          "answer": "famous brands"
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone who plays basketball with friends at weekends. Fill in with FOUR WORDS from the text.]",
+          "question": "He usually ......... his friends at weekends.",
+          "answer": "plays basketball with"
+        },
+        {
+          "number": 12,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about people enjoying their holiday at a lake. Fill in with FIVE WORDS from the text.]",
+          "question": "......... their holiday at the lake with their cousins right now.",
+          "answer": "they are enjoying"
+        },
+        {
+          "number": 13,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled question about reading a book about the Grand Canyon at the moment]",
+          "answer": "Are you reading a book about the Grand Canyon at the moment?"
+        },
+        {
+          "number": 14,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about going to the park with sister on Sundays]",
+          "answer": "She usually goes to the park with her sister on Sundays."
+        },
+        {
+          "number": 15,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about not usually playing games but playing LOL right now]",
+          "answer": "She doesn't usually play games, but she is playing LOL right now."
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "Tôi mặc áo phông và quần jeans đi học hàng ngày.",
+          "options": {
+            "A": "I wear a T-shirt and trousers to work every day.",
+            "B": "I wear a shirt and jeans to the park every day.",
+            "C": "I wear a T-shirt and jeans to school every day."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "question": "Cảnh sát, y tá, và tiếp viên hàng không thường mặc đồng phục.",
+          "options": {
+            "A": "Police officers, nurses, and flight attendants often wear jackets.",
+            "B": "Police officers, nurses, and flight attendants often wear uniforms.",
+            "C": "Police officers, nurses, and flight attendants often wear leggings."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 18,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about fashionable bags. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She sells ........ at her boutique.",
+          "answer": "fashionable bags"
+        },
+        {
+          "number": 19,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about fashion made from unused materials. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: The new collection is made from ........ to protect the environment.",
+          "answer": "unused materials"
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone not cooking at the moment - she is cleaning in the kitchen. Fill in with THREE WORDS from the text.]",
+          "question": "She ........ the moment. She is cleaning in the kitchen.",
+          "answer": "isn't cooking at"
+        },
+        {
+          "number": 21,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about friends always wearing jeans and T-shirts to school in summer]",
+          "answer": "My friends always wear jeans and T-shirts to school in summer."
+        },
+        {
+          "number": 22,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about friends who like playing badminton but not football. Fill in with FOUR WORDS from the text.]",
+          "question": "My friends like playing badminton, but they ......... football.",
+          "answer": "don't like playing"
+        },
+        {
+          "number": 23,
+          "type": "arrange_words",
+          "words": ["his", "a holiday", "He", "family", "right now.", "having", "at the", "beach", "with", "is"],
+          "answer": "He is having a holiday at the beach with his family right now."
+        },
+        {
+          "number": 24,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about famous designers in the fashion industry. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: The show featured many ........ from around the world.",
+          "answer": "famous designers"
+        },
+        {
+          "number": 25,
+          "type": "single_choice",
+          "question": "......... around Africa at the moment?",
+          "options": {
+            "A": "Is Tom travelling",
+            "B": "Is Tom travel",
+            "C": "Does Tom travel"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 26,
+          "type": "single_choice",
+          "question": "Anh ấy đang mặc áo phông và quần soóc.",
+          "options": {
+            "A": "He is wearing a T-shirt and trousers.",
+            "B": "He is wearing a T-shirt and shorts.",
+            "C": "He wears a T-shirt and short."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 27,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about writing an essay about the environment. Fill in with THREE WORDS from the text.]",
+          "question": "......... an essay about the environment right now?",
+          "answer": "Are you writing"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Matt wearing a uniform in the photo because he has a basketball game]",
+          "question": "Why is Matt wearing a uniform in the photo?",
+          "options": {
+            "A": "He is working.",
+            "B": "He is going to school.",
+            "C": "He has a basketball game."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 29,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Emma - she often wears jeans and trainers when it's sunny]",
+          "question": "What does Emma often wear when it's sunny?",
+          "options": {
+            "A": "baggy sweaters and leggings",
+            "B": "T-shirts and shorts",
+            "C": "jeans and trainers"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 30,
+          "type": "single_choice",
+          "question": "Usually, he .......to the gym during the week.",
+          "options": {
+            "A": "doesn't go",
+            "B": "isn't going",
+            "C": "not goes"
+          },
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "lesson": "Bài 9",
+      "total_questions": 30,
+      "questions": [
+        {
+          "number": 1,
+          "type": "single_choice",
+          "question": "Chị tôi có tóc dài màu đen và đôi mắt xanh.",
+          "options": {
+            "A": "My sister has got long, dark legs and blue hands.",
+            "B": "My sister has got a long, dark nose and blue hair.",
+            "C": "My sister has got long, dark hair and blue eyes."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 2,
+          "type": "single_choice",
+          "question": "Bạn cần có đôi chân và cánh tay khỏe mạnh để leo núi.",
+          "options": {
+            "A": "You need strong hands and arms for mountain climbing.",
+            "B": "You need strong legs and hands for mountain climbing.",
+            "C": "You need strong legs and arms for mountain climbing."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 3,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it is similar in meaning. My sister's hair is long and blonde.",
+          "question": "My sister ........ blonde hair.",
+          "answer": "has got long"
+        },
+        {
+          "number": 4,
+          "type": "fill_in_blank",
+          "instruction": "Complete the sentence with THREE WORDS so that it is similar in meaning. The lines around their eyes are black.",
+          "question": "They have ......... around their eyes.",
+          "answer": "got black lines"
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "question": "Bạn cần một chiếc áo khoác và đôi ủng để giữ ấm cơ thể và đôi chân.",
+          "options": {
+            "A": "You need a jacket and boots to keep your body and feet warm.",
+            "B": "You need a jacket and sandals to keep your body and head warm.",
+            "C": "You need a shirt and boots to keep your body and arms warm."
+          },
+          "answer": "A"
+        },
+        {
+          "number": 6,
+          "type": "single_choice",
+          "question": "They ........ the same eye colour.",
+          "options": {
+            "A": "haven't got",
+            "B": "aren't have got",
+            "C": "not have got"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 7,
+          "type": "single_choice",
+          "question": "Cổ và vai của tôi đang đau vì làm việc suốt cả ngày.",
+          "options": {
+            "A": "My neck and head are aching from working all day long.",
+            "B": "My neck and legs are aching from working all day long.",
+            "C": "My neck and shoulders are aching from working all day long."
+          },
+          "answer": "C"
+        },
+        {
+          "number": 8,
+          "type": "arrange_words",
+          "words": ["are", "have", "at", "clothes.", "the festival", "the men", "got", "colourful", "tall and", "All"],
+          "answer": "All the men at the festival are tall and have got colourful clothes."
+        },
+        {
+          "number": 9,
+          "type": "arrange_words",
+          "words": ["lines", "their eyes?", "and black", "white faces", "Have", "got", "they", "around"],
+          "answer": "Have they got white faces and black lines around their eyes?"
+        },
+        {
+          "number": 10,
+          "type": "arrange_words",
+          "words": ["eyes.", "got blue", "Sarah", "brown eyes,", "has", "her", "sister has", "but", "got"],
+          "answer": "Sarah has got brown eyes, but her sister has got blue eyes."
+        },
+        {
+          "number": 11,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Description of a man's physical appearance - thick mouth]",
+          "question": "The man has........ mouth.",
+          "answer": "got a thick"
+        },
+        {
+          "number": 12,
+          "type": "fill_in_blank",
+          "passage": "Lily is really good-looking. Her eyes are large and bright blue, as clear as the sky. Her blonde hair is long and cascades down her back like a waterfall. It has got some blue highlights. Lily likes wearing sporty clothes, which make her look strong and dynamic. She often wears white sports T-shirts with gray or black joggers and trainers for a bike ride with her friends.",
+          "question": "Summary: Lily has got large blue eyes and long........ She often wears sporty clothes, like sports T-shirts, joggers and trainers.",
+          "instruction": "Fill in with TWO WORDS from the text.",
+          "answer": "blonde hair"
+        },
+        {
+          "number": 13,
+          "type": "single_choice",
+          "passage": "This Polga tribesman is a dancer at a festival in Papua New Guinea. All the men are tall and they wear colourful clothes with red hats over their hair. They have got white faces and black lines around their eyes. The man in the photo has got bright red make-up on his mouth and nose, and he has got a string of seashells around his neck.",
+          "question": "What are all the men's clothes like?",
+          "options": {
+            "A": "colourful",
+            "B": "red",
+            "C": "white"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 14,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Thai Nguyen having a lot of beautiful tea hills. Fill in with THREE WORDS from the text.]",
+          "question": "Thai Nguyen has ......... of beautiful tea hills.",
+          "answer": "got a lot"
+        },
+        {
+          "number": 15,
+          "type": "single_choice",
+          "question": "They both ....... friendly smiles.",
+          "options": {
+            "A": "are got",
+            "B": "have got",
+            "C": "are"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 16,
+          "type": "single_choice",
+          "question": "Ricky đang để râu và nó che phủ miệng của anh ấy.",
+          "options": {
+            "A": "Ricky is cutting his hair at the moment and it covers his forehead.",
+            "B": "Ricky is growing his beard at the moment and it covers his mouth.",
+            "C": "Ricky is growing his hair at the moment and it covers his hips."
+          },
+          "answer": "B"
+        },
+        {
+          "number": 17,
+          "type": "single_choice",
+          "question": "Max ........ tall and has got a slender build.",
+          "options": {
+            "A": "is",
+            "B": "have got",
+            "C": "has got"
+          },
+          "answer": "A"
+        },
+        {
+          "number": 18,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about a woman with brown hair having red make-up on her face]",
+          "answer": "The woman with brown hair has got red make-up on her face."
+        },
+        {
+          "number": 19,
+          "type": "arrange_words",
+          "instruction": "[Image: Scrambled sentence about a mother having short brown hair and beautiful green eyes]",
+          "answer": "Her mother has got short, brown hair and beautiful green eyes."
+        },
+        {
+          "number": 20,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about Liam having two sisters named Gina and Rachel. Fill in with THREE WORDS from the text.]",
+          "question": "Liam has ......... They are Gina and Rachel.",
+          "answer": "got two sisters"
+        },
+        {
+          "number": 21,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone having green eyes. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She has got beautiful ........ that everyone admires.",
+          "answer": "green eyes"
+        },
+        {
+          "number": 22,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone having brown eyes. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: He has got warm ........ and a friendly smile.",
+          "answer": "brown eyes"
+        },
+        {
+          "number": 23,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about someone wearing a red dress. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: She is wearing a beautiful ........ at the party.",
+          "answer": "red dress"
+        },
+        {
+          "number": 24,
+          "type": "single_choice",
+          "instruction": "[Image: Text about Luke having a well-built body because he plays sports regularly]",
+          "question": "Why does Luke have a well-built body?",
+          "options": {
+            "A": "He looks different from Luke.",
+            "B": "He inherited it from his mother.",
+            "C": "He plays sports regularly"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 25,
+          "type": "single_choice",
+          "instruction": "[Image: Photo of three women - the one in the middle is reading a book]",
+          "question": "Who is reading a book?",
+          "options": {
+            "A": "The woman on the left",
+            "B": "The woman in the middle.",
+            "C": "The woman at the front"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 26,
+          "type": "single_choice",
+          "instruction": "[Image: Photo of a group of people - most are standing close together]",
+          "question": "What are most people in the photo doing?",
+          "options": {
+            "A": "reading together",
+            "B": "talking together",
+            "C": "standing close together"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 27,
+          "type": "single_choice",
+          "instruction": "[Image: Photo of men with black lines on their faces]",
+          "question": "What do the men have on their faces?",
+          "options": {
+            "A": "black eyes",
+            "B": "black lines",
+            "C": "black mouths"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 28,
+          "type": "single_choice",
+          "question": "......... a thick beard?",
+          "options": {
+            "A": "Is your grandfather got",
+            "B": "Has your grandfather got",
+            "C": "Does your grandfather got"
+          },
+          "answer": "B"
+        },
+        {
+          "number": 29,
+          "type": "single_choice",
+          "question": "Liam ......... short, dark hair and brown eyes.",
+          "options": {
+            "A": "is",
+            "B": "have got",
+            "C": "has got"
+          },
+          "answer": "C"
+        },
+        {
+          "number": 30,
+          "type": "fill_in_blank",
+          "instruction": "[Image: Text about people having friendly smiles. Fill in with TWO WORDS from the text.]",
+          "question": "Summary: They both have got ........ and are very welcoming.",
+          "answer": "friendly smiles"
+        }
+      ]
+    }
+  ]
+}

@@ -1,193 +1,25 @@
-require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
-const connectDB = require("../config/db");
-const Faculty = require("../models/Faculty");
-const Year = require("../models/Year");
-const Semester = require("../models/Semester");
-const Subject = require("../models/Subject");
-const Lesson = require("../models/Lesson");
-const Question = require("../models/Question");
+require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+const connectDB = require('../config/db');
+const Subject = require('../models/Subject');
+const Lesson = require('../models/Lesson');
+const Question = require('../models/Question');
 
-const DRY_RUN = process.argv.includes("--dry-run");
-const VERBOSE_SKIPPED = process.argv.includes("--verbose-skipped");
-const SUBJECT_CODE = "KTCT";
-const SUBJECT_NAME = "Kinh tế chính trị Mác - Lênin";
-const SOURCE_DIR = path.resolve(__dirname, "..", "..", "monhoc", "ktct");
-const LESSON_FILES = [1, 2, 3, 4, 5].map((n) => ({ lessonNo: n, filePath: path.join(SOURCE_DIR, `bai${n}.txt`) }));
+const SOURCE_DIR = path.resolve(__dirname, '..', '..', 'monhoc', 'ktct');
 
-const normalize = (value) => String(value || "")
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .replace(/đ/g, "d")
-  .replace(/Đ/g, "D")
-  .replace(/\s+/g, " ")
-  .trim()
-  .toLowerCase();
+const normalize = (s) => String(s || '').trim();
 
-const cleanText = (value) => String(value || "")
-  .replace(/\r/g, "")
-  .replace(/\u00A0/g, " ")
-  .replace(/[ 	]+/g, " ")
-  .replace(/\s+$/g, "")
-  .trim();
+const parseFile = (text) => {
+  // Split by question markers like "Câu 1:" or new line starting with "Câu"
+  const parts = text.split(/\n(?=Câu\s+\d+:)/g);
+  const questions = [];
+  for (const part of parts) {
+    const m = part.match(/^Câu\s*(\d+):\s*([\s\S]*)$/);
+    if (!m) continue;
+    const rest = m[2].trim();
+    // split options lines starting with e.g. A. or A)
 
-const stripAnswerLabel = (value) => cleanText(String(value || "").replace(/^\s*[A-Z]\s*[.):]\s*/i, ""));
-const stripIndexMarker = (value) => cleanText(String(value || "").replace(/^\s*\d+(?:\s*[.)]|\.\d+\s*)\s*/i, ""));
-
-const stripStars = (value) => cleanText(String(value || "").replace(/\*/g, ""));
-
-const parseQuestionBlocks = (text) => {
-  const lines = String(text || "").replace(/\r/g, "").split("\n");
-  const blocks = [];
-  let currentNo = 0;
-  let currentLines = [];
-
-  const flush = () => {
-    if (currentNo > 0) {
-      blocks.push({ questionNo: currentNo, lines: [...currentLines] });
-    }
-  };
-
-  const isLikelyQuestionHeading = (line) => {
-    const raw = cleanText(line);
-    if (!raw) return null;
-
-    const qMatch = raw.match(/^Câu\s*(\d+)\s*[:.)-]/i);
-    if (qMatch) {
-      return { no: Number(qMatch[1]), text: raw.replace(/^Câu\s*\d+\s*[:.)-]\s*/i, "") };
-    }
-
-    return null;
-  };
-
-  for (const rawLine of lines) {
-    const heading = isLikelyQuestionHeading(rawLine);
-    if (heading) {
-      flush();
-      currentNo = heading.no;
-      currentLines = [heading.text];
-      continue;
-    }
-
-    if (currentNo > 0) currentLines.push(rawLine);
-  }
-
-  flush();
-  return blocks;
-};
-
-const parseBoolFromLine = (line) => {
-  const raw = String(line || "");
-  if (!/\*/.test(raw)) return null;
-  const lowered = normalize(raw);
-  if (lowered.includes("dung")) return true;
-  if (lowered.includes("sai")) return false;
-  return null;
-};
-
-const detectBoolToken = (line) => {
-  const lowered = normalize(line);
-  if (lowered.includes("dung")) return true;
-  if (lowered.includes("sai")) return false;
-  return null;
-};
-
-const parseTrueFalse = (questionText, lines) => {
-  const statements = [];
-  let current = null;
-
-  const pushCurrent = () => {
-    if (current && current.text) {
-      statements.push({ text: stripStars(current.text), correct: current.correct });
-    }
-  };
-
-  for (const rawLine of lines) {
-    const line = cleanText(rawLine);
-    if (!line) continue;
-
-    const statementMatch = line.match(/^(\d+)\s*[.)]\s*(.+)$/);
-    if (statementMatch) {
-      pushCurrent();
-      const inlineCorrect = parseBoolFromLine(line);
-      current = {
-        text: statementMatch[2],
-        correct: inlineCorrect,
-      };
-      continue;
-    }
-
-    const optionMatch = line.match(/^\*?\s*[A-Z]\s*[.)]\s*(.+)$/);
-    if (optionMatch && current) {
-      const boolToken = detectBoolToken(optionMatch[1]);
-      if (boolToken !== null && /\*/.test(line)) {
-        current.correct = boolToken;
-      }
-      continue;
-    }
-
-    if (!current) {
-      const seededCorrect = parseBoolFromLine(line);
-      if (seededCorrect === null && !/^\*?\s*[A-Z]\s*[.)]/.test(line)) {
-        current = { text: line, correct: null };
-      }
-    }
-
-    if (!current) continue;
-
-    const correct = parseBoolFromLine(line);
-    if (correct !== null) {
-      current.correct = correct;
-      continue;
-    }
-
-    if (!/^(?:[A-Z]\s*[.)]|\*\s*(?:Đúng|Sai)|Trả\s*lời\s*:)/i.test(line)) {
-      if (current.correct !== null) {
-        pushCurrent();
-        current = { text: line, correct: null };
-        continue;
-      }
-      current.text = `${current.text} ${line}`.trim();
-    }
-  }
-
-  pushCurrent();
-
-  const answers = statements
-    .map((item) => ({
-      text: stripAnswerLabel(stripStars(item.text)),
-      imageUrl: "",
-      isCorrect: item.correct === true,
-    }))
-    .filter((item) => item.text);
-
-  if (!answers.length) return null;
-
-  // If source doesn't mark stars but still follows true/false format, keep type true_false.
-  if (!answers.some((item) => item.isCorrect) && answers.length) {
-    answers[0].isCorrect = true;
-  }
-
-  return {
-    type: "true_false",
-    question: stripStars(questionText),
-    answers,
-    dragItems: [],
-    dropTargets: [],
-    answerSentence: "",
-  };
-};
-
-const parseDragTable = (questionText, lines) => {
-  const pairs = [];
-
-  for (const rawLine of lines) {
-    const line = cleanText(rawLine);
-    if (!line) continue;
-
-    if (/->|—>|=>/i.test(line)) {
-      const parts = line.split(/->|—>|=>/i);
       if (parts.length >= 2) {
         const prompt = stripStars(parts[0]);
         const answer = stripStars(parts.slice(1).join(" "));

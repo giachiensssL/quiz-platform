@@ -1,7 +1,7 @@
 // src/context/DataContext.jsx
 // Mock data - thay bằng API calls khi có backend
 import { createContext, useCallback, useContext, useState, useEffect, useRef } from 'react';
-import { KTMT_SEED } from '../data/ktmtSeed';
+import { DATA_SEEDS } from '../data';
 import { API_BASE_URL, adminDataAPI, facultiesAPI, lessonsAPI, questionsAPI, semestersAPI, subjectsAPI, yearsAPI } from '../api/api';
 
 const DataContext = createContext(null);
@@ -85,23 +85,44 @@ const inferSubjectIcon = (subjectName) => {
   return matched?.icon || '📚';
 };
 
-const mergeById = (base, extras) => {
+const normalizeLabel = (value) => String(value || '').trim().toLowerCase();
+const mergeEntities = (base, extras, keyFn) => {
   const list = Array.isArray(base) ? [...base] : [];
-  const ids = new Set(list.map((item) => item?.id));
+  const lookup = new Map();
+  list.forEach((item) => {
+    const key = keyFn(item);
+    if (key) lookup.set(key, item);
+  });
+
   (Array.isArray(extras) ? extras : []).forEach((item) => {
-    if (!ids.has(item?.id)) {
+    if (!item) return;
+    const key = keyFn(item);
+    if (!key) return;
+
+    const existing = lookup.get(key);
+    if (existing) {
+      const index = list.indexOf(existing);
+      const merged = { ...existing, ...item };
+      list[index] = merged;
+      lookup.set(key, merged);
+    } else {
       list.push(item);
-      ids.add(item?.id);
+      lookup.set(key, item);
     }
   });
+
   return list;
 };
 
-const ensureKtmtSeed = (source) => {
+const buildSubjectKey = (item) => normalizeLabel(item?.id || item?.name);
+const buildLessonKey = (item) => `${normalizeLabel(item?.subjectId || item?.subject)}::${normalizeLabel(item?.name)}`;
+const buildQuestionKey = (item) => `${normalizeLabel(item?.lessonId)}::${normalizeLabel(item?.text || item?.question)}`;
+
+const ensureDataSeeds = (source) => {
   const safe = source && typeof source === 'object' ? source : {};
-  const subjects = mergeById(safe.subjects, [KTMT_SEED.subject]);
-  const lessons = mergeById(safe.lessons, KTMT_SEED.lessons);
-  const questions = mergeById(safe.questions, KTMT_SEED.questions);
+  const subjects = mergeEntities(safe.subjects, DATA_SEEDS.map((seed) => seed.subject).filter(Boolean), buildSubjectKey);
+  const lessons = mergeEntities(safe.lessons, DATA_SEEDS.flatMap((seed) => (Array.isArray(seed.lessons) ? seed.lessons : [])), buildLessonKey);
+  const questions = mergeEntities(safe.questions, DATA_SEEDS.flatMap((seed) => (Array.isArray(seed.questions) ? seed.questions : [])), buildQuestionKey);
 
   return {
     ...safe,
@@ -113,7 +134,7 @@ const ensureKtmtSeed = (source) => {
 
 const normalizeData = (source, options = {}) => {
   const includeKtmtSeed = options.includeKtmtSeed !== false;
-  const seeded = includeKtmtSeed ? ensureKtmtSeed(source) : (source && typeof source === 'object' ? source : {});
+  const seeded = includeKtmtSeed ? ensureDataSeeds(source) : (source && typeof source === 'object' ? source : {});
   return {
     ...seeded,
     faculties: (Array.isArray(seeded?.faculties) ? seeded.faculties : []).map((item) => ({ ...item, locked: Boolean(item?.locked) })),

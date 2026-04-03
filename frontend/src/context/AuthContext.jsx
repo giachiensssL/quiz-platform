@@ -124,11 +124,17 @@ export function AuthProvider({ children }) {
     }
     return { success: false, error: 'Tên đăng nhập hoặc mật khẩu không đúng.' };
   }, [mockUsers]);
-  const logout = useCallback(() => {
-    setUser(null);
-    safeStorageRemove('qm_user');
-    safeStorageRemove('qm_token');
-    safeStorageRemove(REFRESH_TOKEN_KEY);
+  const logout = useCallback(async () => {
+    try {
+      await authAPI.logout();
+    } catch (err) {
+      console.warn('Backend logout failed:', err.message);
+    } finally {
+      setUser(null);
+      safeStorageRemove('qm_user');
+      safeStorageRemove('qm_token');
+      safeStorageRemove(REFRESH_TOKEN_KEY);
+    }
   }, []);
   return <AuthContext.Provider value={{ user, login, logout, mockUsers, setMockUsers }}>{children}</AuthContext.Provider>;
 }

@@ -232,7 +232,7 @@ const extractLessonHeader = (line) => {
     const matched = normalized.match(pattern);
     if (!matched) continue;
     const lessonNumber = Number(matched[1]);
-    if (!Number.isInteger(lessonNumber) || lessonNumber < 1 || lessonNumber > 12) continue;
+    if (!Number.isInteger(lessonNumber) || lessonNumber < 1 || lessonNumber > 100) continue;
     return {
       lessonNumber,
       title: normalizeText(matched[2] || ''),

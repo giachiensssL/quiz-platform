@@ -122,6 +122,7 @@ api.interceptors.response.use(
 
 export const authAPI = {
   login: (d) => api.post('/auth/login', d),
+  logout: () => api.post('/auth/logout'),
   me: () => api.get('/auth/me')
 };
 
@@ -187,8 +188,9 @@ export const answersAPI = {
 };
 
 export const resultsAPI = {
-  submit: (d) => api.post('/submit', d, { skipAuthRedirect: true }),
-  myList: () => api.get('/results/me')
+  submit: (d) => api.post("/submit", d, { skipAuthRedirect: true }),
+  myList: () => api.get("/results/me"),
+  details: (id) => api.get(`/results/attempt/${id}`),
 };
 
 export const leaderboardAPI = {

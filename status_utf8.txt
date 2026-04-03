@@ -1,0 +1,24 @@
+﻿ M backend/package-lock.json
+ M backend/package.json
+ M backend/routes/submit.js
+ M backend/seed/importKtctFromTxt.js
+ M backend/seed/reports/qth_import_qa.csv
+ M backend/server.js
+ M frontend/src/App.jsx
+ M frontend/src/api/api.js
+ M frontend/src/context/AuthContext.jsx
+ M frontend/src/context/DataContext.jsx
+ M frontend/src/pages/ProfilePage.jsx
+ M frontend/src/styles/global.css
+ M frontend/src/utils/wordQuestionParser.js
+ D "monhoc/PH\303\201P LU\341\272\254T \304\220\341\272\240I C\306\257\306\240NG.txt"
+?? backend/routes/results.js
+?? backend/scripts/
+?? backend/seed/exportSubjectSeed.js
+?? backend/seed/importKtctAllFromTxt.js
+?? frontend/src/data/index.js
+?? frontend/src/pages/ReviewPage.jsx
+?? frontend/src/utils/quizUtils.js
+?? monhoc/NGOAI_NGU_2_dap_an.json
+?? monhoc/PHAP_LUAT_DAI_CUONG.docx
+?? status.txt

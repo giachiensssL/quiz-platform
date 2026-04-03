@@ -75,13 +75,40 @@ router.post("/", protect, async (req, res) => {
       let isCorrect = false;
       let correctResponse = null;
 
-      if (type === "single" || type === "true_false") {
+      if (type === "single") {
         const right = answerOptions.find((item) => item.isCorrect);
         correctResponse = right?.text || "";
         if (userAnswer && userAnswer.answer != null) {
           const selected = findAnswerById(answerOptions, userAnswer.answer);
           const selectedText = selected?.text || userAnswer.answer;
           isCorrect = normalize(selectedText) === normalize(correctResponse);
+        }
+      }
+
+      if (type === "true_false") {
+        if (userAnswer && userAnswer.answer && typeof userAnswer.answer === "object" && !Array.isArray(userAnswer.answer)) {
+          // Multi-statement T/F
+          const boolMap = userAnswer.answer;
+          const totalUnits = answerOptions.length || 1;
+          const correctUnits = answerOptions.reduce((sum, answerOption, idx) => {
+            // Strictly check if the user selected a boolean value
+            const userChoice = boolMap[idx];
+            if (userChoice !== true && userChoice !== false) return sum; // Not answered
+            
+            return sum + (userChoice === Boolean(answerOption.isCorrect) ? 1 : 0);
+          }, 0);
+
+          isCorrect = correctUnits === totalUnits && Object.keys(boolMap).length > 0;
+          correctResponse = answerOptions.map((item) => Boolean(item.isCorrect));
+        } else {
+          // Single-choice T/F fallback
+          const right = answerOptions.find((item) => item.isCorrect);
+          correctResponse = right?.text || "";
+          if (userAnswer && userAnswer.answer != null) {
+            const selected = findAnswerById(answerOptions, userAnswer.answer);
+            const selectedText = selected?.text || userAnswer.answer;
+            isCorrect = normalize(selectedText) === normalize(correctResponse);
+          }
         }
       }
 
@@ -112,18 +139,7 @@ router.post("/", protect, async (req, res) => {
         }
       }
 
-      if (type === "true_false") {
-        if (userAnswer && userAnswer.answer && typeof userAnswer.answer === "object" && !Array.isArray(userAnswer.answer)) {
-          const boolMap = userAnswer.answer;
-          const totalUnits = answerOptions.length || 1;
-          const correctUnits = answerOptions.reduce((sum, answerOption, idx) => {
-            return sum + (Boolean(boolMap[idx]) === Boolean(answerOption.isCorrect) ? 1 : 0);
-          }, 0);
-
-          isCorrect = correctUnits === totalUnits;
-          correctResponse = answerOptions.map((item) => Boolean(item.isCorrect));
-        }
-      }
+      // True/False evaluation logic moved and unified above to avoid redundancy.
 
       if (type === "arrange_words") {
         const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
@@ -182,7 +198,7 @@ router.post("/", protect, async (req, res) => {
         correctResponse = question.dropTargets?.map((target) => ({
           target: target.id,
           correctItemId: target.correctItemId,
-          correctItemIds: Array.isArray(target.correctItemIds)
+          correctItemIds: Array.isArray(target.correctItemIds) && target.correctItemIds.length > 0
             ? target.correctItemIds
             : (target.correctItemId ? [target.correctItemId] : []),
         }));
@@ -197,7 +213,7 @@ router.post("/", protect, async (req, res) => {
               && expectedOrder.every((value, idx) => value === actualOrder[idx]);
           } else if (question.dropTargets?.length && typeof userAnswer.answer === "object") {
             isCorrect = question.dropTargets.every((target) => {
-              const expected = Array.isArray(target.correctItemIds)
+              const expected = Array.isArray(target.correctItemIds) && target.correctItemIds.length > 0
                 ? target.correctItemIds.map((id) => normalize(id)).filter(Boolean)
                 : [normalize(target.correctItemId)].filter(Boolean);
               const actualRaw = userAnswer.answer[target.id];

@@ -21,6 +21,7 @@ const leaderboardRoutes = require("./routes/leaderboard");
 const yearRoutes = require("./routes/years");
 const semesterRoutes = require("./routes/semesters");
 const analyticsRoutes = require("./routes/analytics");
+const resultsRoutes = require("./routes/results");
 
 const app = express();
 const server = http.createServer(app);
@@ -90,6 +91,7 @@ app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/years", yearRoutes);
 app.use("/api/semesters", semesterRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/results", resultsRoutes);
 
 app.get("/api/ping", (req, res) => {
   res.json({ status: "ok", time: new Date() });
@@ -118,15 +120,6 @@ const ensureDefaultAdmin = async () => {
   const adminUsername = adminUsernameRaw.toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD || "Janscient2005";
   const resetOnBoot = String(process.env.ADMIN_RESET_ON_BOOT || "false").toLowerCase() === "true";
-
-  try {
-    await User.collection.dropIndex("email_1");
-    console.log("Dropped legacy index: users.email_1");
-  } catch (error) {
-    if (error.codeName !== "IndexNotFound") {
-      console.warn("Skip dropping legacy index email_1:", error.message);
-    }
-  }
 
   await User.updateMany({ role: "admin", username: { $ne: adminUsername } }, { $set: { role: "user" } });
 

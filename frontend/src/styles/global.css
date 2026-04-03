@@ -243,7 +243,8 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
   display: flex; flex-direction: column; gap: 10px;
-  position: relative; overflow: hidden;
+  position: relative;
+  text-align: left;
 }
 .item-card::after {
   content: '';
@@ -325,7 +326,6 @@ a { text-decoration: none; color: inherit; }
 :root[data-theme='dark'] .form-input:focus { background: var(--surface); box-shadow: 0 0 0 3px rgba(96,165,250,.2); }
 .form-input.error { border-color: var(--danger); }
 .form-input::placeholder { color: var(--muted-light); }
-.form-error { font-size: .78rem; color: var(--danger); display: flex; align-items: center; gap: 4px; }
 .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .file-picker-input {
   position: absolute;
@@ -1781,4 +1781,9 @@ body {
   .admin-page-content {
     height: auto;
   }
+}
+.activity-row:hover {
+  background: var(--bg-soft) !important;
+  border-color: var(--blue-mid) !important;
+  opacity: 0.9;
 }

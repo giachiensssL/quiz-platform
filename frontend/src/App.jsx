@@ -14,6 +14,7 @@ import QuizPage        from './pages/QuizPage';
 import PracticePage    from './pages/PracticePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage     from './pages/ProfilePage';
+import ReviewPage      from './pages/ReviewPage';
 import AdminDashboard  from './pages/admin/AdminDashboard';
 import './styles/global.css';
 
@@ -67,6 +68,7 @@ function App() {
             <Route path="/practice/:subjectId" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/review/:attemptId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
