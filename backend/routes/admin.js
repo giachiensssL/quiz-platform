@@ -933,6 +933,9 @@ router.delete(
       req,
     });
 
+    if (lessonIds.length) {
+      await Question.deleteMany({ lessonId: { $in: lessonIds } });
+    }
     await Lesson.deleteMany({ subject: req.params.id });
     await Subject.findByIdAndDelete(req.params.id);
     notifyCatalogUpdated();

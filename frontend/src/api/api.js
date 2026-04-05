@@ -126,13 +126,7 @@ export const authAPI = {
   me: () => api.get('/auth/me')
 };
 
-export const usersAPI = {
-  list: () => api.get('/users'),
-  create: (d) => api.post('/users', d),
-  remove: (id) => api.delete(`/users/${id}`),
-  block: (id) => api.patch(`/users/${id}/block`),
-  unblock: (id) => api.patch(`/users/${id}/unblock`)
-};
+// NOTE: User management is handled through adminDataAPI below (correct admin endpoints).
 
 export const facultiesAPI = {
   list: () => api.get('/faculties'),

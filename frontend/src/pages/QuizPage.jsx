@@ -20,7 +20,7 @@ const PRACTICE_DURATION_SECONDS = 45 * 60;
 const COMPARE_TEXT_LIMIT = 120;
 const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
 const isDragQuestionType = (type) => type === 'drag';
-const isArrangeQuestionType = () => false;
+const isArrangeQuestionType = (type) => type === 'arrange';
 const isMatchQuestionType = (type) => type === 'match' || type === 'arrange';
 const optionLabel = (index) => String.fromCharCode(65 + index);
 const sameId = (left, right) => String(left ?? '') === String(right ?? '');
@@ -92,6 +92,13 @@ const getQuestionAttemptSignature = (questions) => {
 
 const buildShuffledAttempt = (baseQuestions, storageKey) => {
   if (!Array.isArray(baseQuestions) || baseQuestions.length === 0) return [];
+
+  // Skip shuffle attempt loop when only 1 question – signature can never differ.
+  if (baseQuestions.length === 1) {
+    const single = baseQuestions.map(cloneQuestionForAttempt);
+    safeStorageSet(storageKey, getQuestionAttemptSignature(single));
+    return single;
+  }
 
   const previousSignature = safeStorageGet(storageKey);
   let picked = null;

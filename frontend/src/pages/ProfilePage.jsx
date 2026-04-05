@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/api';
 import Navbar from '../components/Navbar';
 import { EmptyState } from '../components/UI';
@@ -6,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function ProfilePage() {
   const { user, mockUsers } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({
     user: null,

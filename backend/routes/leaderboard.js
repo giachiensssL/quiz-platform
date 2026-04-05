@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
     }
 
     const pipeline = [
+      { $match: { role: "user", isBlocked: false } },
       { $unwind: "$attempts" },
     ];
 

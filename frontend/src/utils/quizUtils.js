@@ -10,7 +10,7 @@ export const TYPE_LABELS = {
 
 export const isAnswerCorrect = (answer) => Boolean(answer?.correct ?? answer?.isCorrect);
 export const isDragQuestionType = (type) => type === "drag";
-export const isArrangeQuestionType = () => false;
+export const isArrangeQuestionType = (type) => type === 'arrange';
 export const isMatchQuestionType = (type) => type === "match" || type === "arrange";
 export const optionLabel = (index) => String.fromCharCode(65 + index);
 export const sameId = (left, right) => String(left ?? "") === String(right ?? "");

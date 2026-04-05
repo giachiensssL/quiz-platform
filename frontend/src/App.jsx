@@ -43,7 +43,8 @@ function VisitTracker() {
     return () => {
       window.clearInterval(heartbeat);
       window.removeEventListener('beforeunload', onUnload);
-      analyticsAPI.leave({ sessionId }).catch(() => {});
+      // Do not call analyticsAPI.leave here to avoid double-leave from React StrictMode
+      // unmount/remount. The beforeunload handler (sendBeacon) covers actual page exits.
     };
   }, []);
 

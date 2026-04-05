@@ -53,7 +53,9 @@ const computeStreakDays = (attempts = []) => {
   const uniqueDays = Array.from(new Set(
     attempts
       .map((item) => {
-        const date = new Date(item?.createdAt || item?.updatedAt || Date.now());
+        const raw = item?.createdAt || item?.updatedAt;
+        if (!raw) return "";
+        const date = new Date(raw);
         if (Number.isNaN(date.getTime())) return "";
         return date.toISOString().slice(0, 10);
       })

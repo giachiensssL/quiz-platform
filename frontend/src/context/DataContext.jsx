@@ -337,6 +337,7 @@ export function DataProvider({ children }) {
       subjects,
       lessons,
       questions,
+      leaderboard: [],
     }, { includeKtmtSeed: false }));
     return true;
   }, []);
@@ -399,6 +400,7 @@ export function DataProvider({ children }) {
 
     let socket;
     let reconnectTimer;
+    let reconnectDelay = 1500;
 
     const connect = () => {
       setRealtimeStatus('connecting');
@@ -406,11 +408,13 @@ export function DataProvider({ children }) {
         socket = new WebSocket(wsUrl);
       } catch {
         setRealtimeStatus('disconnected');
-        reconnectTimer = window.setTimeout(connect, 3000);
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+        reconnectTimer = window.setTimeout(connect, reconnectDelay);
         return;
       }
 
       socket.onopen = () => {
+        reconnectDelay = 1500; // Reset backoff on successful connect
         setRealtimeStatus('connected');
       };
 
@@ -427,7 +431,8 @@ export function DataProvider({ children }) {
 
       socket.onclose = () => {
         setRealtimeStatus('disconnected');
-        reconnectTimer = window.setTimeout(connect, 1500);
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+        reconnectTimer = window.setTimeout(connect, reconnectDelay);
       };
 
       socket.onerror = () => {
