@@ -136,6 +136,25 @@ export function AuthProvider({ children }) {
       safeStorageRemove(REFRESH_TOKEN_KEY);
     }
   }, []);
-  return <AuthContext.Provider value={{ user, login, logout, mockUsers, setMockUsers }}>{children}</AuthContext.Provider>;
+
+  const updateProfile = useCallback(async (data) => {
+    try {
+      const response = await authAPI.updateProfile(data);
+      const updatedUser = response.data.user;
+      const u = {
+        ...user,
+        username: updatedUser.username,
+        name: updatedUser.fullName || updatedUser.username,
+        avatar: updatedUser.avatar,
+      };
+      setUser(u);
+      safeStorageSet('qm_user', JSON.stringify(u));
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error?.response?.data?.message || 'Cập nhật không thành công' };
+    }
+  }, [user]);
+
+  return <AuthContext.Provider value={{ user, login, logout, updateProfile, mockUsers, setMockUsers }}>{children}</AuthContext.Provider>;
 }
 export const useAuth = () => useContext(AuthContext);

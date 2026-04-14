@@ -32,6 +32,7 @@ const userSchema = new Schema(
       lessons: [{ type: Schema.Types.ObjectId, ref: "Lesson" }],
     },
     refreshTokens: [{ type: String }],
+    avatar: { type: String, default: "" },
     attempts: [attemptSchema],
   },
   { timestamps: true }

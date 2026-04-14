@@ -123,7 +123,13 @@ api.interceptors.response.use(
 export const authAPI = {
   login: (d) => api.post('/auth/login', d),
   logout: () => api.post('/auth/logout'),
-  me: () => api.get('/auth/me')
+  me: () => api.get('/auth/me'),
+  updateProfile: (d) => {
+    if (d instanceof FormData) {
+      return api.put('/auth/profile', d, { headers: { 'Content-Type': 'multipart/form-data' } });
+    }
+    return api.put('/auth/profile', d);
+  }
 };
 
 // NOTE: User management is handled through adminDataAPI below (correct admin endpoints).

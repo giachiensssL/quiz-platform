@@ -16,6 +16,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage     from './pages/ProfilePage';
 import ReviewPage      from './pages/ReviewPage';
 import AdminDashboard  from './pages/admin/AdminDashboard';
+import ChatWidget     from './components/ChatWidget';
 import './styles/global.css';
 
 function VisitTracker() {
@@ -57,6 +58,7 @@ function App() {
       <AuthProvider>
         <DataProvider>
           <VisitTracker />
+          <ChatWidget />
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

@@ -1,14 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI } from '../api/api';
+import { authAPI, API_BASE_URL } from '../api/api';
 import Navbar from '../components/Navbar';
 import { EmptyState } from '../components/UI';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProfilePage() {
-  const { user, mockUsers } = useAuth();
+  const { user, mockUsers, updateProfile } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  
   const [profile, setProfile] = useState({
     user: null,
     stats: {
@@ -19,6 +25,13 @@ export default function ProfilePage() {
     },
     recentActivities: [],
   });
+
+  const getFullAvatarUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const base = API_BASE_URL.replace('/api', '');
+    return `${base}${path}`;
+  };
 
   const isServerToken = (token) => {
     const value = String(token || '').trim();
@@ -39,6 +52,7 @@ export default function ProfilePage() {
       user: {
         username: user?.username || '',
         fullName: found?.name || user?.name || '',
+        avatar: user?.avatar || '',
       },
       stats: {
         totalAttempts,
@@ -50,45 +64,38 @@ export default function ProfilePage() {
     };
   };
 
+  const loadProfile = async () => {
+    const token = localStorage.getItem('qm_token');
+    if (!isServerToken(token)) {
+      setProfile(toLocalProfile());
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await authAPI.me();
+      const payload = res?.data || {};
+      setProfile({
+        user: payload.user || null,
+        stats: {
+          totalAttempts: Number(payload?.stats?.totalAttempts || 0),
+          accuracy: Number(payload?.stats?.accuracy || 0),
+          totalScore: Number(payload?.stats?.totalScore || 0),
+          streakDays: Number(payload?.stats?.streakDays || 0),
+        },
+        recentActivities: Array.isArray(payload?.recentActivities) ? payload.recentActivities : [],
+      });
+      setEditName(payload.user?.fullName || '');
+    } catch {
+      setProfile(toLocalProfile());
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let mounted = true;
-    const loadProfile = async () => {
-      const token = localStorage.getItem('qm_token');
-      if (!isServerToken(token)) {
-        if (mounted) {
-          setProfile(toLocalProfile());
-          setLoading(false);
-        }
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const res = await authAPI.me();
-        const payload = res?.data || {};
-        if (!mounted) return;
-        setProfile({
-          user: payload.user || null,
-          stats: {
-            totalAttempts: Number(payload?.stats?.totalAttempts || 0),
-            accuracy: Number(payload?.stats?.accuracy || 0),
-            totalScore: Number(payload?.stats?.totalScore || 0),
-            streakDays: Number(payload?.stats?.streakDays || 0),
-          },
-          recentActivities: Array.isArray(payload?.recentActivities) ? payload.recentActivities : [],
-        });
-      } catch {
-        if (!mounted) return;
-        setProfile(toLocalProfile());
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
     loadProfile();
-    return () => {
-      mounted = false;
-    };
   }, [user?.id, user?.username]);
 
   const displayName = profile?.user?.fullName || user?.name || user?.username || 'User';
@@ -96,6 +103,38 @@ export default function ProfilePage() {
     () => (displayName ? displayName.split(' ').map((w) => w[0]).slice(-2).join('').toUpperCase() : 'U'),
     [displayName]
   );
+
+  const avatarUrl = getFullAvatarUrl(profile?.user?.avatar || user?.avatar);
+
+  const handleUpdateName = async () => {
+    if (!editName.trim()) return;
+    setUpdating(true);
+    const res = await updateProfile({ fullName: editName });
+    if (res.success) {
+      setIsEditing(false);
+      loadProfile();
+    } else {
+      alert(res.error);
+    }
+    setUpdating(false);
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    setUpdating(true);
+    const res = await updateProfile(formData);
+    if (res.success) {
+      loadProfile();
+    } else {
+      alert(res.error);
+    }
+    setUpdating(false);
+  };
 
   const statCards = [
     [String(profile?.stats?.totalAttempts || 0), 'Bài đã làm', ''],
@@ -119,16 +158,87 @@ export default function ProfilePage() {
     <div className="app-wrapper"><Navbar/>
       <div className="page-content">
         <div className="profile-head">
-          <div className="profile-avatar">{initials}</div>
-          <div>
-            <div className="page-title">{displayName}</div>
+          <div 
+            className="profile-avatar" 
+            style={{ 
+              cursor: 'pointer',
+              overflow: 'hidden',
+              position: 'relative',
+              backgroundColor: avatarUrl ? 'transparent' : 'var(--blue)',
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            title="Đổi ảnh đại diện"
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : initials}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: 'rgba(0,0,0,0.5)',
+              color: 'white',
+              fontSize: '10px',
+              padding: '2px 0',
+              textAlign: 'center',
+              opacity: 0,
+              transition: 'opacity 0.2s'
+            }} className="avatar-hover-hint">Sửa</div>
+          </div>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            style={{ display: 'none' }} 
+            accept="image/*" 
+            onChange={handleAvatarChange} 
+          />
+          
+          <div style={{ flex: 1 }}>
+            {isEditing ? (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  className="input" 
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  style={{ fontSize: '1.25rem', fontWeight: 700, padding: '4px 8px' }}
+                  autoFocus
+                />
+                <button className="btn btn-green btn-sm" onClick={handleUpdateName} disabled={updating}>
+                  Lưu
+                </button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(false)}>
+                  Hủy
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div className="page-title">{displayName}</div>
+                <button 
+                  style={{
+                    background:'none',
+                    border:'none',
+                    color:'var(--blue)',
+                    cursor:'pointer',
+                    fontSize:'.875rem'
+                  }}
+                  onClick={() => setIsEditing(true)}
+                >
+                  ✎ Sửa
+                </button>
+              </div>
+            )}
+            
             <div style={{fontSize:'.875rem',color:'var(--muted)',marginTop:4}}>@{user?.username || profile?.user?.username || ''}</div>
             <div style={{display:'flex',gap:8,marginTop:10}}>
               <span className="badge badge-blue">Sinh viên</span>
               <span className="badge badge-green">Hoạt động</span>
+              {updating && <span style={{fontSize:'.75rem', color:'var(--blue)'}}>Đang cập nhật...</span>}
             </div>
           </div>
         </div>
+        
         <div className="stat-row">
           {statCards.map(([v,l,c])=>(
             <div key={l} className="stat-card">
@@ -138,6 +248,7 @@ export default function ProfilePage() {
             </div>
           ))}
         </div>
+        
         <div style={{marginTop:20}}>
           <div className="section-title">Hoạt động gần đây</div>
           <div className="table-wrap">
@@ -173,6 +284,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+      <style>{`
+        .profile-avatar:hover .avatar-hover-hint { opacity: 1 !important; }
+      `}</style>
     </div>
   );
 }

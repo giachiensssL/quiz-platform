@@ -4,6 +4,32 @@ const User = require("../models/User");
 const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = "uploads/";
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `avatar-${req.user._id}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|webp/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+    if (mimetype && extname) return cb(null, true);
+    cb(new Error("Chỉ chấp nhận file ảnh (jpg, jpeg, png, webp)"));
+  },
+});
 
 const ACCESS_EXPIRES = process.env.JWT_EXPIRES_IN || "15m";
 const REFRESH_EXPIRES = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
@@ -197,6 +223,7 @@ router.get("/me", verifyToken, async (req, res) => {
         username: user.username,
         fullName: user.fullName || "",
         email: user.email || "",
+        avatar: user.avatar || "",
         role: user.role,
         createdAt: user.createdAt,
       },
@@ -208,6 +235,51 @@ router.get("/me", verifyToken, async (req, res) => {
         streakDays: computeStreakDays(attempts),
       },
       recentActivities,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/profile", verifyToken, upload.single("avatar"), async (req, res) => {
+  try {
+    const { fullName } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    if (fullName !== undefined) {
+      user.fullName = fullName.trim();
+    }
+
+    if (req.file) {
+      // Remove old avatar if exists
+      if (user.avatar && user.avatar.startsWith("/uploads/")) {
+        const oldPath = path.join(__dirname, "..", user.avatar);
+        if (fs.existsSync(oldPath)) {
+          try {
+            fs.unlinkSync(oldPath);
+          } catch (e) {
+            console.error("Error removing old avatar:", e);
+          }
+        }
+      }
+      user.avatar = `/uploads/${req.file.filename}`;
+    }
+
+    await user.save();
+
+    return res.json({
+      message: "Cập nhật hồ sơ thành công",
+      user: {
+        id: String(user._id),
+        username: user.username,
+        fullName: user.fullName,
+        avatar: user.avatar,
+        role: user.role,
+      },
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

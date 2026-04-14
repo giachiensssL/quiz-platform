@@ -8,6 +8,8 @@ const rateLimit = require("express-rate-limit");
 const { WebSocketServer } = require("ws");
 const connectDB = require("./config/db");
 const User = require("./models/User");
+const path = require("path");
+const fs = require("fs");
 const { setWebSocketServer } = require("./realtime");
 
 const authRoutes = require("./routes/auth");
@@ -79,6 +81,13 @@ app.use(morgan("tiny"));
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
+
+// Serve uploads
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+app.use("/uploads", express.static(uploadsDir));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/faculties", facultyRoutes);

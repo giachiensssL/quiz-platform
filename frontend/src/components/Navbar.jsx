@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
 import { Button } from './UI';
 import { sidebarItems } from './Sidebar';
+import { API_BASE_URL } from '../api/api';
 
 export default function Navbar() {
   const THEME_KEY = 'qm_theme';
@@ -13,6 +14,13 @@ export default function Navbar() {
   const { realtimeStatus } = useData();
   const [theme, setTheme] = useState('light');
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const getFullAvatarUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const base = API_BASE_URL.replace('/api', '');
+    return `${base}${path}`;
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY);
@@ -39,6 +47,8 @@ export default function Navbar() {
   const mobileItems = user?.role === 'admin'
     ? [{ label: 'Admin Dashboard', icon: '🛠', path: '/admin' }]
     : sidebarItems;
+
+  const avatarUrl = getFullAvatarUrl(user?.avatar);
 
   return (
     <>
@@ -78,7 +88,11 @@ export default function Navbar() {
           )}
           <Button variant="ghost" size="sm" onClick={toggleTheme}>{theme === 'dark' ? '☀ Sáng' : '🌙 Tối'}</Button>
           <span className="navbar-user">{user?.name}</span>
-          <button className="avatar-btn">{initials}</button>
+          <button className="avatar-btn" onClick={() => navigate('/profile')} style={{ overflow: 'hidden', padding: 0 }}>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : initials}
+          </button>
           <Button variant="ghost" size="sm" onClick={()=>{logout();navigate('/login');}}>Đăng xuất</Button>
         </div>
       </nav>
