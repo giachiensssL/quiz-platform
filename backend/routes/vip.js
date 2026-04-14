@@ -107,12 +107,12 @@ router.post("/webhook", async (req, res) => {
     console.log("Dữ liệu nhận được:", JSON.stringify(req.body, null, 2));
 
     const body = req.body;
-    const content = body.description || body.content || body.addInfo || "";
+    const content = (body.description || body.content || body.addInfo || "").toUpperCase();
     console.log("Nội dung chuyển khoản trích xuất:", content);
     
-    // Find the orderId inside the transfer content (e.g. "VIP-1713..." or "Thanh toan VIP-1713...")
-    const match = content.match(/VIP-\d+-[A-Z0-9]+/i);
-    const orderId = match ? match[0].toUpperCase() : (body.orderId || null);
+    // Improved Regex: Search for 'VIP' followed by optional hyphens and alpha-numeric characters
+    const match = content.match(/VIP-?\d+-?[A-Z0-9]+/i);
+    let orderId = match ? match[0].toUpperCase() : (body.orderId || null);
     
     console.log("Mã đơn hàng tìm thấy:", orderId);
 
@@ -121,8 +121,26 @@ router.post("/webhook", async (req, res) => {
       return res.status(400).json({ message: "No orderId found in payment content" });
     }
 
-    const transaction = await Transaction.findOne({ orderId: orderId.trim() });
-    if (!transaction) return res.status(404).json({ message: "Transaction not found" });
+    // Normalization logic: find by strict ID OR by normalized ID (no hyphens)
+    const normalizedId = orderId.replace(/-/g, "");
+    const transaction = await Transaction.findOne({
+      $or: [
+        { orderId: orderId.trim() },
+        { orderId: { $regex: new RegExp(orderId.trim().split('').join('-?'), 'i') } }
+      ]
+    });
+    
+    // Fallback: If still not found, search all transactions and compare normalized IDs
+    let finalTransaction = transaction;
+    if (!finalTransaction) {
+      const allPending = await Transaction.find({ status: "pending" });
+      finalTransaction = allPending.find(t => t.orderId.replace(/-/g, "") === normalizedId);
+    }
+
+    if (!finalTransaction) {
+      console.log("❌ LỖI: Không tìm thấy giao dịch nào khớp với mã:", orderId);
+      return res.status(404).json({ message: "Transaction not found" });
+    }
     if (transaction.status === "completed") return res.json({ message: "Already processed" });
 
     // Generate accounts
