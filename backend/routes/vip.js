@@ -148,6 +148,13 @@ router.get('/status/:orderId', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GET /api/vip/webhook ← Helper for browser testing
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/webhook', (req, res) => {
+  res.send('<h1>✅ Webhook VIP đang hoạt động!</h1><p>Vui lòng chuyển tiền theo đúng mã đơn hàng để hệ thống tự động xử lý.</p>');
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/vip/webhook  ← SePay webhook (automatic when payment arrives)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/webhook', async (req, res) => {
