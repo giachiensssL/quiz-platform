@@ -51,7 +51,7 @@ router.post("/create-order", async (req, res) => {
     const pkg = PACKAGES[packageId];
     if (!pkg) return res.status(400).json({ message: "Gói không hợp lệ." });
 
-    const orderId = `VIP-${Date.now()}-${randomStr(3).toUpperCase()}`;
+    const orderId = `VIP${Date.now()}${randomStr(3).toUpperCase()}`;
     const amount = pkg.amount;
 
     const bankId = "BIDV";
@@ -110,8 +110,8 @@ router.post("/webhook", async (req, res) => {
     const content = (body.description || body.content || body.addInfo || "").toUpperCase();
     console.log("Nội dung chuyển khoản trích xuất:", content);
     
-    // Improved Regex: Search for 'VIP' followed by optional hyphens and alpha-numeric characters
-    const match = content.match(/VIP-?\d+-?[A-Z0-9]+/i);
+    // Simple Regex: Search for 'VIP' followed by alpha-numeric characters
+    const match = content.match(/VIP[A-Z0-9]+/i);
     let orderId = match ? match[0].toUpperCase() : (body.orderId || null);
     
     console.log("Mã đơn hàng tìm thấy:", orderId);
