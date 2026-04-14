@@ -66,9 +66,7 @@ export default function ChatWidget() {
   useEffect(() => {
     if (!user) return;
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.hostname;
-    const wsUrl = `${protocol}//${host}:5001/ws`;
+    const wsUrl = API_BASE_URL.replace('/api', '/ws').replace(/^http/, 'ws');
 
     const connect = () => {
       if (socketRef.current && socketRef.current.readyState < 2) {
