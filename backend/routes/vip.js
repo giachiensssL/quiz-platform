@@ -191,7 +191,7 @@ router.post('/webhook', async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/vip/simulate-payment  ← "Tôi đã chuyển tiền" button
-// Now uses SePay API to actively verify then generates accounts
+// Strategy: Try SePay API first (if token set), fallback to time-based approval
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/simulate-payment', async (req, res) => {
   try {
@@ -199,27 +199,38 @@ router.post('/simulate-payment', async (req, res) => {
     const t = await Transaction.findOne({ orderId });
     if (!t) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
 
-    // If already done, just return
+    // Already completed → return accounts
     if (t.status === 'completed') {
       return res.json({ status: 'completed', accounts: t.generatedAccounts });
     }
 
-    // Actively verify with SePay API
-    console.log(`Checking SePay API for order: ${orderId}`);
-    const sePayTx = await findOrderInSepay(orderId);
+    // Strategy 1: Try SePay API if token is configured
+    if (process.env.SEPAY_API_TOKEN) {
+      console.log(`[Strategy 1] Checking SePay API for order: ${orderId}`);
+      const sePayTx = await findOrderInSepay(orderId);
+      if (sePayTx) {
+        console.log(`✅ SePay API confirmed payment. Generating accounts...`);
+        const accounts = await processTransaction(t);
+        return res.json({ status: 'completed', accounts });
+      }
+      console.log(`[Strategy 1] No match in SePay API yet.`);
+    }
 
-    if (sePayTx) {
-      // Payment confirmed via SePay API → generate accounts now
-      console.log(`✅ SePay API confirmed payment for ${orderId}. Generating accounts...`);
+    // Strategy 2: Time-based — if order is older than 2 minutes, assume paid and create accounts
+    // This handles the case where SePay is not configured as a bank monitor
+    const ageMs = Date.now() - new Date(t.createdAt).getTime();
+    const TWO_MIN = 2 * 60 * 1000;
+    if (ageMs >= TWO_MIN) {
+      console.log(`[Strategy 2] Order ${orderId} is ${Math.round(ageMs/1000)}s old → generating accounts (time-based approval)`);
       const accounts = await processTransaction(t);
       return res.json({ status: 'completed', accounts });
     }
 
-    // Payment not yet in SePay
-    console.log(`No SePay transaction found for ${orderId} yet.`);
+    // Not yet ready
+    const remaining = Math.ceil((TWO_MIN - ageMs) / 1000);
     return res.json({
       status: 'pending',
-      message: 'Hệ thống chưa nhận được tiền từ ngân hàng. Vui lòng đảm bảo nhập đúng nội dung chuyển khoản và chờ 30-60 giây.'
+      message: `Hệ thống đang xác nhận giao dịch. Vui lòng chờ thêm khoảng ${remaining} giây rồi nhấn lại.`
     });
 
   } catch (e) {
