@@ -151,44 +151,56 @@ router.get('/status/:orderId', async (req, res) => {
 // POST /api/vip/webhook  ← SePay webhook (automatic when payment arrives)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/webhook', async (req, res) => {
-  console.log('=== SEPAY WEBHOOK RECEIVED ===');
-  console.log('Body:', JSON.stringify(req.body, null, 2));
+  console.log('==== [SEPAY WEBHOOK START] ====');
+  console.log('Client IP:', req.ip);
+  console.log('Headers:', JSON.stringify(req.headers));
+  console.log('Raw Body:', JSON.stringify(req.body));
 
   try {
     const body = req.body || {};
-    const rawContent = String(
-      body.content || body.transferContent || body.description ||
-      body.memo || body.addInfo || body.remarks || ''
-    );
-    const normalized = rawContent.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    const vipIdx = normalized.indexOf('VIP');
+    
+    // Gộp tất cả các trường có thể chứa nội dung chuyển tiền vào 1 chuỗi dài
+    const fullTextSearch = [
+      body.content, body.transferContent, body.description,
+      body.memo, body.addInfo, body.remarks, body.code
+    ].filter(Boolean).join(' ').toUpperCase();
 
-    if (vipIdx === -1) {
-      console.log('Non-VIP webhook, skipping.');
-      return res.status(200).json({ success: true, note: 'not_vip' });
+    console.log('Nội dung chuyển tiền tổng hợp:', fullTextSearch);
+
+    if (!fullTextSearch || fullTextSearch.length < 3) {
+      console.log('>>> [Bỏ qua]: Không tìm thấy nội dung chuyển khoản.');
+      return res.status(200).json({ success: true, note: 'empty_content' });
     }
 
-    const extracted = normalized.substring(vipIdx);
-    const pending = await Transaction.find({ status: 'pending' });
-    const match = pending.find(t => {
-      const dbNorm = t.orderId.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      return extracted.includes(dbNorm) || dbNorm.includes(extracted);
-    });
+    // Trả lời 200 ngay để SePay không gửi lại lần nữa
+    res.status(200).json({ success: true, message: 'Received' });
 
-    // Respond 200 immediately, then process
-    res.status(200).json({ success: true });
+    // Tìm tất cả các đơn hàng đang chờ
+    const pendingOrders = await Transaction.find({ status: 'pending' });
+    console.log('Số đơn hàng đang chờ:', pendingOrders.length);
+
+    let match = null;
+    for (const order of pendingOrders) {
+      const dbCode = order.orderId.toUpperCase();
+      if (fullTextSearch.includes(dbCode)) {
+        match = order;
+        console.log(`✅ [KHỚP LỆNH]: Tìm thấy đơn hàng ${dbCode}`);
+        break;
+      }
+    }
 
     if (!match) {
-      console.error(`No pending transaction matched "${extracted}"`);
+      console.log('❌ [KHÔNG KHỚP]: Không tìm thấy mã đơn hàng nào trong nội dung trên.');
       return;
     }
 
-    console.log(`Processing order ${match.orderId} for ${match.buyerEmail}...`);
-    const accounts = await processTransaction(match);
-    console.log(`✅ Done! Created ${accounts.length} accounts.`);
+    // Tạo tài khoản VIP
+    console.log(`🚀 [XỬ LÝ]: Đang tạo ${match.count || 10} tài khoản cho ${match.buyerEmail}...`);
+    await processTransaction(match);
+    console.log('✅ [HOÀN TẤT]: Đã nâng cấp thành công.');
 
   } catch (err) {
-    console.error('WEBHOOK ERROR:', err.message);
+    console.error('🔥 [LỖI WEBHOOK]:', err.message);
     if (!res.headersSent) res.status(200).json({ success: true });
   }
 });
