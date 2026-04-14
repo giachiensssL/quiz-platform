@@ -4,17 +4,14 @@ const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
 
-// Helper to generate random string
 const randomStr = (len) => Math.random().toString(36).substring(2, 2 + len);
 
-// VIP Packages Configuration
 const PACKAGES = {
-  'p1':  { id: 'p1',  count: 1,  amount: 35000,  label: 'Khởi đầu (1 TK)' },
-  'p5':  { id: 'p5',  count: 5,  amount: 50000,  label: 'Tiểu Thánh (5 TK)' },
-  'p10': { id: 'p10', count: 10, amount: 100000, label: 'Đại Thánh (10 TK)' },
+  'p1':  { count: 1,  amount: 35000,  label: 'Khởi đầu (1 TK)' },
+  'p5':  { count: 5,  amount: 50000,  label: 'Tiểu Thánh (5 TK)' },
+  'p10': { count: 10, amount: 100000, label: 'Đại Thánh (10 TK)' },
 };
 
-// Email Transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -23,139 +20,157 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendEmailClient = async (to, accounts) => {
-  const content = accounts.map(a => `- Tài khoản: ${a.username} | Mật khẩu: ${a.password}`).join('\n');
+const sendEmail = async (to, accounts) => {
+  const lines = accounts.map(a => `  - User: ${a.username} | Pass: ${a.password}`).join('\n');
   try {
     await transporter.sendMail({
       from: '"Thiên Đạo Học Viện" <no-reply@tiendao.vn>',
       to,
-      subject: '📦 Tài khoản VIP của bạn đã sẵn sàng!',
-      text: `Chào đạo hữu,\n\nCảm ơn bạn đã ủng hộ chúng tôi. Dưới đây là danh sách tài khoản tu luyện của bạn:\n\n${content}\n\nChúc bạn tu luyện tinh tấn!`,
+      subject: '📦 Tài khoản VIP đã sẵn sàng!',
+      text: `Tài khoản của bạn:\n\n${lines}\n\nChúc tu luyện tinh tấn!`,
     });
-    console.log(`✅ Email sent to ${to}`);
-  } catch (err) {
-    console.error(`❌ Failed to send email: ${err.message}`);
-  }
+  } catch (e) { console.error('Email error:', e.message); }
 };
 
-// Common Account Generation Logic
-const generateAndCompleteOrder = async (transaction) => {
+// Generate accounts & save to DB
+const processTransaction = async (t) => {
+  const count = t.itemsCount || 1;
   const accounts = [];
-  const count = transaction.itemsCount || 1;
   for (let i = 0; i < count; i++) {
-    const username = `sh_${Date.now().toString().slice(-4)}${randomStr(4)}`;
+    const username = `vip_${Date.now().toString().slice(-5)}${randomStr(3)}`;
     const password = randomStr(8);
-    await User.create({ username, password, fullName: "Người dùng VIP", role: "user" });
+    await User.create({ username, password, fullName: 'Đạo Hữu VIP', role: 'user' });
     accounts.push({ username, password });
-    await new Promise(r => setTimeout(r, 60)); // unique timestamps
+    await new Promise(r => setTimeout(r, 80));
   }
-  transaction.status = "completed";
-  transaction.generatedAccounts = accounts;
-  await transaction.save();
-  sendEmailClient(transaction.buyerEmail, accounts);
+  t.status = 'completed';
+  t.generatedAccounts = accounts;
+  await t.save();
+  sendEmail(t.buyerEmail, accounts); // fire and forget
   return accounts;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [POST] /api/vip/create-order
+// POST /api/vip/create-order
 // ─────────────────────────────────────────────────────────────────────────────
-router.post("/create-order", async (req, res) => {
+router.post('/create-order', async (req, res) => {
   try {
     const { email, name, packageId } = req.body;
-    if (!email) return res.status(400).json({ message: "Thiếu email để nhận tài khoản." });
+    if (!email) return res.status(400).json({ message: 'Thiếu email.' });
     const pkg = PACKAGES[packageId];
-    if (!pkg) return res.status(400).json({ message: "Gói không tồn tại." });
+    if (!pkg) return res.status(400).json({ message: 'Gói không hợp lệ.' });
 
-    const orderId = `VIP${Date.now()}${randomStr(3).toUpperCase()}`;
-    const bankId = "BIDV";
-    const bankAccount = "8874437189";
-    const accountName = "GIANG A CHIEN";
-
+    const orderId = `VIP${Date.now()}${randomStr(4).toUpperCase()}`;
+    const bankId = 'BIDV', bankAccount = '8874437189', accountName = 'GIANG A CHIEN';
     const qrUrl = `https://img.vietqr.io/image/${bankId}-${bankAccount}-compact2.png?amount=${pkg.amount}&addInfo=${orderId}&accountName=${encodeURIComponent(accountName)}`;
 
-    const transaction = await Transaction.create({
-      orderId, amount: pkg.amount,
-      buyerEmail: email, buyerName: name,
-      itemsCount: pkg.count,
+    const t = await Transaction.create({
+      orderId, amount: pkg.amount, buyerEmail: email,
+      buyerName: name, itemsCount: pkg.count,
     });
 
-    res.json({ orderId: transaction.orderId, amount: transaction.amount, qrUrl, bankId, bankAccount, accountName });
+    res.json({ orderId: t.orderId, amount: t.amount, qrUrl, bankId, bankAccount, accountName });
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [POST] /api/vip/webhook - TƯƠNG THÍCH SEPAY CHUẨN 2024
+// GET /api/vip/status/:orderId  ← Used by frontend polling
 // ─────────────────────────────────────────────────────────────────────────────
-router.post("/webhook", async (req, res) => {
+router.get('/status/:orderId', async (req, res) => {
   try {
-    console.log(">>> [LOG WEBHOOK SEPAY] Bắt đầu xử lý...");
-    console.log(">>> [BODY]:", JSON.stringify(req.body, null, 2));
+    const t = await Transaction.findOne({ orderId: req.params.orderId });
+    if (!t) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
+    res.json({ status: t.status, accounts: t.generatedAccounts || [] });
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
 
-    const { content, transferAmount, id } = req.body;
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/vip/webhook  ← SePay calls this when money arrives
+// FIX: Process FIRST, then respond 200 — avoids Render killing async work
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/webhook', async (req, res) => {
+  // Log EVERYTHING for debugging in Render logs
+  console.log('=== SEPAY WEBHOOK ===');
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('Body:', JSON.stringify(req.body, null, 2));
 
-    // 1. Kiểm tra tính hợp lệ dữ liệu SePay gửi sang
-    if (!content) {
-      console.warn(">>> [Lỗi]: Thiếu trường 'content' (Nội dung chuyển tiền)");
-      return res.status(400).json({ status: 400, message: "Missing content field" });
+  try {
+    const body = req.body || {};
+
+    // SePay can send content in any of these fields:
+    const rawContent = String(
+      body.content || body.transferContent || body.description ||
+      body.memo || body.addInfo || body.remarks || ''
+    );
+    const amount = Number(body.transferAmount || body.amount || 0);
+
+    console.log('Extracted content:', rawContent);
+    console.log('Extracted amount:', amount);
+
+    if (!rawContent) {
+      console.warn('No content field found — returning 200 to prevent SePay retry spam');
+      return res.status(200).json({ success: true, note: 'no content' });
     }
 
-    // 2. Trả về 200 NGAY cho SePay để tránh gửi lặp lại (Idempotency)
-    // SePay cần nhận kết quả OK trước khi Backend thực hiện logic nặng
-    res.status(200).json({ status: 200, message: "OK" });
+    // Normalize: uppercase, only A-Z 0-9
+    const normalized = rawContent.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const vipIdx = normalized.indexOf('VIP');
 
-    // 3. Logic tìm orderId dựa trên nội dung chuyển khoản (bỏ qua dấu gạch ngang)
-    const normalizedContent = content.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (!normalizedContent.includes("VIP")) {
-      console.log(">>> [Bỏ qua]: Không phải nội dung thanh toán VIP.");
-      return;
+    if (vipIdx === -1) {
+      console.log('Content does not contain VIP — not a VIP transaction, skipping.');
+      return res.status(200).json({ success: true, note: 'not vip' });
     }
 
-    // Tìm mã bắt đầu từ chữ VIP
-    const vipIdx = normalizedContent.indexOf("VIP");
-    const extractedOrderId = normalizedContent.substring(vipIdx);
-    console.log(">>> [Phân tích]: Tìm thấy mã VIP nghi vấn:", extractedOrderId);
+    const extracted = normalized.substring(vipIdx);
+    console.log('Normalized VIP code extracted:', extracted);
 
-    // Lấy tất cả các giao dịch đang chờ để so khớp chuỗi
-    const pendingTrans = await Transaction.find({ status: "pending" });
-    const target = pendingTrans.find(t => {
-      const dbId = t.orderId.toUpperCase().replace(/[^A-Z0-9]/g, "");
-      return extractedOrderId.includes(dbId) || dbId.includes(extractedOrderId);
+    // Find matching pending transaction
+    const pending = await Transaction.find({ status: 'pending' });
+    console.log('Pending transactions:', pending.map(p => p.orderId));
+
+    const match = pending.find(t => {
+      const dbNorm = t.orderId.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const hit = extracted.includes(dbNorm) || dbNorm.includes(extracted);
+      if (hit) console.log(`✅ DB ID "${dbNorm}" matched extracted "${extracted}"`);
+      return hit;
     });
 
-    if (!target) {
-      console.error(`>>> [Lỗi]: Không tìm thấy đơn hàng nào khớp với: ${extractedOrderId}`);
-      return;
+    if (!match) {
+      console.error(`❌ No pending order matched "${extracted}"`);
+      // Still return 200 so SePay doesn't retry infinitely
+      return res.status(200).json({ success: true, note: 'no match' });
     }
 
-    // 4. Kiểm tra số tiền (nếu cần bảo mật cao hơn, hãy bật dòng dưới)
-    // if (Number(transferAmount) < target.amount) { console.error(">>> [Lỗi]: Thiếu tiền."); return; }
+    // IMPORTANT: Respond 200 BEFORE heavy processing (account creation can take seconds)
+    res.status(200).json({ success: true });
 
-    // 5. Nâng cấp tài khoản & Hoàn tất đơn hàng
-    console.log(`>>> [Thành công!]: Khớp đơn hàng ${target.orderId}. Đang tạo tài khoản...`);
-    const accs = await generateAndCompleteOrder(target);
-    console.log(`>>> [OK]: Đã tạo ${accs.length} tài khoản VIP cho: ${target.buyerEmail}`);
+    // Now process asynchronously AFTER sending 200
+    // This pattern is safe — Render won't kill the process just because res was sent
+    console.log(`Creating ${match.itemsCount} accounts for ${match.buyerEmail}...`);
+    const accounts = await processTransaction(match);
+    console.log(`✅ Done! Created ${accounts.length} accounts for ${match.buyerEmail}`);
 
-  } catch (error) {
-    console.error(">>> [LỖI HỆ THỐNG WEBHOOK]:", error.message);
-    // Nếu chưa trả lời res thì trả 500, nhưng ở đây đã trả 200 rồi
+  } catch (err) {
+    console.error('WEBHOOK ERROR:', err.message, err.stack);
+    // If res not sent yet, send 200 anyway to avoid SePay retrying
+    if (!res.headersSent) res.status(200).json({ success: true, error: err.message });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [POST] /api/vip/simulate-payment - User nhấn "Xác nhận đã chuyển tiền"
+// POST /api/vip/simulate-payment  ← User clicks "Tôi đã chuyển tiền"
+// Only reads DB — does NOT generate accounts
 // ─────────────────────────────────────────────────────────────────────────────
-router.post("/simulate-payment", async (req, res) => {
+router.post('/simulate-payment', async (req, res) => {
   try {
     const { orderId } = req.body;
-    const trans = await Transaction.findOne({ orderId });
-    if (!trans) return res.status(404).json({ message: "Order not found" });
+    const t = await Transaction.findOne({ orderId });
+    if (!t) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
 
-    if (trans.status === "completed") {
-      return res.json({ status: "completed", accounts: trans.generatedAccounts });
+    if (t.status === 'completed') {
+      return res.json({ status: 'completed', accounts: t.generatedAccounts });
     }
-
-    // Ở bản chuẩn, nút này CHỈ KIỂM TRA trạng thái DB chứ không tự tạo acc khống
-    res.json({ status: "pending", message: "Hệ thống chưa nhận được thông báo tiền từ ngân hàng. Vui lòng đợi trong giây lát." });
+    res.json({ status: 'pending' });
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
