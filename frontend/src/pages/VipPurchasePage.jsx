@@ -36,6 +36,24 @@ export default function VipPurchasePage() {
     { id: 'p10', count: 10, amount: 100000, label: 'Đại Thánh', desc: 'Sở hữu 10 tài khoản cực phẩm', icon: '👑' },
   ];
 
+  // Auto-polling for payment status
+  useEffect(() => {
+    let interval;
+    if (step === 2 && order?.orderId) {
+      interval = setInterval(async () => {
+        try {
+          const res = await vipAPI.getStatus(order.orderId);
+          if (res.data.status === 'completed') {
+            setAccounts(res.data.accounts);
+            setStep(3);
+            clearInterval(interval);
+          }
+        } catch (e) { console.error('Polling error', e); }
+      }, 5000); // Check every 5 seconds
+    }
+    return () => clearInterval(interval);
+  }, [step, order]);
+
   // Save new purchase to email-specific history
   useEffect(() => {
     if (step === 3 && accounts.length > 0 && order?.orderId && email) {
@@ -68,12 +86,12 @@ export default function VipPurchasePage() {
   const handleCheckPayment = async () => {
     setChecking(true);
     try {
-      const res = await vipAPI.simulatePayment(order.orderId);
+      const res = await vipAPI.getStatus(order.orderId);
       if (res.data.status === 'completed') {
         setAccounts(res.data.accounts);
         setStep(3);
       } else {
-        alert(res.data.message || 'Hệ thống chưa nhận được thanh toán. Vui lòng đợi 30 giây và thử lại.');
+        alert('Hệ thống đang chờ xác nhận từ ngân hàng. Vui lòng đợi trong giây lát hoặc kiểm tra lịch sử sau ít phút.');
       }
     } catch { alert('Lỗi kết nối. Vui lòng thử lại.'); }
     finally { setChecking(false); }
