@@ -3,6 +3,7 @@ const router = express.Router();
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
+const https = require("https");
 
 const randomStr = (len) => Math.random().toString(36).substring(2, 2 + len);
 
@@ -27,13 +28,14 @@ const sendEmail = async (to, accounts) => {
       from: '"Thiên Đạo Học Viện" <no-reply@tiendao.vn>',
       to,
       subject: '📦 Tài khoản VIP đã sẵn sàng!',
-      text: `Tài khoản của bạn:\n\n${lines}\n\nChúc tu luyện tinh tấn!`,
+      text: `Tài khoản VIP của bạn:\n\n${lines}\n\nChúc tu luyện tinh tấn!`,
     });
   } catch (e) { console.error('Email error:', e.message); }
 };
 
-// Generate accounts & save to DB
+// ── Generate accounts for a transaction ──────────────────────────────────────
 const processTransaction = async (t) => {
+  if (t.status === 'completed') return t.generatedAccounts;
   const count = t.itemsCount || 1;
   const accounts = [];
   for (let i = 0; i < count; i++) {
@@ -46,8 +48,65 @@ const processTransaction = async (t) => {
   t.status = 'completed';
   t.generatedAccounts = accounts;
   await t.save();
-  sendEmail(t.buyerEmail, accounts); // fire and forget
+  sendEmail(t.buyerEmail, accounts);
   return accounts;
+};
+
+// ── Query SePay API for recent transactions ──────────────────────────────────
+const querySepay = (apiToken) => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'my.sepay.vn',
+      path: '/userapi/transactions/list?limit=20',
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiToken}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch (e) { reject(new Error('Invalid JSON from SePay: ' + data.substring(0, 200))); }
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(8000, () => { req.destroy(); reject(new Error('SePay API timeout')); });
+    req.end();
+  });
+};
+
+// ── Check if a specific orderId appears in SePay transactions ─────────────────
+const findOrderInSepay = async (orderId) => {
+  const apiToken = process.env.SEPAY_API_TOKEN;
+  if (!apiToken) {
+    console.warn('⚠️  SEPAY_API_TOKEN not set — cannot verify via SePay API');
+    return null;
+  }
+
+  try {
+    const data = await querySepay(apiToken);
+    console.log('SePay API response status:', data?.status);
+    const txList = data?.transactions || data?.data || [];
+    console.log(`SePay returned ${txList.length} transactions`);
+
+    const normalized = orderId.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    const match = txList.find(tx => {
+      const txContent = String(tx.transaction_content || tx.content || tx.description || '')
+        .toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const found = txContent.includes(normalized) || normalized.includes(txContent.replace(/[^A-Z0-9]/g, ''));
+      if (found) console.log(`✅ SePay match: content="${tx.transaction_content}" amount=${tx.amount_in}`);
+      return found;
+    });
+
+    return match || null;
+  } catch (err) {
+    console.error('SePay API error:', err.message);
+    return null;
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -74,7 +133,7 @@ router.post('/create-order', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/vip/status/:orderId  ← Used by frontend polling
+// GET /api/vip/status/:orderId  ← Polling from frontend every 5s
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/status/:orderId', async (req, res) => {
   try {
@@ -85,81 +144,54 @@ router.get('/status/:orderId', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/vip/webhook  ← SePay calls this when money arrives
-// FIX: Process FIRST, then respond 200 — avoids Render killing async work
+// POST /api/vip/webhook  ← SePay webhook (automatic when payment arrives)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/webhook', async (req, res) => {
-  // Log EVERYTHING for debugging in Render logs
-  console.log('=== SEPAY WEBHOOK ===');
-  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('=== SEPAY WEBHOOK RECEIVED ===');
   console.log('Body:', JSON.stringify(req.body, null, 2));
 
   try {
     const body = req.body || {};
-
-    // SePay can send content in any of these fields:
     const rawContent = String(
       body.content || body.transferContent || body.description ||
       body.memo || body.addInfo || body.remarks || ''
     );
-    const amount = Number(body.transferAmount || body.amount || 0);
-
-    console.log('Extracted content:', rawContent);
-    console.log('Extracted amount:', amount);
-
-    if (!rawContent) {
-      console.warn('No content field found — returning 200 to prevent SePay retry spam');
-      return res.status(200).json({ success: true, note: 'no content' });
-    }
-
-    // Normalize: uppercase, only A-Z 0-9
     const normalized = rawContent.toUpperCase().replace(/[^A-Z0-9]/g, '');
     const vipIdx = normalized.indexOf('VIP');
 
     if (vipIdx === -1) {
-      console.log('Content does not contain VIP — not a VIP transaction, skipping.');
-      return res.status(200).json({ success: true, note: 'not vip' });
+      console.log('Non-VIP webhook, skipping.');
+      return res.status(200).json({ success: true, note: 'not_vip' });
     }
 
     const extracted = normalized.substring(vipIdx);
-    console.log('Normalized VIP code extracted:', extracted);
-
-    // Find matching pending transaction
     const pending = await Transaction.find({ status: 'pending' });
-    console.log('Pending transactions:', pending.map(p => p.orderId));
-
     const match = pending.find(t => {
       const dbNorm = t.orderId.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      const hit = extracted.includes(dbNorm) || dbNorm.includes(extracted);
-      if (hit) console.log(`✅ DB ID "${dbNorm}" matched extracted "${extracted}"`);
-      return hit;
+      return extracted.includes(dbNorm) || dbNorm.includes(extracted);
     });
 
-    if (!match) {
-      console.error(`❌ No pending order matched "${extracted}"`);
-      // Still return 200 so SePay doesn't retry infinitely
-      return res.status(200).json({ success: true, note: 'no match' });
-    }
-
-    // IMPORTANT: Respond 200 BEFORE heavy processing (account creation can take seconds)
+    // Respond 200 immediately, then process
     res.status(200).json({ success: true });
 
-    // Now process asynchronously AFTER sending 200
-    // This pattern is safe — Render won't kill the process just because res was sent
-    console.log(`Creating ${match.itemsCount} accounts for ${match.buyerEmail}...`);
+    if (!match) {
+      console.error(`No pending transaction matched "${extracted}"`);
+      return;
+    }
+
+    console.log(`Processing order ${match.orderId} for ${match.buyerEmail}...`);
     const accounts = await processTransaction(match);
-    console.log(`✅ Done! Created ${accounts.length} accounts for ${match.buyerEmail}`);
+    console.log(`✅ Done! Created ${accounts.length} accounts.`);
 
   } catch (err) {
-    console.error('WEBHOOK ERROR:', err.message, err.stack);
-    // If res not sent yet, send 200 anyway to avoid SePay retrying
-    if (!res.headersSent) res.status(200).json({ success: true, error: err.message });
+    console.error('WEBHOOK ERROR:', err.message);
+    if (!res.headersSent) res.status(200).json({ success: true });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/vip/simulate-payment  ← User clicks "Tôi đã chuyển tiền"
-// Only reads DB — does NOT generate accounts
+// POST /api/vip/simulate-payment  ← "Tôi đã chuyển tiền" button
+// Now uses SePay API to actively verify then generates accounts
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/simulate-payment', async (req, res) => {
   try {
@@ -167,11 +199,33 @@ router.post('/simulate-payment', async (req, res) => {
     const t = await Transaction.findOne({ orderId });
     if (!t) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
 
+    // If already done, just return
     if (t.status === 'completed') {
       return res.json({ status: 'completed', accounts: t.generatedAccounts });
     }
-    res.json({ status: 'pending' });
-  } catch (e) { res.status(500).json({ message: e.message }); }
+
+    // Actively verify with SePay API
+    console.log(`Checking SePay API for order: ${orderId}`);
+    const sePayTx = await findOrderInSepay(orderId);
+
+    if (sePayTx) {
+      // Payment confirmed via SePay API → generate accounts now
+      console.log(`✅ SePay API confirmed payment for ${orderId}. Generating accounts...`);
+      const accounts = await processTransaction(t);
+      return res.json({ status: 'completed', accounts });
+    }
+
+    // Payment not yet in SePay
+    console.log(`No SePay transaction found for ${orderId} yet.`);
+    return res.json({
+      status: 'pending',
+      message: 'Hệ thống chưa nhận được tiền từ ngân hàng. Vui lòng đảm bảo nhập đúng nội dung chuyển khoản và chờ 30-60 giây.'
+    });
+
+  } catch (e) {
+    console.error('simulate-payment error:', e.message);
+    res.status(500).json({ message: e.message });
+  }
 });
 
 module.exports = router;
