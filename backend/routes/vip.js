@@ -107,41 +107,37 @@ router.post("/webhook", async (req, res) => {
     console.log("Dữ liệu nhận được:", JSON.stringify(req.body, null, 2));
 
     const body = req.body;
-    const content = (body.description || body.content || body.addInfo || "").toUpperCase();
-    console.log("Nội dung chuyển khoản trích xuất:", content);
+    const rawContent = (body.description || body.content || body.addInfo || "").toUpperCase();
+    console.log("Nội dung chuyển khoản trích xuất:", rawContent);
     
-    // Simple Regex: Search for 'VIP' followed by alpha-numeric characters
-    const match = content.match(/VIP[A-Z0-9]+/i);
-    let orderId = match ? match[0].toUpperCase() : (body.orderId || null);
+    // Extract everything that looks like VIP... (only letters and numbers)
+    const normalizedContent = rawContent.replace(/[^A-Z0-9]/g, "");
     
-    console.log("Mã đơn hàng tìm thấy:", orderId);
-
-    if (!orderId) {
-      console.log("❌ LỖI: Không tìm thấy Mã đơn hàng trong nội dung chuyển khoản.");
-      return res.status(400).json({ message: "No orderId found in payment content" });
+    // Find 'VIP' in the normalized string
+    const vipIdx = normalizedContent.indexOf("VIP");
+    if (vipIdx === -1) {
+      console.log("❌ LỖI: Không tìm thấy chữ VIP trong nội dung:", normalizedContent);
+      return res.status(400).json({ message: "No VIP keyword found" });
     }
 
-    // Normalization logic: find by strict ID OR by normalized ID (no hyphens)
-    const normalizedId = orderId.replace(/-/g, "");
-    const transaction = await Transaction.findOne({
-      $or: [
-        { orderId: orderId.trim() },
-        { orderId: { $regex: new RegExp(orderId.trim().split('').join('-?'), 'i') } }
-      ]
+    // The potential ID starts from 'VIP'
+    const potentialId = normalizedContent.substring(vipIdx);
+    console.log("Mã tìm được sau khi chuẩn hóa:", potentialId);
+
+    // Fetch ALL pending transactions to do a manual elastic match
+    const pendingTransactions = await Transaction.find({ status: "pending" });
+    
+    const finalTransaction = pendingTransactions.find(t => {
+      const dbIdNormalized = t.orderId.replace(/[^A-Z0-9]/g, "").toUpperCase();
+      // Match if the bank content contains the DB ID or vice versa
+      return potentialId.includes(dbIdNormalized) || dbIdNormalized.includes(potentialId);
     });
-    
-    // Fallback: If still not found, search all transactions and compare normalized IDs
-    let finalTransaction = transaction;
-    if (!finalTransaction) {
-      const allPending = await Transaction.find({ status: "pending" });
-      finalTransaction = allPending.find(t => t.orderId.replace(/-/g, "") === normalizedId);
-    }
 
     if (!finalTransaction) {
-      console.log("❌ LỖI: Không tìm thấy giao dịch nào khớp với mã:", orderId);
+      console.log("❌ LỖI: Không tìm thấy giao dịch nào khớp trong danh sách PENDING.");
       return res.status(404).json({ message: "Transaction not found" });
     }
-    if (transaction.status === "completed") return res.json({ message: "Already processed" });
+    if (finalTransaction.status === "completed") return res.json({ message: "Already processed" });
 
     // Generate accounts
     const newAccounts = [];
