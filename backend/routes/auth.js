@@ -68,6 +68,8 @@ const issueTokens = async (user, options = {}) => {
     user: {
       id: user._id,
       username: user.username,
+      fullName: user.fullName || "",
+      avatar: user.avatar || "",
       role: user.role,
     },
   };

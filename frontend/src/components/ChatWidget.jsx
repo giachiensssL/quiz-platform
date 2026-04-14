@@ -47,10 +47,11 @@ export default function ChatWidget() {
   }, []);
 
   const getFullAvatarUrl = (path) => {
-    if (!path) return null;
+    if (!path || typeof path !== 'string') return null;
     if (path.startsWith('http')) return path;
-    const base = API_BASE_URL.replace('/api', '');
-    return `${base}${path}`;
+    const base = API_BASE_URL.replace(/\/api$/, '');
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${base}${cleanPath}`;
   };
 
   // Save messages to localStorage whenever they change

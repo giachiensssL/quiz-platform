@@ -58,13 +58,40 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (ENABLE_LOCAL_AUTH_FALLBACK) return;
     const token = safeStorageGet('qm_token') || '';
-    const isLocalToken = token === 'admin-token' || token.startsWith('token-');
-    if (!isLocalToken) return;
+    if (!token) return;
 
-    setUser(null);
-    safeStorageRemove('qm_user');
-    safeStorageRemove('qm_token');
-    safeStorageRemove(REFRESH_TOKEN_KEY);
+    const syncUser = async () => {
+      try {
+        const res = await authAPI.me();
+        if (res?.data?.user) {
+          const bu = res.data.user;
+          const u = {
+            id: bu.id,
+            username: bu.username,
+            role: bu.role,
+            name: bu.fullName || bu.username,
+            avatar: bu.avatar || '',
+          };
+          setUser(u);
+          safeStorageSet('qm_user', JSON.stringify(u));
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          logout();
+        }
+      }
+    };
+
+    syncUser();
+
+    // Cleanup local token if it was mock
+    const isLocalToken = token === 'admin-token' || token.startsWith('token-');
+    if (isLocalToken) {
+      setUser(null);
+      safeStorageRemove('qm_user');
+      safeStorageRemove('qm_token');
+      safeStorageRemove(REFRESH_TOKEN_KEY);
+    }
   }, []);
 
   const login = useCallback(async (username, password) => {
@@ -76,7 +103,8 @@ export function AuthProvider({ children }) {
         id: backendUser.id,
         username: backendUser.username || username,
         role: payload.role || backendUser.role || 'user',
-        name: backendUser.username || username,
+        name: backendUser.fullName || backendUser.username || username,
+        avatar: backendUser.avatar || '',
       };
       setUser(u);
       safeStorageSet('qm_user', JSON.stringify(u));
