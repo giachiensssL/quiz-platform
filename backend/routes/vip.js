@@ -23,167 +23,140 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendEmail = async (to, accounts) => {
-  const content = accounts.map(a => `- User: ${a.username} | Pass: ${a.password}`).join('\n');
+const sendEmailClient = async (to, accounts) => {
+  const content = accounts.map(a => `- Tài khoản: ${a.username} | Mật khẩu: ${a.password}`).join('\n');
   try {
     await transporter.sendMail({
       from: '"Thiên Đạo Học Viện" <no-reply@tiendao.vn>',
       to,
-      subject: 'Chúc mừng bạn đã mở khóa VIP thành công!',
-      text: `Cảm ơn bạn đã ủng hộ!\n\nDanh sách tài khoản:\n\n${content}\n\nChúc bạn tu luyện tinh tấn!`,
+      subject: '📦 Tài khoản VIP của bạn đã sẵn sàng!',
+      text: `Chào đạo hữu,\n\nCảm ơn bạn đã ủng hộ chúng tôi. Dưới đây là danh sách tài khoản tu luyện của bạn:\n\n${content}\n\nChúc bạn tu luyện tinh tấn!`,
     });
     console.log(`✅ Email sent to ${to}`);
   } catch (err) {
-    console.error(`❌ Failed to send email to ${to}:`, err.message);
+    console.error(`❌ Failed to send email: ${err.message}`);
   }
 };
 
-// ── Core: generate accounts for a transaction ──────────────────────────────
-const processPayment = async (transaction) => {
+// Common Account Generation Logic
+const generateAndCompleteOrder = async (transaction) => {
+  const accounts = [];
   const count = transaction.itemsCount || 1;
-  const newAccounts = [];
   for (let i = 0; i < count; i++) {
-    const username = `dh_${Date.now().toString().slice(-5)}${randomStr(4)}`;
+    const username = `sh_${Date.now().toString().slice(-4)}${randomStr(4)}`;
     const password = randomStr(8);
-    await User.create({ username, password, fullName: 'Đạo Hữu VIP', role: 'user' });
-    newAccounts.push({ username, password });
-    await new Promise(r => setTimeout(r, 50)); // avoid duplicate timestamp usernames
+    await User.create({ username, password, fullName: "Người dùng VIP", role: "user" });
+    accounts.push({ username, password });
+    await new Promise(r => setTimeout(r, 60)); // unique timestamps
   }
-  transaction.status = 'completed';
-  transaction.generatedAccounts = newAccounts;
+  transaction.status = "completed";
+  transaction.generatedAccounts = accounts;
   await transaction.save();
-  sendEmail(transaction.buyerEmail, newAccounts);
-  return newAccounts;
+  sendEmailClient(transaction.buyerEmail, accounts);
+  return accounts;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   POST /api/vip/create-order
+// [POST] /api/vip/create-order
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/create-order", async (req, res) => {
   try {
     const { email, name, packageId } = req.body;
-    if (!email) return res.status(400).json({ message: "Vui lòng cung cấp email." });
+    if (!email) return res.status(400).json({ message: "Thiếu email để nhận tài khoản." });
     const pkg = PACKAGES[packageId];
-    if (!pkg) return res.status(400).json({ message: "Gói không hợp lệ." });
+    if (!pkg) return res.status(400).json({ message: "Gói không tồn tại." });
 
     const orderId = `VIP${Date.now()}${randomStr(3).toUpperCase()}`;
     const bankId = "BIDV";
     const bankAccount = "8874437189";
     const accountName = "GIANG A CHIEN";
+
     const qrUrl = `https://img.vietqr.io/image/${bankId}-${bankAccount}-compact2.png?amount=${pkg.amount}&addInfo=${orderId}&accountName=${encodeURIComponent(accountName)}`;
 
     const transaction = await Transaction.create({
       orderId, amount: pkg.amount,
       buyerEmail: email, buyerName: name,
       itemsCount: pkg.count,
-      description: `Mua gói ${pkg.label} cho ${email}`,
     });
 
-    res.json({ orderId: transaction.orderId, amount: transaction.amount, qrUrl, accountName, bankId, bankAccount, itemsCount: pkg.count });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    res.json({ orderId: transaction.orderId, amount: transaction.amount, qrUrl, bankId, bankAccount, accountName });
+  } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   GET /api/vip/status/:orderId  — polling from frontend
-// ─────────────────────────────────────────────────────────────────────────────
-router.get("/status/:orderId", async (req, res) => {
-  try {
-    const transaction = await Transaction.findOne({ orderId: req.params.orderId });
-    if (!transaction) return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
-    res.json({ status: transaction.status, accounts: transaction.generatedAccounts });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// @route   POST /api/vip/webhook  — SePay calls this on payment
-// SePay docs: https://my.sepay.vn/userManual/webhook
-// Key field: "content" contains transfer description
+// [POST] /api/vip/webhook - TƯƠNG THÍCH SEPAY CHUẨN 2024
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/webhook", async (req, res) => {
   try {
-    console.log("=== WEBHOOK MỚI TỪ SEPAY ===");
-    console.log("Body:", JSON.stringify(req.body, null, 2));
+    console.log(">>> [LOG WEBHOOK SEPAY] Bắt đầu xử lý...");
+    console.log(">>> [BODY]:", JSON.stringify(req.body, null, 2));
 
-    const b = req.body;
+    const { content, transferAmount, id } = req.body;
 
-    // SePay sends 'content' as the transfer description field
-    // Reference: https://my.sepay.vn/userManual/webhook (field: content)
-    const rawContent = String(
-      b.content || b.description || b.transferContent ||
-      b.addInfo || b.memo || b.remarks || ''
-    ).toUpperCase();
-
-    console.log("Nội dung chuyển khoản:", rawContent);
-
-    // Normalize: remove all non-alphanumeric chars
-    const normalized = rawContent.replace(/[^A-Z0-9]/g, '');
-    const vipIdx = normalized.indexOf('VIP');
-
-    if (vipIdx === -1) {
-      console.log("❌ Không có chữ VIP trong nội dung. Bỏ qua.");
-      // Return 200 so SePay doesn't retry, but don't process
-      return res.json({ message: "No VIP code in content, skipped" });
+    // 1. Kiểm tra tính hợp lệ dữ liệu SePay gửi sang
+    if (!content) {
+      console.warn(">>> [Lỗi]: Thiếu trường 'content' (Nội dung chuyển tiền)");
+      return res.status(400).json({ status: 400, message: "Missing content field" });
     }
 
-    const potentialId = normalized.substring(vipIdx);
-    console.log("Chuỗi VIP chuẩn hóa:", potentialId);
+    // 2. Trả về 200 NGAY cho SePay để tránh gửi lặp lại (Idempotency)
+    // SePay cần nhận kết quả OK trước khi Backend thực hiện logic nặng
+    res.status(200).json({ status: 200, message: "OK" });
 
-    // Find matching pending transaction
-    const pending = await Transaction.find({ status: 'pending' });
-    const found = pending.find(t => {
-      const dbId = t.orderId.replace(/[^A-Z0-9]/g, '').toUpperCase();
-      return potentialId.startsWith(dbId) || dbId === potentialId || potentialId.includes(dbId);
+    // 3. Logic tìm orderId dựa trên nội dung chuyển khoản (bỏ qua dấu gạch ngang)
+    const normalizedContent = content.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (!normalizedContent.includes("VIP")) {
+      console.log(">>> [Bỏ qua]: Không phải nội dung thanh toán VIP.");
+      return;
+    }
+
+    // Tìm mã bắt đầu từ chữ VIP
+    const vipIdx = normalizedContent.indexOf("VIP");
+    const extractedOrderId = normalizedContent.substring(vipIdx);
+    console.log(">>> [Phân tích]: Tìm thấy mã VIP nghi vấn:", extractedOrderId);
+
+    // Lấy tất cả các giao dịch đang chờ để so khớp chuỗi
+    const pendingTrans = await Transaction.find({ status: "pending" });
+    const target = pendingTrans.find(t => {
+      const dbId = t.orderId.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      return extractedOrderId.includes(dbId) || dbId.includes(extractedOrderId);
     });
 
-    if (!found) {
-      console.log("❌ Không tìm thấy transaction pending khớp. Pending IDs:", pending.map(t => t.orderId));
-      return res.status(404).json({ message: "Matching pending transaction not found" });
+    if (!target) {
+      console.error(`>>> [Lỗi]: Không tìm thấy đơn hàng nào khớp với: ${extractedOrderId}`);
+      return;
     }
 
-    if (found.status === 'completed') {
-      console.log("⚠️ Đã xử lý rồi:", found.orderId);
-      return res.json({ message: "Already processed" });
-    }
+    // 4. Kiểm tra số tiền (nếu cần bảo mật cao hơn, hãy bật dòng dưới)
+    // if (Number(transferAmount) < target.amount) { console.error(">>> [Lỗi]: Thiếu tiền."); return; }
 
-    console.log("✅ Khớp với orderId:", found.orderId);
-    const accounts = await processPayment(found);
-    console.log(`✅ Đã tạo ${accounts.length} tài khoản cho ${found.buyerEmail}`);
+    // 5. Nâng cấp tài khoản & Hoàn tất đơn hàng
+    console.log(`>>> [Thành công!]: Khớp đơn hàng ${target.orderId}. Đang tạo tài khoản...`);
+    const accs = await generateAndCompleteOrder(target);
+    console.log(`>>> [OK]: Đã tạo ${accs.length} tài khoản VIP cho: ${target.buyerEmail}`);
 
-    res.json({ success: true, accounts });
   } catch (error) {
-    console.error("Webhook Error:", error);
-    res.status(500).json({ message: "Internal Server Error", detail: error.message });
+    console.error(">>> [LỖI HỆ THỐNG WEBHOOK]:", error.message);
+    // Nếu chưa trả lời res thì trả 500, nhưng ở đây đã trả 200 rồi
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   POST /api/vip/simulate-payment
-// FIX: This only checks DB status — does NOT create accounts
-// Accounts are ONLY created via webhook above
+// [POST] /api/vip/simulate-payment - User nhấn "Xác nhận đã chuyển tiền"
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/simulate-payment", async (req, res) => {
   try {
     const { orderId } = req.body;
-    const transaction = await Transaction.findOne({ orderId });
-    if (!transaction) return res.status(404).json({ message: "Transaction not found" });
+    const trans = await Transaction.findOne({ orderId });
+    if (!trans) return res.status(404).json({ message: "Order not found" });
 
-    if (transaction.status === 'completed') {
-      // Payment was already confirmed by SePay webhook → return accounts
-      return res.json({ status: 'completed', accounts: transaction.generatedAccounts });
+    if (trans.status === "completed") {
+      return res.json({ status: "completed", accounts: trans.generatedAccounts });
     }
 
-    // Still pending → tell user to wait
-    return res.json({
-      status: 'pending',
-      message: 'Hệ thống chưa nhận được thanh toán. Vui lòng đảm bảo nội dung chuyển khoản chứa đúng mã đơn hàng, sau đó đợi 30 giây.'
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    // Ở bản chuẩn, nút này CHỈ KIỂM TRA trạng thái DB chứ không tự tạo acc khống
+    res.json({ status: "pending", message: "Hệ thống chưa nhận được thông báo tiền từ ngân hàng. Vui lòng đợi trong giây lát." });
+  } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
 module.exports = router;
