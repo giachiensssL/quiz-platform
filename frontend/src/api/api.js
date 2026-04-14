@@ -19,6 +19,14 @@ const normalizeApiBase = (base) => {
 export const API_BASE_URL = normalizeApiBase(envApiBase);
 export const AUTH_NOTICE_KEY = 'qm_auth_notice';
 
+export const getFullAvatarUrl = (path) => {
+  if (!path || typeof path !== 'string') return null;
+  if (path.startsWith('http')) return path;
+  const base = API_BASE_URL.replace(/\/api\/?$/i, '');
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${cleanPath}`;
+};
+
 const isLikelyJwt = (token) => {
   const value = String(token || '').trim();
   if (!value) return false;
@@ -248,6 +256,12 @@ export const analyticsAPI = {
   track: (d) => api.post('/analytics/track', d),
   heartbeat: (d) => api.post('/analytics/heartbeat', d),
   leave: (d) => api.post('/analytics/leave', d),
+};
+
+export const vipAPI = {
+  createOrder: (d) => api.post('/vip/create-order', d),
+  getStatus: (orderId) => api.get(`/vip/status/${orderId}`),
+  simulatePayment: (orderId) => api.post('/vip/simulate-payment', { orderId }),
 };
 
 export default api;

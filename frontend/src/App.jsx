@@ -16,6 +16,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import ProfilePage     from './pages/ProfilePage';
 import ReviewPage      from './pages/ReviewPage';
 import AdminDashboard  from './pages/admin/AdminDashboard';
+import VipPurchasePage  from './pages/VipPurchasePage';
 import ChatWidget     from './components/ChatWidget';
 import './styles/global.css';
 
@@ -61,6 +62,7 @@ function App() {
           <ChatWidget />
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/buy-vip" element={<VipPurchasePage />} />
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/year/:facultyId" element={<ProtectedRoute><YearPage /></ProtectedRoute>} />
             <Route path="/semester/:yearId" element={<ProtectedRoute><SemesterPage /></ProtectedRoute>} />

@@ -24,6 +24,7 @@ const yearRoutes = require("./routes/years");
 const semesterRoutes = require("./routes/semesters");
 const analyticsRoutes = require("./routes/analytics");
 const resultsRoutes = require("./routes/results");
+const vipRoutes = require("./routes/vip");
 
 const app = express();
 const server = http.createServer(app);
@@ -101,6 +102,7 @@ app.use("/api/years", yearRoutes);
 app.use("/api/semesters", semesterRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/results", resultsRoutes);
+app.use("/api/vip", vipRoutes);
 
 app.get("/api/ping", (req, res) => {
   res.json({ status: "ok", time: new Date() });

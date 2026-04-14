@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { leaderboardAPI } from '../api/api';
+import { leaderboardAPI, getFullAvatarUrl } from '../api/api';
 import Navbar from '../components/Navbar';
 import { EmptyState } from '../components/UI';
 
@@ -521,7 +521,7 @@ export default function LeaderboardPage() {
               letterSpacing:1.5, textTransform:'uppercase',
               fontFamily:"'Inter', sans-serif", fontWeight:600,
               color:'#FFD700',
-            }}>Thiên Đạo Chí Tôn</span>
+            }}>Thiên Đạo</span>
             <div style={{ fontSize:'0.76rem', color:'rgba(255,255,255,0.5)', marginTop:5, fontFamily:"'Inter', sans-serif" }}>
               Thiên đạo pháp tắc 
             </div>
@@ -549,7 +549,11 @@ export default function LeaderboardPage() {
               <div key={rank} className={`lb-podium-card ${rClass}`}>
                 {rClass === 'r1' && <div className="lb-podium-shine" />}
                 <span className="lb-podium-crown">{crown}</span>
-                <div className="lb-podium-avatar">{(toDisplayName(data)[0] || 'U').toUpperCase()}</div>
+                <div className="lb-podium-avatar">
+                  {getFullAvatarUrl(data.avatar) ? (
+                    <img src={getFullAvatarUrl(data.avatar)} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                  ) : (toDisplayName(data)[0] || 'U').toUpperCase()}
+                </div>
                 <span className="lb-podium-rank-zh">
                   {rank===1?'第一名':rank===2?'第二名':'第三名'}
                 </span>
@@ -588,7 +592,11 @@ export default function LeaderboardPage() {
                 <div key={getRowKey(r) || i} className="lb-row"
                   style={{ '--rc': color, animationDelay: `${i * 0.055}s` }}>
                   <div className="lb-row-rank">#{ar}</div>
-                  <div className="lb-row-avatar">{(toDisplayName(r)[0] || 'U').toUpperCase()}</div>
+                  <div className="lb-row-avatar">
+                    {getFullAvatarUrl(r.avatar) ? (
+                      <img src={getFullAvatarUrl(r.avatar)} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    ) : (toDisplayName(r)[0] || 'U').toUpperCase()}
+                  </div>
                   <div className="lb-row-info">
                     <div className="lb-row-name">{toDisplayName(r)}</div>
                     <span className="lb-row-tag">{getCultivationTitle(ai)}</span>

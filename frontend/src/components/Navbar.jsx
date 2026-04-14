@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
 import { Button } from './UI';
 import { sidebarItems } from './Sidebar';
-import { API_BASE_URL } from '../api/api';
+import { API_BASE_URL, getFullAvatarUrl } from '../api/api';
 
 export default function Navbar() {
   const THEME_KEY = 'qm_theme';
@@ -15,12 +15,6 @@ export default function Navbar() {
   const [theme, setTheme] = useState('light');
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const getFullAvatarUrl = (path) => {
-    if (!path) return null;
-    if (path.startsWith('http')) return path;
-    const base = API_BASE_URL.replace('/api', '');
-    return `${base}${path}`;
-  };
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY);
@@ -66,6 +60,29 @@ export default function Navbar() {
           <span className="brand-dot" />
           QuizMaster
         </div>
+        {user?.role !== 'admin' && (
+          <button 
+            className="buy-vip-nav-btn"
+            onClick={() => navigate('/buy-vip')}
+            style={{
+              marginLeft: '15px',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              border: 'none',
+              background: 'linear-gradient(135deg, #FFD700, #F59E0B)',
+              color: '#000',
+              fontWeight: 'bold',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              boxShadow: '0 0 15px rgba(245, 158, 11, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            ✨ MUA VIP
+          </button>
+        )}
         {user?.role !== 'admin' && (
           <div className="navbar-nav">
             <button className={`nav-link${location.pathname==='/'?' active':''}`} onClick={()=>navigate('/')}>Trang chủ</button>

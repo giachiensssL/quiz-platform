@@ -357,6 +357,22 @@ export default function LoginPage() {
               </button>
             </form>
 
+            <div style={{ textAlign: 'center', marginTop: 15 }}>
+              <button 
+                type="button"
+                onClick={() => navigate('/buy-vip')}
+                style={{
+                  background: 'none', border: 'none',
+                  color: '#FFD700', fontSize: '0.82rem', fontWeight: 600,
+                  cursor: 'pointer', textDecoration: 'underline',
+                  textShadow: '0 0 10px rgba(255,215,0,0.4)',
+                  letterSpacing: '0.05em'
+                }}
+              >
+                ✨ Chưa có tài khoản? Khai mở VIP ngay
+              </button>
+            </div>
+
             {/* Bottom note */}
             <div style={{
               marginTop: 16,
