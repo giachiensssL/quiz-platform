@@ -25,51 +25,35 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async (to, accounts) => {
   const content = accounts.map(a => `- User: ${a.username} | Pass: ${a.password}`).join('\n');
-  const mailOptions = {
-    from: '"Thiên Đạo Học Viện" <no-reply@tiendao.vn>',
-    to: to,
-    subject: 'Chúc mừng bạn đã mở khóa VIP thành công!',
-    text: `Cảm ơn bạn đã ủng hộ chúng tôi. Dưới đây là danh sách tài khoản của bạn:\n\n${content}\n\nChúc bạn tu luyện tinh tấn!`,
-  };
   try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to}`);
+    await transporter.sendMail({
+      from: '"Thiên Đạo Học Viện" <no-reply@tiendao.vn>',
+      to,
+      subject: 'Chúc mừng bạn đã mở khóa VIP thành công!',
+      text: `Cảm ơn bạn đã ủng hộ!\n\nDanh sách tài khoản:\n\n${content}\n\nChúc bạn tu luyện tinh tấn!`,
+    });
+    console.log(`✅ Email sent to ${to}`);
   } catch (err) {
-    console.error(`Failed to send email to ${to}`, err.message);
+    console.error(`❌ Failed to send email to ${to}:`, err.message);
   }
 };
 
-// ── Shared account generation logic ──────────────────────────────────────────
-const generateAccounts = async (transaction) => {
-  const newAccounts = [];
+// ── Core: generate accounts for a transaction ──────────────────────────────
+const processPayment = async (transaction) => {
   const count = transaction.itemsCount || 1;
+  const newAccounts = [];
   for (let i = 0; i < count; i++) {
     const username = `dh_${Date.now().toString().slice(-5)}${randomStr(4)}`;
     const password = randomStr(8);
     await User.create({ username, password, fullName: 'Đạo Hữu VIP', role: 'user' });
     newAccounts.push({ username, password });
+    await new Promise(r => setTimeout(r, 50)); // avoid duplicate timestamp usernames
   }
   transaction.status = 'completed';
   transaction.generatedAccounts = newAccounts;
   await transaction.save();
   sendEmail(transaction.buyerEmail, newAccounts);
   return newAccounts;
-};
-
-// ── Find pending transaction by VIP code from raw text ────────────────────────
-const findTransactionByContent = async (rawText) => {
-  // Normalize: uppercase, keep only letters and numbers
-  const normalized = rawText.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const vipIdx = normalized.indexOf('VIP');
-  if (vipIdx === -1) return null;
-
-  const potentialId = normalized.substring(vipIdx);
-  const pending = await Transaction.find({ status: 'pending' });
-
-  return pending.find(t => {
-    const dbId = t.orderId.replace(/[^A-Z0-9]/g, '').toUpperCase();
-    return potentialId.includes(dbId) || dbId.includes(potentialId);
-  }) || null;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,7 +63,6 @@ router.post("/create-order", async (req, res) => {
   try {
     const { email, name, packageId } = req.body;
     if (!email) return res.status(400).json({ message: "Vui lòng cung cấp email." });
-
     const pkg = PACKAGES[packageId];
     if (!pkg) return res.status(400).json({ message: "Gói không hợp lệ." });
 
@@ -90,10 +73,8 @@ router.post("/create-order", async (req, res) => {
     const qrUrl = `https://img.vietqr.io/image/${bankId}-${bankAccount}-compact2.png?amount=${pkg.amount}&addInfo=${orderId}&accountName=${encodeURIComponent(accountName)}`;
 
     const transaction = await Transaction.create({
-      orderId,
-      amount: pkg.amount,
-      buyerEmail: email,
-      buyerName: name,
+      orderId, amount: pkg.amount,
+      buyerEmail: email, buyerName: name,
       itemsCount: pkg.count,
       description: `Mua gói ${pkg.label} cho ${email}`,
     });
@@ -105,7 +86,7 @@ router.post("/create-order", async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   GET /api/vip/status/:orderId
+// @route   GET /api/vip/status/:orderId  — polling from frontend
 // ─────────────────────────────────────────────────────────────────────────────
 router.get("/status/:orderId", async (req, res) => {
   try {
@@ -118,7 +99,9 @@ router.get("/status/:orderId", async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   POST /api/vip/webhook  (SePay / external services)
+// @route   POST /api/vip/webhook  — SePay calls this on payment
+// SePay docs: https://my.sepay.vn/userManual/webhook
+// Key field: "content" contains transfer description
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/webhook", async (req, res) => {
   try {
@@ -126,33 +109,61 @@ router.post("/webhook", async (req, res) => {
     console.log("Body:", JSON.stringify(req.body, null, 2));
 
     const b = req.body;
-    // SePay may use any of these field names
-    const rawContent = [
-      b.description, b.content, b.addInfo,
-      b.transferContent, b.memo, b.remarks, b.info
-    ].filter(Boolean).join(' ');
 
-    console.log("Nội dung tổng hợp:", rawContent);
+    // SePay sends 'content' as the transfer description field
+    // Reference: https://my.sepay.vn/userManual/webhook (field: content)
+    const rawContent = String(
+      b.content || b.description || b.transferContent ||
+      b.addInfo || b.memo || b.remarks || ''
+    ).toUpperCase();
 
-    const found = await findTransactionByContent(rawContent);
-    if (!found) {
-      console.log("❌ Không tìm thấy giao dịch pending phù hợp.");
-      return res.status(404).json({ message: "Transaction not found" });
+    console.log("Nội dung chuyển khoản:", rawContent);
+
+    // Normalize: remove all non-alphanumeric chars
+    const normalized = rawContent.replace(/[^A-Z0-9]/g, '');
+    const vipIdx = normalized.indexOf('VIP');
+
+    if (vipIdx === -1) {
+      console.log("❌ Không có chữ VIP trong nội dung. Bỏ qua.");
+      // Return 200 so SePay doesn't retry, but don't process
+      return res.json({ message: "No VIP code in content, skipped" });
     }
-    if (found.status === 'completed') return res.json({ message: "Already processed" });
 
-    const accounts = await generateAccounts(found);
+    const potentialId = normalized.substring(vipIdx);
+    console.log("Chuỗi VIP chuẩn hóa:", potentialId);
+
+    // Find matching pending transaction
+    const pending = await Transaction.find({ status: 'pending' });
+    const found = pending.find(t => {
+      const dbId = t.orderId.replace(/[^A-Z0-9]/g, '').toUpperCase();
+      return potentialId.startsWith(dbId) || dbId === potentialId || potentialId.includes(dbId);
+    });
+
+    if (!found) {
+      console.log("❌ Không tìm thấy transaction pending khớp. Pending IDs:", pending.map(t => t.orderId));
+      return res.status(404).json({ message: "Matching pending transaction not found" });
+    }
+
+    if (found.status === 'completed') {
+      console.log("⚠️ Đã xử lý rồi:", found.orderId);
+      return res.json({ message: "Already processed" });
+    }
+
+    console.log("✅ Khớp với orderId:", found.orderId);
+    const accounts = await processPayment(found);
     console.log(`✅ Đã tạo ${accounts.length} tài khoản cho ${found.buyerEmail}`);
+
     res.json({ success: true, accounts });
   } catch (error) {
     console.error("Webhook Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", detail: error.message });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @route   POST /api/vip/simulate-payment  (User clicks "Tôi đã chuyển tiền")
-// FIX: Now actually checks and generates accounts instead of always "pending"
+// @route   POST /api/vip/simulate-payment
+// FIX: This only checks DB status — does NOT create accounts
+// Accounts are ONLY created via webhook above
 // ─────────────────────────────────────────────────────────────────────────────
 router.post("/simulate-payment", async (req, res) => {
   try {
@@ -160,20 +171,17 @@ router.post("/simulate-payment", async (req, res) => {
     const transaction = await Transaction.findOne({ orderId });
     if (!transaction) return res.status(404).json({ message: "Transaction not found" });
 
-    // If already completed, return the accounts
     if (transaction.status === 'completed') {
+      // Payment was already confirmed by SePay webhook → return accounts
       return res.json({ status: 'completed', accounts: transaction.generatedAccounts });
     }
 
-    // NOT YET: Check SePay's transaction list to see if payment came in
-    // For now, we check if there's a recent incoming amount matching our transaction
-    // Simple heuristic: generate accounts immediately when user confirms
-    // (In production you would cross-check with SePay API here)
-    const accounts = await generateAccounts(transaction);
-    return res.json({ status: 'completed', accounts });
-
+    // Still pending → tell user to wait
+    return res.json({
+      status: 'pending',
+      message: 'Hệ thống chưa nhận được thanh toán. Vui lòng đảm bảo nội dung chuyển khoản chứa đúng mã đơn hàng, sau đó đợi 30 giây.'
+    });
   } catch (error) {
-    console.error("simulate-payment error:", error);
     res.status(500).json({ message: error.message });
   }
 });
