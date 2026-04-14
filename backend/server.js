@@ -79,6 +79,15 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: requestBodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: requestBodyLimit }));
 app.use(morgan("tiny"));
+
+// Global POST Logger for Debugging
+app.use((req, res, next) => {
+  if (req.method === "POST") {
+    console.log(`>>> [POST REQUEST]: ${req.path}`);
+  }
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
@@ -103,6 +112,11 @@ app.use("/api/semesters", semesterRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/results", resultsRoutes);
 app.use("/api/vip", vipRoutes);
+
+// Helper debug route
+app.get("/api/vip/webhook", (req, res) => {
+  res.send("Webhook endpoint is active! Please use POST method for SePay.");
+});
 
 app.get("/api/ping", (req, res) => {
   res.json({ status: "ok", time: new Date() });
