@@ -214,7 +214,7 @@ router.post('/webhook', async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/vip/simulate-payment  ← "Tôi đã chuyển tiền" button
-// RULE: Only reads DB status. Accounts are ONLY created via webhook above.
+// Check if payment arrived via Webhook (DB) or active check via SePay API (Fallback)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/simulate-payment', async (req, res) => {
   try {
@@ -222,13 +222,27 @@ router.post('/simulate-payment', async (req, res) => {
     const t = await Transaction.findOne({ orderId });
     if (!t) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
 
+    // 1. Nếu Webhook đã xử lý xong rồi
     if (t.status === 'completed') {
       return res.json({ status: 'completed', accounts: t.generatedAccounts });
     }
 
-    // Still pending — SePay webhook has not confirmed payment yet
-    return res.json({ status: 'pending' });
+    // 2. Webhook chưa đến → Chủ động gọi SePay API tra cứu (Nếu có Token)
+    if (process.env.SEPAY_API_TOKEN) {
+      console.log(`[simulate-payment] Đang gọi SePay API kiểm tra thủ công cho: ${orderId}...`);
+      const sePayTx = await findOrderInSepay(orderId);
+
+      if (sePayTx) {
+        console.log(`✅ [FOUND]: Tìm thấy giao dịch trên API. Đang tạo tài khoản...`);
+        const accounts = await processTransaction(t);
+        return res.json({ status: 'completed', accounts });
+      }
+    }
+
+    // 3. Vẫn chưa thấy tiền
+    return res.json({ status: 'pending', message: 'Hệ thống chưa nhận được thanh toán. Nếu bạn đã chuyển khoản, vui lòng đợi 1-2 phút rồi thử lại.' });
   } catch (e) {
+    console.error('Simulate error:', e.message);
     res.status(500).json({ message: e.message });
   }
 });
