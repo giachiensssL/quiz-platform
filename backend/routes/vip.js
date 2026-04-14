@@ -119,8 +119,12 @@ router.post('/create-order', async (req, res) => {
     const pkg = PACKAGES[packageId];
     if (!pkg) return res.status(400).json({ message: 'Gói không hợp lệ.' });
 
-    const orderId = `VIP${Date.now()}${randomStr(4).toUpperCase()}`;
-    const bankId = 'BIDV', bankAccount = '8874437189', accountName = 'GIANG A CHIEN';
+    const orderId = `VIP${randomStr(6).toUpperCase()}`;
+    const bankId = "970418"; // BIDV BIN Code - More stable than "BIDV" string
+    const bankAccount = "8874437189";
+    const accountName = "GIANG A CHIEN";
+
+    // Use full VietQR format for better app recognition
     const qrUrl = `https://img.vietqr.io/image/${bankId}-${bankAccount}-compact2.png?amount=${pkg.amount}&addInfo=${orderId}&accountName=${encodeURIComponent(accountName)}`;
 
     const t = await Transaction.create({
@@ -128,7 +132,7 @@ router.post('/create-order', async (req, res) => {
       buyerName: name, itemsCount: pkg.count,
     });
 
-    res.json({ orderId: t.orderId, amount: t.amount, qrUrl, bankId, bankAccount, accountName });
+    res.json({ orderId: t.orderId, amount: t.amount, qrUrl, bankId: "BIDV", bankAccount, accountName });
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
