@@ -4,6 +4,7 @@ const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
 const https = require("https");
+const { broadcast } = require("../realtime");
 
 const randomStr = (len) => Math.random().toString(36).substring(2, 2 + len);
 
@@ -36,19 +37,35 @@ const sendEmail = async (to, accounts) => {
 // ── Generate accounts for a transaction ──────────────────────────────────────
 const processTransaction = async (t) => {
   if (t.status === 'completed') return t.generatedAccounts;
-  const count = t.itemsCount || 1;
+  const count = t.itemsCount || 10;
   const accounts = [];
+  
   for (let i = 0; i < count; i++) {
-    const username = `vip_${Date.now().toString().slice(-5)}${randomStr(3)}`;
+    const username = `vip_${Date.now().toString().slice(-4)}${randomStr(3)}`;
     const password = randomStr(8);
-    await User.create({ username, password, fullName: 'Đạo Hữu VIP', role: 'user' });
+    
+    // Pass raw password, User model pre-save hook will handle hashing
+    await User.create({ 
+      username, 
+      password, 
+      fullName: 'VIP Member', 
+      role: 'user' 
+    });
+    
     accounts.push({ username, password });
-    await new Promise(r => setTimeout(r, 80));
+    // Slight delay to ensure non-duplicate timestamps if based on Date.now()
+    if (count > 5) await new Promise(r => setTimeout(r, 50));
   }
+  
   t.status = 'completed';
   t.generatedAccounts = accounts;
   await t.save();
-  sendEmail(t.buyerEmail, accounts);
+  
+  await sendEmail(t.buyerEmail, accounts);
+  
+  // 🔔 REALTIME NOTIFICATION
+  broadcast("payment_success", { orderId: t.orderId });
+  
   return accounts;
 };
 
@@ -158,15 +175,22 @@ router.get('/webhook', (req, res) => {
 // POST /api/vip/webhook  ← SePay webhook (automatic when payment arrives)
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/webhook', async (req, res) => {
-  console.log('==== [SEPAY WEBHOOK START] ====');
-  console.log('Client IP:', req.ip);
-  console.log('Headers:', JSON.stringify(req.headers));
-  console.log('Raw Body:', JSON.stringify(req.body));
-
   try {
+    // 🔐 VERIFY WEBHOOK SOURCE
+    const authHeader = req.headers["authorization"] || "";
+    const expectedToken = process.env.SEPAY_SECRET || "sepay_secret_token";
+    
+    if (authHeader !== `Bearer ${expectedToken}`) {
+      console.warn('⚠️ Unauthorized Webhook Attempt from:', req.ip);
+      return res.sendStatus(403);
+    }
+
     const body = req.body || {};
     
-    // Gộp tất cả các trường có thể chứa nội dung chuyển tiền vào 1 chuỗi dài
+    // ⚡ ACK IMMEDIATELY
+    res.status(200).json({ success: true, message: 'Received' });
+
+    // Identify transaction content
     const fullTextSearch = [
       body.content, body.transferContent, body.description,
       body.memo, body.addInfo, body.remarks, body.code
@@ -202,7 +226,8 @@ router.post('/webhook', async (req, res) => {
     }
 
     // Tạo tài khoản VIP
-    console.log(`🚀 [XỬ LÝ]: Đang tạo ${match.count || 10} tài khoản cho ${match.buyerEmail}...`);
+    console.log(`🚀 [XỬ LÝ]: Đang tạo ${match.itemsCount || 10} tài khoản cho ${match.buyerEmail}...`);
+    match.sepayRaw = body;
     await processTransaction(match);
     console.log('✅ [HOÀN TẤT]: Đã nâng cấp thành công.');
 
@@ -248,4 +273,20 @@ router.post('/simulate-payment', async (req, res) => {
 });
 
 module.exports = router;
+
+// ── Background Task: Auto Expire Unpaid Orders (Every 2 minutes) ─────────────
+setInterval(async () => {
+  try {
+    const expiredDate = new Date(Date.now() - 15 * 60 * 1000); // 15 minutes ago
+    const result = await Transaction.updateMany(
+      { status: 'pending', createdAt: { $lt: expiredDate } },
+      { status: 'failed', description: 'Hết hạn thanh toán (15p)' }
+    );
+    if (result.modifiedCount > 0) {
+      console.log(`[Cleaner] Auto-expired ${result.modifiedCount} unpaid orders.`);
+    }
+  } catch (err) {
+    console.error('[Cleaner] Error:', err.message);
+  }
+}, 120000);
 

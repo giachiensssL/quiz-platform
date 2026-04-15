@@ -16,6 +16,7 @@ const transactionSchema = new Schema(
     itemsCount: { type: Number, default: 10 },
     paymentMethod: { type: String, default: "VietQR" },
     description: { type: String },
+    sepayRaw: { type: Object },
   },
   { timestamps: true }
 );
