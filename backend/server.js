@@ -35,6 +35,12 @@ const allowedOrigins = (process.env.FRONTEND_URL || "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+// Common production domains as fallbacks
+const productionOrigins = [
+  "https://quiz-platform-pi-seven.vercel.app",
+  "https://quiz-platform-sm9a.onrender.com",
+];
+
 const localOriginPatterns = [
   /^http:\/\/localhost(:\d+)?$/i,
   /^http:\/\/127\.0\.0\.1(:\d+)?$/i,
@@ -46,6 +52,7 @@ const localOriginPatterns = [
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
+  if (productionOrigins.includes(origin)) return true;
   return localOriginPatterns.some((pattern) => pattern.test(origin));
 };
 
@@ -90,6 +97,10 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
+});
+
+app.get("/api", (req, res) => {
+  res.json({ message: "QuizMaster API is active 🚀", version: "1.0.0" });
 });
 
 // Serve uploads
@@ -177,7 +188,10 @@ connectDB()
     });
     setWebSocketServer(wsServer);
 
-    server.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+    server.listen(PORT, () => {
+      console.log(`Backend running on port ${PORT}`);
+      console.log(`Allowed Origins:`, [...allowedOrigins, ...productionOrigins]);
+    });
   })
   .catch((error) => {
     console.error("Backend startup failed", error);
