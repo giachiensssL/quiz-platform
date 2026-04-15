@@ -58,7 +58,7 @@ const issueTokens = async (user, options = {}) => {
   const refreshToken = signRefreshToken(user);
 
   const retained = (user.refreshTokens || []).filter((item) => item !== previousRefreshToken);
-  user.refreshTokens = [refreshToken, ...retained].slice(0, 1);
+  user.refreshTokens = [refreshToken, ...retained].slice(0, 10);
   await user.save();
 
   return {

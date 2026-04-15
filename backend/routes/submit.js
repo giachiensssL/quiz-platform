@@ -142,8 +142,11 @@ router.post("/", protect, async (req, res) => {
       // True/False evaluation logic moved and unified above to avoid redundancy.
 
       if (type === "arrange_words") {
-        const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
-        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || "").trim()]));
+        const dragItems = (Array.isArray(question.dragItems) && question.dragItems.length > 0)
+          ? question.dragItems
+          : (Array.isArray(question.answers) ? question.answers.map((a, idx) => ({ id: a.id || String(idx + 1), label: a.text })) : []);
+
+        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || item.text || "").trim()]));
         const expectedSentence = normalizeSentence(question.answerSentence || "");
 
         if (expectedSentence) {
@@ -158,7 +161,7 @@ router.post("/", protect, async (req, res) => {
             isCorrect = actualSentence === expectedSentence;
           }
         } else {
-        const expectedOrderById = (Array.isArray(question.dragItems) ? question.dragItems : [])
+        const expectedOrderById = dragItems
           .map((item) => String(item.id || "").trim())
           .filter(Boolean);
         correctResponse = expectedOrderById;
@@ -174,8 +177,11 @@ router.post("/", protect, async (req, res) => {
       }
 
       if (type === "match_words") {
-        const dragItems = Array.isArray(question.dragItems) ? question.dragItems : [];
-        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || "").trim()]));
+        const dragItems = (Array.isArray(question.dragItems) && question.dragItems.length > 0)
+          ? question.dragItems
+          : (Array.isArray(question.answers) ? question.answers.map((a, idx) => ({ id: a.id || String(idx + 1), label: a.text })) : []);
+
+        const labelById = Object.fromEntries(dragItems.map((item) => [String(item.id || "").trim(), String(item.label || item.text || "").trim()]));
         const expectedSentence = normalizeSentence(question.answerSentence || "");
         const expectedOrderById = dragItems.map((item) => String(item.id || "").trim()).filter(Boolean);
         correctResponse = expectedSentence || expectedOrderById;

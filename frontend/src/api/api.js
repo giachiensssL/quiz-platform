@@ -108,18 +108,24 @@ api.interceptors.response.use(
     }
 
     if (status === 401 && !isLoginRequest && !skipAuthRedirect && hasSessionToken) {
-      const kickedByOtherSession = serverMessage.toLowerCase().includes('đăng nhập ở thiết bị khác');
+      const serverMessageLower = serverMessage.toLowerCase();
+      const kickedByOtherSession = serverMessageLower.includes('đăng nhập ở thiết bị khác') || serverMessageLower.includes('thiết bị khác');
+      
       if (kickedByOtherSession) {
         sessionStorage.setItem(
           AUTH_NOTICE_KEY,
           'Tài khoản này vừa được đăng nhập ở thiết bị khác. Bạn đã bị đăng xuất, vui lòng đăng nhập lại.'
         );
       }
-      localStorage.removeItem('qm_token');
-      localStorage.removeItem('qm_user');
-      localStorage.removeItem('qm_refresh_token');
-      if (!isOnLoginPage) {
-        window.location.href = '/login';
+
+      // Only redirect if absolutely certain it's an auth failure, not a network fluke.
+      if (status === 401) {
+        localStorage.removeItem('qm_token');
+        localStorage.removeItem('qm_user');
+        localStorage.removeItem('qm_refresh_token');
+        if (!isOnLoginPage) {
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(err);
@@ -132,6 +138,7 @@ export const authAPI = {
   login: (d) => api.post('/auth/login', d),
   logout: () => api.post('/auth/logout'),
   me: () => api.get('/auth/me'),
+  getBaseUrl: () => API_BASE_URL,
   updateProfile: (d) => {
     if (d instanceof FormData) {
       return api.put('/auth/profile', d, { headers: { 'Content-Type': 'multipart/form-data' } });

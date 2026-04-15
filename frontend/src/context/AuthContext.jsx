@@ -128,7 +128,7 @@ export function AuthProvider({ children }) {
       }
 
       if (error?.code === 'ERR_NETWORK') {
-        return { success: false, error: 'Không kết nối được backend (http://localhost:5001). Hãy bật backend rồi đăng nhập lại.' };
+        return { success: false, error: `Không kết nối được backend (${authAPI.getBaseUrl?.() || 'http://localhost:5001'}). Hãy bật máy chủ rồi thử lại.` };
       }
 
       // Only allow local fallback when explicitly enabled and server is unreachable.
