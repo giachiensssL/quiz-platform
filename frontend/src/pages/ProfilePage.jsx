@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI, API_BASE_URL } from '../api/api';
+import { authAPI, API_BASE_URL, getFullAvatarUrl } from '../api/api';
 import Navbar from '../components/Navbar';
 import { EmptyState } from '../components/UI';
 import { useAuth } from '../context/AuthContext';
@@ -26,12 +26,6 @@ export default function ProfilePage() {
     recentActivities: [],
   });
 
-  const getFullAvatarUrl = (path) => {
-    if (!path) return null;
-    if (path.startsWith('http')) return path;
-    const base = API_BASE_URL.replace('/api', '');
-    return `${base}${path}`;
-  };
 
   const isServerToken = (token) => {
     const value = String(token || '').trim();

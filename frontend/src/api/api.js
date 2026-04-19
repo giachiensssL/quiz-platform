@@ -23,7 +23,7 @@ export const getFullAvatarUrl = (path) => {
   if (!path || typeof path !== 'string') return null;
   if (path.startsWith('http')) return path;
   const base = API_BASE_URL.replace(/\/api\/?$/i, '');
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const cleanPath = '/' + path.replace(/^\/+/, '');
   return `${base}${cleanPath}`;
 };
 

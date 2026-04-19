@@ -1,5 +1,6 @@
 const express = require("express");
 const { verifyToken, isAdmin } = require("../middleware/auth");
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -60,14 +61,26 @@ router.post("/leave", (req, res) => {
   return res.json({ totalVisits, onlineUsers: sessions.size, peakOnline });
 });
 
-router.get("/summary", verifyToken, isAdmin, (req, res) => {
+router.get("/summary", verifyToken, isAdmin, async (req, res) => {
   cleanupSessions();
-  return res.json({
-    totalVisits,
-    onlineUsers: sessions.size,
-    peakOnline,
-    trackedSessions: sessions.size,
-  });
+  try {
+    const totalUsers = await User.countDocuments();
+    return res.json({
+      totalVisits,
+      onlineUsers: sessions.size,
+      peakOnline,
+      trackedSessions: sessions.size,
+      totalUsers,
+    });
+  } catch (error) {
+    return res.json({
+      totalVisits,
+      onlineUsers: sessions.size,
+      peakOnline,
+      trackedSessions: sessions.size,
+      totalUsers: 0,
+    });
+  }
 });
 
 module.exports = router;

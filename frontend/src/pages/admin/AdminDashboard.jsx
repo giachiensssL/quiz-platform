@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import { API_BASE_URL, adminDataAPI } from '../../api/api';
+import { API_BASE_URL, adminDataAPI, getFullAvatarUrl } from '../../api/api';
 import Navbar from '../../components/Navbar';
 import { Button, Input, Select, Textarea, Modal, Confirm, Toast, Badge, EmptyState } from '../../components/UI';
 import { parseDocxQuestionsWithReport, parseLessonsFromTextWithReport, parseQuestionsFromTextWithReport } from '../../utils/wordQuestionParser';
@@ -10,7 +10,7 @@ import { parseDocxQuestionsWithReport, parseLessonsFromTextWithReport, parseQues
 // ── OVERVIEW ────────────────────────────────────────────────────
 function Overview({ data, analytics }) {
   const stats = [
-    { label: 'Người dùng', val: 2, icon: '👥', color: 'var(--blue)' },
+    { label: 'Người dùng', val: analytics?.totalUsers || 0, icon: '👥', color: 'var(--blue)' },
     { label: 'Câu hỏi', val: data.questions.length, icon: '❓', color: 'var(--orange)' },
     { label: 'Môn học', val: data.subjects.length, icon: '📚', color: 'var(--success)' },
     { label: 'Bài học', val: data.lessons.length, icon: '📝', color: '#8B5CF6' },
@@ -100,6 +100,7 @@ function UsersPanel() {
     email: user.email || '',
     role: user.role || 'user',
     isBlocked: Boolean(user.blocked),
+    avatar: user.avatar || '',
     accessLocks: normalizeAccessLocks(user.accessLocks || emptyAccessLocks),
     attempts: Array.isArray(user.attempts) ? user.attempts : [],
     createdAt: user.createdAt || new Date().toISOString(),
@@ -514,13 +515,24 @@ function UsersPanel() {
         )}
         {loading ? <EmptyState icon="⏳" text="Đang tải danh sách người dùng..." /> : users.length === 0 ? <EmptyState icon="👥" text="Chưa có người dùng" /> : (
           <table className="data-table">
-            <thead><tr><th>Tài khoản</th><th>Thông tin</th><th>Mật khẩu</th><th>Vai trò</th><th>Trạng thái</th><th>Khóa riêng</th><th>Kết quả</th><th>Thao tác</th></tr></thead>
+            <thead><tr><th>Tài khoản</th><th>Ảnh</th><th>Thông tin</th><th>Mật khẩu</th><th>Vai trò</th><th>Trạng thái</th><th>Khóa riêng</th><th>Kết quả</th><th>Thao tác</th></tr></thead>
             <tbody>
               {users.map(u => (
                 <tr key={u._id}>
                   <td>
                     <div style={{ fontWeight: 700 }}>@{u.username}</div>
                     <div style={{ color: 'var(--muted)', fontSize: '.78rem' }}>{u._id}</div>
+                  </td>
+                  <td>
+                    <div className="avatar-preview-sm" style={{
+                      width: 40, height: 40, borderRadius: '50%',
+                      background: 'var(--surface-2)', overflow: 'hidden',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                      {getFullAvatarUrl(u.avatar) ? (
+                        <img src={getFullAvatarUrl(u.avatar)} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : ( (u.fullName || u.username || 'U')[0].toUpperCase() )}
+                    </div>
                   </td>
                   <td>
                     <div style={{ fontWeight: 600 }}>{u.fullName || 'Chưa cập nhật tên'}</div>
