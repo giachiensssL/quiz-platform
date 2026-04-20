@@ -58,16 +58,22 @@ const safeStorageSet = (key, value) => {
   }
 };
 
-const shouldShuffleAnswers = (type) => type === 'single' || type === 'multiple';
+const shouldShuffleAnswers = (type) => ['single', 'multiple', 'truefalse', 'arrange', 'match'].includes(type);
+const shouldShuffleDrags = (type) => ['drag', 'arrange', 'match'].includes(type);
 
 const cloneQuestionForAttempt = (question) => {
   const nextQuestion = {
     ...question,
     answers: Array.isArray(question?.answers) ? [...question.answers] : [],
+    dragItems: Array.isArray(question?.dragItems) ? [...question.dragItems] : [],
   };
 
   if (shouldShuffleAnswers(nextQuestion.type) && nextQuestion.answers.length > 1) {
     nextQuestion.answers = shuffleArray(nextQuestion.answers);
+  }
+
+  if (shouldShuffleDrags(nextQuestion.type) && nextQuestion.dragItems.length > 1) {
+    nextQuestion.dragItems = shuffleArray(nextQuestion.dragItems);
   }
 
   return nextQuestion;
@@ -77,13 +83,13 @@ const getQuestionAttemptSignature = (questions) => {
   const questionPart = questions.map((q) => String(q.id ?? '')).join(',');
   const answerPart = questions
     .map((q) => {
-      if (!Array.isArray(q.answers) || q.answers.length <= 1) {
-        return `${String(q.id ?? '')}:`;
-      }
-      const answerOrder = q.answers
-        .map((a, idx) => String(a?.id ?? a?.text ?? idx))
-        .join('|');
-      return `${String(q.id ?? '')}:${answerOrder}`;
+      const answersSign = Array.isArray(q.answers) 
+        ? q.answers.map((a, idx) => String(a?.id ?? a?.text ?? idx)).join('|') 
+        : '';
+      const dragsSign = Array.isArray(q.dragItems) 
+        ? q.dragItems.map((d, idx) => String(d?.id ?? d?.label ?? idx)).join('|') 
+        : '';
+      return `${String(q.id ?? '')}:${answersSign}#${dragsSign}`;
     })
     .join(';');
 
