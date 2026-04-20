@@ -12,11 +12,21 @@ const setWebSocketServer = (server) => {
         if (data.event === "chat_message") {
           // Broadcast chat message to everyone (including role for admin detection)
           broadcast("chat_message", {
+            id: data.id || `msg_${Date.now()}`,
             user: data.user,
             text: data.text,
             avatar: data.avatar || '',
             role: data.role || 'user',
             timestamp: data.timestamp || Date.now(),
+            reactions: data.reactions || {},
+          });
+        }
+        if (data.event === "chat_reaction") {
+          // Broadcast reaction to everyone
+          broadcast("chat_reaction", {
+            messageId: data.messageId,
+            emoji: data.emoji,
+            username: data.username,
           });
         }
       } catch (e) {

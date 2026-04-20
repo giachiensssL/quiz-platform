@@ -20,9 +20,13 @@ export default function ChatWidget() {
   const [inputValue, setInputValue] = useState('');
   const [connected, setConnected] = useState(false);
   const [hasNew, setHasNew] = useState(false);
+  const [hoveredMsg, setHoveredMsg] = useState(null);
+  const [reactionPickerMsg, setReactionPickerMsg] = useState(null);
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const [rankMap, setRankMap] = useState({}); // { username: rankPlusOne }
+
+  const emojis = ['❤️', '😂', '👍', '🔥', '😍', '👏'];
 
   const fetchRanks = async () => {
     try {
@@ -79,6 +83,23 @@ export default function ChatWidget() {
             setMessages((prev) => [...prev, data.payload]);
             if (!isOpen) setHasNew(true);
           }
+          if (data.event === 'chat_reaction') {
+            const { messageId, emoji, username } = data.payload;
+            setMessages((prev) => prev.map(m => {
+              if (m.id === messageId) {
+                const reactions = { ...(m.reactions || {}) };
+                const users = Array.isArray(reactions[emoji]) ? [...reactions[emoji]] : [];
+                if (users.includes(username)) {
+                  reactions[emoji] = users.filter(u => u !== username);
+                } else {
+                  reactions[emoji] = [...users, username];
+                }
+                if (reactions[emoji].length === 0) delete reactions[emoji];
+                return { ...m, reactions };
+              }
+              return m;
+            }));
+          }
         } catch (e) {
           console.error('Chat message error', e);
         }
@@ -117,15 +138,31 @@ export default function ChatWidget() {
 
     const messagePayload = {
       event: 'chat_message',
+      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       user: user.name || user.username,
       text: inputValue,
       avatar: user.avatar || '',
-      role: user.role || 'user',      // ← include role for admin detection
+      role: user.role || 'user',
       timestamp: Date.now(),
+      reactions: {},
     };
 
     socketRef.current.send(JSON.stringify(messagePayload));
     setInputValue('');
+  };
+
+  const handleReaction = (messageId, emoji) => {
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
+
+    const reactionPayload = {
+      event: 'chat_reaction',
+      messageId,
+      emoji,
+      username: user.name || user.username,
+    };
+
+    socketRef.current.send(JSON.stringify(reactionPayload));
+    setReactionPickerMsg(null);
   };
 
   const clearHistory = () => {
@@ -178,6 +215,42 @@ export default function ChatWidget() {
           border-radius: 12px 4px 4px 12px;
           color: #fff;
         }
+
+        /* ── Rank specialized bubbles ── */
+        .bubble-rank-1 {
+          border: 1px solid #FFD700 !important;
+          background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(0,0,0,0.6)) !important;
+          box-shadow: 0 0 15px rgba(255, 215, 0, 0.3) !important;
+          animation: gold-glow 2s infinite alternate;
+        }
+        @keyframes gold-glow {
+          from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+          to { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        }
+        .bubble-rank-2 {
+          border: 1px solid #C0C0C0 !important;
+          background: linear-gradient(135deg, rgba(192, 192, 192, 0.12), rgba(0,0,0,0.4)) !important;
+          box-shadow: 0 0 12px rgba(192, 192, 192, 0.15) !important;
+        }
+        .bubble-rank-3 {
+          border: 1px solid #CD7F32 !important;
+          background: linear-gradient(135deg, rgba(205, 127, 50, 0.12), rgba(0,0,0,0.4)) !important;
+          box-shadow: 0 0 10px rgba(205, 127, 50, 0.15) !important;
+        }
+        .bubble-rank-elite {
+          border: 1px solid rgba(34, 211, 238, 0.4) !important;
+          background: rgba(34, 211, 238, 0.05) !important;
+        }
+
+        /* Rank badges */
+        .rank-badge {
+          font-size: 0.6rem; padding: 1px 5px; border-radius: 4px;
+          font-weight: 800; text-transform: uppercase; margin-right: 4px;
+        }
+        .rank-badge-1 { background: #FFD700; color: #000; border: 1px solid #fff; box-shadow: 0 0 5px #FFD700; }
+        .rank-badge-2 { background: #C0C0C0; color: #000; }
+        .rank-badge-3 { background: #CD7F32; color: #fff; }
+        .rank-badge-elite { background: rgba(34, 211, 238, 0.2); color: #22D3EE; border: 1px solid rgba(34, 211, 238, 0.4); }
 
         /* ── Admin messages ── */
         .msg-bubble-admin {
@@ -268,6 +341,67 @@ export default function ChatWidget() {
           background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.5);
           color: #FFD700; font-weight: 600; letter-spacing: 0.5px;
         }
+
+        /* Reactions Styling */
+        .reaction-tag {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1.5px solid rgba(212, 175, 55, 0.2);
+          border-radius: 16px;
+          padding: 2px 8px;
+          font-size: 0.75rem;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          transition: all 0.2s;
+          margin-right: 4px;
+          margin-top: 6px;
+        }
+        .reaction-tag:hover { 
+          background: rgba(212, 175, 55, 0.15);
+          border-color: rgba(212, 175, 55, 0.4);
+        }
+        .reaction-tag.active { 
+          background: rgba(212, 175, 55, 0.2);
+          border-color: #d4af37;
+          box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+        }
+        .reaction-btn {
+          cursor: pointer;
+          font-size: 1.1rem;
+          opacity: 0.4;
+          transition: all 0.2s;
+          padding: 4px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .reaction-btn:hover {
+          opacity: 1;
+          color: #d4af37;
+          background: rgba(212, 175, 55, 0.1);
+        }
+        .reaction-picker {
+          position: absolute;
+          bottom: 110%;
+          display: flex;
+          background: #1a1a2e;
+          border: 1px solid #d4af37;
+          border-radius: 24px;
+          padding: 6px 10px;
+          gap: 12px;
+          z-index: 1010;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+          animation: reactionPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes reactionPop { 
+          from { transform: scale(0.5) translateY(10px); opacity: 0; } 
+          to { transform: scale(1) translateY(0); opacity: 1; } 
+        }
+        .picker-emoji {
+          cursor: pointer; font-size: 1.3rem; 
+          transition: transform 0.2s;
+        }
+        .picker-emoji:hover { transform: scale(1.3); }
 
         /* Input & helpers */
         .xianxia-input-wrap {
@@ -367,6 +501,7 @@ export default function ChatWidget() {
             borderRadius: '12px', display: 'flex', flexDirection: 'column',
             zIndex: 1000, overflow: 'hidden',
           }}
+          onClick={() => setReactionPickerMsg(null)}
         >
           {/* Header */}
           <div className="xianxia-header" style={{
@@ -420,19 +555,47 @@ export default function ChatWidget() {
             )}
 
             {messages.map((msg, i) => {
-              const isMe = msg.user === (user.name || user.username);
+              const currentUsername = user.name || user.username;
+              const isMe = msg.user === currentUsername;
               const isAdmin = msg.role === 'admin';
               const avatar = getFullAvatarUrl(msg.avatar);
               const ts = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : '';
               const rRank = rankMap[msg.user] || 0;
+              const isHovered = hoveredMsg === msg.id;
+
+              const renderReactions = () => {
+                if (!msg.reactions || Object.keys(msg.reactions).length === 0) return null;
+                return (
+                  <div style={{ 
+                    display: 'flex', flexWrap: 'wrap', 
+                    marginTop: 4, 
+                    justifyContent: isMe ? 'flex-end' : 'flex-start' 
+                  }}>
+                    {Object.entries(msg.reactions).map(([emoji, users]) => (
+                      <div 
+                        key={emoji} 
+                        className={`reaction-tag ${users.includes(currentUsername) ? 'active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); handleReaction(msg.id, emoji); }}
+                        title={users.join(', ')}
+                      >
+                        <span>{emoji}</span>
+                        <span style={{ fontWeight: 700 }}>{users.length}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              };
 
               if (isAdmin) {
                 // ── Admin message (full-width, centered, special) ──
                 return (
-                  <div key={i} style={{ alignSelf: 'stretch', width: '100%' }}>
-                    <div style={{
-                      display: 'flex', gap: '10px', alignItems: 'flex-start',
-                    }}>
+                  <div 
+                    key={msg.id || i} 
+                    style={{ alignSelf: 'stretch', width: '100%' }}
+                    onMouseEnter={() => setHoveredMsg(msg.id)}
+                    onMouseLeave={() => setHoveredMsg(null)}
+                  >
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                       {/* 3-color halo avatar */}
                       <div className="admin-avatar-wrap">
                         <div className="admin-avatar-halo" />
@@ -442,7 +605,7 @@ export default function ChatWidget() {
                             : '👑'}
                         </div>
                       </div>
-                      <div style={{ flex: 1. }}>
+                      <div style={{ flex: 1, position: 'relative' }}>
                         <div className="admin-name-label">
                           <span className="admin-crown">👑</span>
                           <span>Admin Đại Đế</span>
@@ -455,6 +618,19 @@ export default function ChatWidget() {
                         }}>
                           {msg.text}
                         </div>
+                        {renderReactions()}
+                        {isHovered && (
+                          <div style={{ position: 'absolute', right: 0, top: 0 }}>
+                            <div className="reaction-btn" onClick={(e) => { e.stopPropagation(); setReactionPickerMsg(msg.id); }}>➕</div>
+                            {reactionPickerMsg === msg.id && (
+                              <div className="reaction-picker" onClick={(e) => e.stopPropagation()}>
+                                {emojis.map(e => (
+                                  <span key={e} className="picker-emoji" onClick={() => handleReaction(msg.id, e)}>{e}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -463,12 +639,18 @@ export default function ChatWidget() {
 
               // ── Regular message ──
               return (
-                <div key={i} style={{
-                  display: 'flex', flexDirection: 'column',
-                  alignItems: isMe ? 'flex-end' : 'flex-start',
-                  maxWidth: '88%',
-                  alignSelf: isMe ? 'flex-end' : 'flex-start',
-                }}>
+                <div 
+                  key={msg.id || i} 
+                  style={{
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: isMe ? 'flex-end' : 'flex-start',
+                    maxWidth: '88%',
+                    alignSelf: isMe ? 'flex-end' : 'flex-start',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={() => setHoveredMsg(msg.id)}
+                  onMouseLeave={() => setHoveredMsg(null)}
+                >
                   <div style={{
                     display: 'flex', gap: '8px', alignItems: 'flex-start',
                     flexDirection: isMe ? 'row-reverse' : 'row',
@@ -495,20 +677,30 @@ export default function ChatWidget() {
                           : (msg.user ? msg.user[0].toUpperCase() : 'U')}
                       </div>
                     </div>
-                    <div>
-                      {!isMe && (
-                        <div style={{
-                          fontSize: '0.7rem', color: '#d4af37',
-                          marginBottom: '3px', marginLeft: '4px',
-                          fontWeight: 600, opacity: 0.75,
-                          display: 'flex', alignItems: 'center', gap: 4,
-                        }}>
-                          {msg.user}
-                          {ts && <span style={{ fontSize: '0.6rem', color: 'rgba(255, 255, 255, 0.25)', fontWeight: 400 }}>{ts}</span>}
-                        </div>
-                      )}
+                    <div style={{ position: 'relative' }}>
+                      <div style={{
+                        fontSize: '0.7rem', color: '#d4af37',
+                        marginBottom: '3px', marginLeft: isMe ? 0 : '4px',
+                        marginRight: isMe ? '4px' : 0,
+                        fontWeight: 600, opacity: 0.75,
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        flexDirection: isMe ? 'row-reverse' : 'row',
+                      }}>
+                        {rRank === 1 && <span className="rank-badge rank-badge-1">Top 1</span>}
+                        {rRank === 2 && <span className="rank-badge rank-badge-2">Top 2</span>}
+                        {rRank === 3 && <span className="rank-badge rank-badge-3">Top 3</span>}
+                        {rRank >= 4 && rRank <= 10 && <span className="rank-badge rank-badge-elite">Top {rRank}</span>}
+                        {!isMe && msg.user}
+                        {ts && <span style={{ fontSize: '0.6rem', color: 'rgba(255, 255, 255, 0.25)', fontWeight: 400 }}>{ts}</span>}
+                      </div>
                       <div
-                        className={isMe ? 'msg-bubble-me' : 'msg-bubble-other'}
+                        className={`
+                          ${isMe ? 'msg-bubble-me' : 'msg-bubble-other'}
+                          ${rRank === 1 ? 'bubble-rank-1' : ''}
+                          ${rRank === 2 ? 'bubble-rank-2' : ''}
+                          ${rRank === 3 ? 'bubble-rank-3' : ''}
+                          ${rRank >= 4 && rRank <= 10 ? 'bubble-rank-elite' : ''}
+                        `}
                         style={{
                           padding: '9px 13px', fontSize: '0.92rem',
                           boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
@@ -517,8 +709,27 @@ export default function ChatWidget() {
                       >
                         {msg.text}
                       </div>
-                      {isMe && ts && (
-                        <div style={{ fontSize: '0.6rem', color: 'rgba(255, 255, 255, 0.25)', marginTop: 2, textAlign: 'right' }}>{ts}</div>
+
+                      {renderReactions()}
+
+                      {/* Reaction Trigger Button (on hover) */}
+                      {isHovered && (
+                        <div style={{ 
+                          position: 'absolute', 
+                          [isMe ? 'left' : 'right']: '-35px', 
+                          top: '50%', 
+                          transform: 'translateY(-50%)',
+                          zIndex: 10
+                        }}>
+                          <div className="reaction-btn" onClick={(e) => { e.stopPropagation(); setReactionPickerMsg(msg.id); }}>➕</div>
+                          {reactionPickerMsg === msg.id && (
+                            <div className="reaction-picker" style={{ [isMe ? 'left' : 'right']: 0 }} onClick={(e) => e.stopPropagation()}>
+                              {emojis.map(e => (
+                                <span key={e} className="picker-emoji" onClick={() => handleReaction(msg.id, e)}>{e}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
