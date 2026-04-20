@@ -173,6 +173,29 @@ export default function VipPurchasePage() {
           </div>
 
           <div style={{ padding: 24 }}>
+            {/* System Notice: Payment not ready */}
+            <div style={{
+              background: '#fff5f5',
+              border: '1px solid #feb2b2',
+              borderRadius: '10px',
+              padding: '14px 18px',
+              marginBottom: 24,
+              boxShadow: '0 4px 6px -1px rgba(197, 48, 48, 0.1)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                <strong style={{ color: '#c53030', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Thông báo quan trọng</strong>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.85rem', color: '#742a2a', lineHeight: 1.6 }}>
+                Hiện tại chương trình thanh toán tự động chưa sẵn sàng hoạt động. 
+                Nếu bạn muốn giao dịch hãy liên hệ Admin qua 
+                <strong style={{ color: '#c53030' }}> Zalo: 0876030347</strong> hoặc 
+                <a href="https://m.me/tuantudeptrai123?hash=Abb5IMVvnQMqfZ8n&source_id=8585216" target="_blank" rel="noopener noreferrer" style={{ color: '#c53030', fontWeight: 800, textDecoration: 'none' }}> Facebook: Sở Thiên Thu</a> để được hỗ trợ trực tiếp.
+              </p>
+            </div>
+
+
+
 
             {/* ── Step 0: Select package ── */}
             {step === 0 && (
@@ -289,25 +312,24 @@ export default function VipPurchasePage() {
 
           </div>
 
-          {/* Contact Zalo Admin */}
-          <div style={{ 
-            padding: '0 24px 24px', 
-            textAlign: 'center' 
+          {/* Direct Contact QRs */}
+          <div style={{
+            padding: '0 24px 24px',
+            display: 'flex',
+            gap: 24,
+            justifyContent: 'center',
+            borderTop: '1px solid #edf2f7',
+            paddingTop: 24
           }}>
-            <div style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: 8, 
-              padding: '8px 20px', 
-              background: '#fffaf0', 
-              borderRadius: '30px', 
-              border: '1px solid #feebc8',
-              boxShadow: '0 2px 4px rgba(183, 121, 31, 0.05)'
-            }}>
-              <span style={{ fontSize: '0.82rem', color: '#744210', fontWeight: 600 }}>📞 Liên hệ Zalo Admin:</span>
-              <a href="tel:0876030347" style={{ color: '#b7791f', fontWeight: 800, textDecoration: 'none', fontSize: '0.95rem', letterSpacing: '0.02em' }}>
-                0876030347
+            <div style={{ textAlign: 'center' }}>
+              <a href="https://m.me/tuantudeptrai123?hash=Abb5IMVvnQMqfZ8n&source_id=8585216" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <img src="/messenger_qr.png" alt="Messenger QR" style={{ width: 120, height: 120, borderRadius: 8, border: '1px solid #eee', display: 'block', margin: '0 auto' }} />
+                <div style={{ marginTop: 8, fontSize: '0.65rem', fontWeight: 700, color: '#0084ff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Messenger Admin</div>
               </a>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <img src="/zalo_qr.png" alt="Zalo QR" style={{ width: 120, height: 120, borderRadius: 8, border: '1px solid #eee', display: 'block', margin: '0 auto' }} />
+              <div style={{ marginTop: 8, fontSize: '0.65rem', fontWeight: 700, color: '#0068ff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Zalo Admin</div>
             </div>
           </div>
         </div>
