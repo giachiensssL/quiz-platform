@@ -383,8 +383,23 @@ export default function LoginPage() {
               borderTop: '1px solid rgba(245,158,11,0.15)',
               paddingTop: 12,
             }}>
-              <span style={{ color: 'rgba(245,158,11,0.7)', fontWeight: 600 }}>⚡ Lưu ý:</span>{' '}
-              Mỗi phiên chỉ cho phép một thiết bị đăng nhập.
+              <div style={{ marginBottom: 4 }}>
+                <span style={{ color: 'rgba(245,158,11,0.7)', fontWeight: 600 }}>⚡ Lưu ý:</span>{' '}
+                Mỗi phiên chỉ cho phép một thiết bị đăng nhập.
+              </div>
+              <div style={{ 
+                marginTop: 8, 
+                padding: '4px 12px', 
+                background: 'rgba(245,158,11,0.1)', 
+                borderRadius: 20,
+                display: 'inline-block',
+                border: '1px solid rgba(245,158,11,0.2)',
+              }}>
+                <span style={{ color: 'rgba(253,230,138,0.6)' }}>📞 Liên hệ Zalo Admin: </span>
+                <a href="tel:0876030347" style={{ color: '#fbbf24', fontWeight: 800, textDecoration: 'none', letterSpacing: '0.05em' }}>
+                  0876030347
+                </a>
+              </div>
             </div>
           </div>
 

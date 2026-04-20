@@ -288,6 +288,28 @@ export default function VipPurchasePage() {
             )}
 
           </div>
+
+          {/* Contact Zalo Admin */}
+          <div style={{ 
+            padding: '0 24px 24px', 
+            textAlign: 'center' 
+          }}>
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: 8, 
+              padding: '8px 20px', 
+              background: '#fffaf0', 
+              borderRadius: '30px', 
+              border: '1px solid #feebc8',
+              boxShadow: '0 2px 4px rgba(183, 121, 31, 0.05)'
+            }}>
+              <span style={{ fontSize: '0.82rem', color: '#744210', fontWeight: 600 }}>📞 Liên hệ Zalo Admin:</span>
+              <a href="tel:0876030347" style={{ color: '#b7791f', fontWeight: 800, textDecoration: 'none', fontSize: '0.95rem', letterSpacing: '0.02em' }}>
+                0876030347
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
